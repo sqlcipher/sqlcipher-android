@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sqlite.database.sqlite_cts;
+package net.zetetic.database.sqlcipher_cts;
 
 import android.database.sqlite.SQLiteDatabaseCorruptException;
 import android.test.AndroidTestCase;

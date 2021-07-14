@@ -14,31 +14,26 @@
  * limitations under the License.
  */
 
-package org.sqlite.database.sqlite_cts;
+package net.zetetic.database.sqlcipher_cts;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.LargeTest;
+
+import net.zetetic.database.DatabaseUtils;
+import net.zetetic.database.SQLException;
+import net.zetetic.database.sqlcipher.SQLiteCursor;
+import net.zetetic.database.sqlcipher.SQLiteCursorDriver;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase.CursorFactory;
+import net.zetetic.database.sqlcipher.SQLiteQuery;
+import net.zetetic.database.sqlcipher.SQLiteStatement;
+import net.zetetic.database.sqlcipher.SQLiteTransactionListener;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Locale;
 import java.util.concurrent.Semaphore;
-
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import org.sqlite.database.DatabaseUtils;
-import org.sqlite.database.SQLException;
-import org.sqlite.database.sqlite.SQLiteCursor;
-import org.sqlite.database.sqlite.SQLiteCursorDriver;
-import org.sqlite.database.sqlite.SQLiteDatabase;
-import org.sqlite.database.sqlite.SQLiteDatabase.CursorFactory;
-import org.sqlite.database.sqlite.SQLiteException;
-import org.sqlite.database.sqlite.SQLiteQuery;
-import org.sqlite.database.sqlite.SQLiteStatement;
-import org.sqlite.database.sqlite.SQLiteTransactionListener;
-import android.test.AndroidTestCase;
-import android.test.MoreAsserts;
-import android.test.suitebuilder.annotation.LargeTest;
-import android.test.suitebuilder.annotation.SmallTest;
 
 public class SQLiteDatabaseTest extends AndroidTestCase {
     private SQLiteDatabase mDatabase;

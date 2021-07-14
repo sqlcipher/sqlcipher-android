@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.sqlite.database.sqlite_cts;
+package net.zetetic.database.sqlcipher_cts;
 
-import org.sqlite.database.sqlite.SQLiteFullException;
+import net.zetetic.database.sqlcipher.SQLiteFullException;
 import android.test.AndroidTestCase;
 
 public class SQLiteFullExceptionTest extends AndroidTestCase {

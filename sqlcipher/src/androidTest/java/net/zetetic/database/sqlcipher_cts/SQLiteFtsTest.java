@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.sqlite.database.sqlite_cts;
+package net.zetetic.database.sqlcipher_cts;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
-import org.sqlite.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
+
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import java.io.File;
 

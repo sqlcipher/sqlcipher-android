@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.sqlite.database.sqlite_cts;
+package net.zetetic.database.sqlcipher_cts;
 
 
-import android.content.Context;
 import android.database.Cursor;
-import org.sqlite.database.sqlite.SQLiteDatabase;
-import org.sqlite.database.sqlite.SQLiteDoneException;
-import org.sqlite.database.sqlite.SQLiteException;
-import org.sqlite.database.sqlite.SQLiteQuery;
-import org.sqlite.database.sqlite.SQLiteStatement;
 import android.test.AndroidTestCase;
 import android.test.MoreAsserts;
+
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDoneException;
+import net.zetetic.database.sqlcipher.SQLiteException;
+import net.zetetic.database.sqlcipher.SQLiteStatement;
 
 import java.io.File;
 
