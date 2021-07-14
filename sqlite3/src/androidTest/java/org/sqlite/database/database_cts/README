@@ -1,0 +1,22 @@
+
+The tests in this directory are modified versions of the SQLite tests in the
+Android CTS (Compatibility Test Suite) project. This project is stored in
+a git repository here:
+
+  https://android.googlesource.com/platform/cts
+
+The snapshot was taken from master branch commit id:
+
+  0794ecacb76b54eeee881762d0edfc83209ab05f
+
+  https://android.googlesource.com/platform/cts/+/0794ecacb76b54eeee881762d0edfc83209ab05f
+
+Within that project, the tests are in directory:
+
+  ./tests/tests/database/src/android/database/cts/
+
+So:
+
+  https://android.googlesource.com/platform/cts/+/0794ecacb76b54eeee881762d0edfc83209ab05f/tests/tests/database/src/android/database/cts
+  
+Only those tests that use SQLite objects have been copied over.

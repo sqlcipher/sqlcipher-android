@@ -1,0 +1,180 @@
+
+<h1>Installation</h1>
+
+
+<p> There are three ways to add the SQLite Android bindings to an application:
+
+<ol>
+  <li> By adding a pre-built aar file to the applications 
+  <a href=https://developer.android.com/studio/index.html>Android Studio</a>
+       project.
+
+  <li> By building an aar file, then adding it to the applications Android
+       Studio project as in (1).
+
+  <li> By adding the SQLite Android bindings source code to and building it 
+       along with the other application code.
+</ol>
+
+<p> By default, the SQLite Android bindings support Android API levels 16 
+and greater (Android versions 4.1 and up). There is also a separate version
+that supports Android API levels 9 and greater (Android version 2.3 and 
+up). Please note the extra step involved in [#obtaincode|obtaining the code] 
+if you wish to use the version compatible with API level 9.
+
+<h2> <a name=prebuilt></a> 1. Using a Pre-Built aar File</h2>
+
+<p>
+  This is the most straightforward option. An "aar" file is similar to a 
+  jar file, except that it may contain both compiled java classes and 
+  native code. An aar file for the latest SQLite release usable with
+  API levels 16 and up is available from 
+  <a href=http://sqlite.org/download.html>this page</a>.
+  
+<p>
+  There are two steps involved in adding an aar file to an Android Studio
+  project:
+
+<p>
+  <ol>
+    <li> <b>Import the module</b>. In Android Studio 2.1 this is
+    accomplished by selecting the <code>"File" -> "New" -> "New
+    Module..."</code> menu and then choosing <code>"Import JAR/AAR
+    Package"</code>.
+
+    <li> <b>Add a dependency on the new module to the main application</b>
+    module (or to all modules that will use the SQLite Android bindings).  In
+    Android Studio 2.1 the dependency may be created using the project
+    structure dialog (select <code>"File" -> "Project Structure..."</code>) or
+    by adding code similar to the following to the application modules
+    <code>build.gradle</code> file: <verbatim>
+    dependencies {
+        // Change "sqlite-android-3130000" to the name of the new module!
+        compile project(':sqlite-android-3130000')
+    }</verbatim>
+</ol>
+
+<p> A more detailed description of using the steps above to create a very 
+    simple applictation is [./verysimpleapp.wiki | available here].
+
+<p>
+  At time of writing, aar files may only be used directly in Android Studio
+  projects, not projects created using other IDEs (e.g. Eclipse, IntelliJ
+  IDEA). However, an aar is just a zip archive containing a
+  <code>classes.jar</code> file that in turn contains the SQLite Android
+  binding java classes and a <code>jni/</code> directory that contains the 
+  native library for each platform.  By extracting these two things from the 
+  aar file and adding them to the project separately it is often possible to 
+  use an aar file in non-Android Studio projects.
+
+<h2>2. <a name=customaar></a> Building a Custom aar File</h2>
+
+<p>
+  Building a custom aar file requires both the Android SDK and NDK. 
+
+<ol>
+  <li><a name=obtaincode></a><b>Obtain the code</b>. The code for the SQLite Android bindings may
+  be obtained either by checking out 
+  the <a href=http://fossil-scm.org>fossil</a> repository, or by downloading
+  a zip file.
+  <p>
+  To obtain the code using fossil, use the following series of commands.
+  In this case, the "project directory" refered to in subsequent steps is
+  the <code>sqlite</code> directory created by the second command below:
+  <p>
+  <verbatim>
+    $ fossil clone http://www.sqlite.org/android android.fossil
+    $ mkdir sqlite
+    $ cd sqlite
+    $ fossil open ../android.fossil</verbatim>
+  <p>
+  Alternatively, the latest code may be downloaded as a 
+  <a href=http://www.sqlite.org/android/zip/SQLite+Android+Bindings.zip?uuid=trunk>zip archive</a>. 
+  In this case, the "project directory" is the
+  <code>SQLite_Android_Bindings/</code> directory created by unzipping the
+  downloaded archive.
+  <p>
+  <i>API level 9-15 users:</i> The code for the version that is
+  compatible with Android API level 9 and greater may be obtained as a zip
+  file 
+  <a href=http://www.sqlite.org/android/zip/SQLite+Android+Bindings.zip?uuid=api-level-9>from here</a>.
+  Or, if using fossil, the <code>fossil open</code> command above should be
+  replaced with: 
+  <verbatim>
+    $ fossil open ../android.fossil api-level-9</verbatim>
+
+  <li><a name=buildnative></a> <b>Configure the native libraries.</b>
+  <p> 
+  The latest release of the public domain SQLite library is bundled 
+  with the SQLite Android bindings code downloaded in step 1. If you wish
+  to use a different version of SQLite, for example one that contains the
+  proprietry [./see.wiki | SEE extension], then replace the <code>sqlite3.c</code>
+  and <code>sqlite3.h</code> files at the following locations:
+<verbatim>
+    sqlite3/src/main/jni/sqlite/sqlite3.c
+    sqlite3/src/main/jni/sqlite/sqlite3.h</verbatim>
+  <p> 
+  By default, SQLite is built with the following options:
+<verbatim>
+    -DSQLITE_ENABLE_FTS5
+    -DSQLITE_ENABLE_RTREE
+    -DSQLITE_ENABLE_JSON1
+    -DSQLITE_ENABLE_FTS3</verbatim>
+  To build the SQLite library with some other combination of command line
+  switches, edit the <code>Android.mk</code> file at this location:
+<verbatim>
+    sqlite3/src/main/jni/sqlite/Android.mk</verbatim>
+
+  <li> <b>Build and Assemble the aar file</b>. To assemble the aar file using the 
+  command line, first set environment variable ANDROID_HOME to the SDK
+  directory, then run the gradle "assembleRelease" target from within the
+  "sqlite3" sub-directory of the project directory. For example:
+<verbatim>
+    $ export ANDROID_HOME=~/Android/Sdk/
+    $ cd sqlite3
+    $ ../gradlew assembleRelease</verbatim>
+  <p>
+  Assembling an aar file using Android Studio is similar. Open the SQLite
+  Android bindings project using Android Studio, run a "gradle sync", then
+  run the "assembleRelease" gradle task within the "sqlite3" module.
+  <p>
+  Using either the command line or Android Studio to run the gradle task
+  causes the aar file to be created at:
+  <code>sqlite3/build/outputs/aar/sqlite3-release.aar</code>.
+  <p>
+  Once the custom aar file has been created, it may be used in an Android
+  Studio application as described above. The aar file should be roughly
+  3.2MB in size. If it is much smaller than this (closer to 100KB), this
+  indicates that the aar file is missing the native libraries for one
+  reason or another. Consult the build logs.
+  <p>
+  If the <code>Android.mk</code> file described in step 2 above is edited 
+  after a build has been run, it may be necessary to run the 
+  gradle "clean" target (either with <code>../gradlew clean</code> or through
+  Android Studio) before rebuilding the aar file to ensure a correct build.
+</ol>
+
+<h2> <a name=directint></a> 3. Adding Source Code Directly to the Application</h2>
+
+<p>
+The SQLite Android bindings code may also be added directly to the 
+application project, so that it is built and deployed in the same way 
+as all other application code.
+
+<p>
+To copy the SQLite Android bindings code into an application:
+
+<ol>
+  <li> Obtain the code in the same way as [#obtaincode | described above].
+
+  <li> Recursively copy the contents of the <code>sqlite3/main/src/jni/</code>
+       directory into the application or application modules <code>jni/</code> 
+       directory. Then, from the parent of the <code>jni/</code> directory, run
+       the <code>ndk-build</code> command, as [#buildnative | described here]. 
+
+  <li> Recursively copy the contents of the <code>sqlite3/main/src/java/</code>
+       directory to whereever the application java code is.
+</ol>
+
+
+

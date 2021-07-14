@@ -1,0 +1,57 @@
+
+<h1>Very Simple App</h1>
+
+<p>
+1. Create a new project in Android Studio. Use the "Basic Activity" template.
+Leave all other settings at their defaults.
+
+<p style="margin:3ex 0 3ex 0">
+<img align=left width=45% margin=20 src=vsa/1newproject.png>
+<img align=left width=45% src=vsa/2newproject.png>
+<p style="clear:both">
+<img align=left width=45% src=vsa/3newproject.png>
+<img align=left width=45% src=vsa/4newproject.png>
+<br style="clear:both">
+
+<p style="margin:3ex 0 3ex 0">
+2. Modify the code in MainActivity.java as follows:
+
+<p>
+<img align=left width=45% src=vsa/1editmainactivity.png>
+<br style="clear:both">
+
+<p style="margin:3ex 0 3ex 0">
+3. Set the name of the TextView widget in MainActivity to "tv_widget".
+
+<p>
+<img align=left width=45% src=vsa/1setwidgetid.png>
+<br style="clear:both">
+
+<p style="margin:3ex 0 3ex 0">
+4. Import the pre-built SQLite aar file:
+
+<p>
+<img align=left width=45% src=vsa/1importmodule.png>
+<img align=left width=45% src=vsa/2importmodule.png>
+<p style="clear:both">
+<img align=left width=45% src=vsa/3importmodule.png>
+<br style="clear:both">
+
+<p style="margin:3ex 0 3ex 0">
+5. Add the dependency on the new module to the application module:
+
+<p>
+<img align=left width=45% src=vsa/1adddep.png>
+<img align=left width=45% src=vsa/2adddep.png>
+<p style="clear:both">
+<img align=left width=45% src=vsa/3adddep.png>
+<br style="clear:both">
+
+<p style="margin:3ex 0 3ex 0">
+6. The very simple app is now ready to build! Click the green triangle on the
+toolbar to build, deploy and run it.
+
+<p>
+<img align=left width=45% src=vsa/1build.png>
+<br style="clear:both">
+

@@ -1,0 +1,77 @@
+
+<h1>Application Programming</h1>
+
+<h2>Loading the Shared Library</h2>
+
+<p>
+  Before using any SQLite related methods or objects, the native SQLite
+  library must be loaded into the application using the following code:
+
+<verbatim>
+  System.loadLibrary("sqliteX");
+</verbatim>
+
+<p>
+  One way to ensure that the shared library is loaded early enough is
+  to add it to a "static" block within the declaration of the application's
+  main Activity class.
+
+<p>
+  If an SQLite related method is invoked before the shared libary is loaded,
+  the application will segfault (crash with no error message or exception).
+
+<h2>Using the SQLite Android bindings classes</h2>
+
+<p>
+  The classes that make up the built-in Android SQLite interface reside in
+  the "android.database.sqlite" namespace. This interface provides all of
+  the same classes, except within the "org.sqlite.database.sqlite" namespace.
+  This means that to modify an application to use the custom version of 
+  SQLite, all that is usually required is to replace all occurrences
+  "android.database.sqlite" within the source code with
+  "org.sqlite.database.sqlite". For example, the following:
+
+<verbatim>
+  import android.database.sqlite.SQLiteDatabase;
+</verbatim>
+
+<p>should be replaced with:
+
+<verbatim>
+  import org.sqlite.database.sqlite.SQLiteDatabase;
+</verbatim>
+
+<p>
+  As well as replacing all uses of the classes in the 
+  android.database.sqlite.* namespace, the application must also be sure 
+  to use the following two:
+
+<verbatim>
+  org.sqlite.database.SQLException
+  org.sqlite.database.DatabaseErrorHandler
+</verbatim>
+
+<p>instead of:
+
+<verbatim>
+  android.database.SQLException
+  android.database.DatabaseErrorHandler
+</verbatim>
+
+<h2>Differences From the Built-in SQLite Support</h2>
+  
+<p>Aside from namespace changes, there are other differences from the
+stock Android interface that applications need to be aware of:
+
+<ol>
+  <li> The SQLiteStatement.<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteStatement.html#simpleQueryForBlobFileDescriptor()">simpleQueryForBlobFileDescriptor()</a> 
+       API is not available.
+
+  <li> The collation sequence "UNICODE" is not available.
+
+  <li> The collation sequence "LOCALIZED", which normally changes with the 
+       system's current locale, is always equivalent to SQLite's built
+       in collation BINARY.
+</ol>
+
+

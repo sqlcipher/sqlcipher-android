@@ -1,0 +1,35 @@
+<h1> 
+SQLite Android Bindings 
+</h1>
+
+<p> The SQLite library is a core part of the Android environment. Java
+applications and content providers access SQLite using the interface in
+the 
+<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteDatabase.html">android.database.sqlite</a> namespace.
+
+<p> For most applications, this is convenient and works well. However,
+it means that applications must be content with the SQLite version and
+build installed on the target device as part of the operating system.
+If your application happens to require a newer version of SQLite, or a build
+with a custom extension or <a href=http://www.sqlite.org/vfs.html>VFS</a>
+installed, you're out of luck. 
+
+<p> One solution is to bundle the SQLite library directly into the 
+application, bypassing the version built-in to Android. This project,
+the <i>SQLite Android bindings</i>, provides an easy way to do just
+that. This allows an application to use a custom build or version of 
+SQLite, regardless of the Android version to which it is deployed, while
+continuing to use the standard Android interface.
+
+Available User Documentation:
+
+  *  [./install.wiki | Installation Guide ] - this page describes the various
+     ways the SQLite Android bindings may be integrated with an
+     application.
+
+  *  [./usage.wiki | Application Programming ] - this page describes the
+     very minor code modifications required to use the SQLite Android bindings
+     instead of Android's built-in SQLite support.
+
+  *  [./see.wiki | Using the Simple Encryption Extension (SEE) ] - extra notes
+  regarding the use of the proprietary encryption extension SEE.

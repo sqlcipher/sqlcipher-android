@@ -1,0 +1,146 @@
+
+<h1>Using The SQLite Encryption Extension</h1>
+
+<p>
+  The <a href=http://www.sqlite.org/see/doc/trunk/www/readme.wiki>The SQLite Encryption Extension</a> 
+  provides an easy way to create, read and write encrypted database files.
+  It may be used with the SQLite Android bindings to add encrypted database
+  capability to any application.
+
+<h2>1. Building a SEE Enabled Version </h2>
+<p>
+Unless you are using a [./install.wiki#prebuilt | pre-built aar file] to use
+the SEE extension with the SQLite Android bindings you will need to build
+a custom version, either as a [./install.wiki#customaar | custom aar file]
+or by [./install.wiki#directint|directly integrating] the code with the application.
+<p>
+To do this, follow the instructions linked above. Except, before running
+the <code>ndk-build</code> command to build the native libraries:
+
+<ol>
+  <li> Replace the <code>sqlite3.c</code> and <code>sqlite3.h</code> files
+  with the SEE enable versions (i.e. the concatenation of sqlite3.c and see.c -
+  refer to the link above for details). 
+
+  <li> Edit the Android.mk file so as to uncomment the second of the two
+  lines reproduced below:
+
+<verbatim>
+  # If using SEE, uncomment the following:
+  # LOCAL_CFLAGS += -DSQLITE_HAS_CODEC
+</verbatim>
+</ol>
+
+<h2> 2. Application Code Notes </h2>
+
+<h3> 2.1. Opening an Encrypted Database </h3>
+
+<p>
+The best way to open an existing encrypted database, or to create a new one, 
+is to specify an encryption key as part of an 
+<a href=http://sqlite.org/uri.html>SQLite URI database identifier</a>. For
+example, instead of "DatabaseName.db", one of:
+
+<verbatim>
+  file:DatabaseName.db?key=secret
+  file:DatabaseName.db?hexkey=0123ABCD
+</verbatim>
+
+<p>
+The first form above, specifying a text key, requires SQLite version 3.19.0.
+
+<p>
+  Alternatively, after opening or creating an encrypted database, the
+  application may immediately execute a PRAGMA to configure the encryption
+  key. This must be done before any other database methods are called. For
+  example:
+
+<verbatim>
+  import org.sqlite.database.sqlite.SQLiteDatabase;
+
+    ...
+
+  SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("my.db", null);
+  db.execSQL("PRAGMA key = 'secretkey'");
+</verbatim>
+
+<p>
+  Or, if you are using the
+  <a href=http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html>SQLiteOpenHelper</a>
+  helper class, the PRAGMA must be the first thing executed within the
+  onConfigure() callback. For example:
+
+<verbatim>
+  import org.sqlite.database.sqlite.SQLiteDatabase;
+  import org.sqlite.database.sqlite.SQLiteHelper;
+
+    ...
+
+  class MyHelper extends SQLiteOpenHelper {
+    ...
+    void onConfigure(SQLiteDatabase db){
+      db.execSQL("PRAGMA key = 'secretkey'");
+    }
+    ...
+  }
+</verbatim>
+
+<p>
+Note that <b>using the PRAGMA to specify the encryption key as described above
+is incompatible with WAL mode</b>. In Android, enabling WAL mode also enables
+connection pooling under the hood. This increase concurrency for multi-threaded
+applications, but also makes configuring the encryption key with SQLite
+directly using the PRAGMA unsafe (as Android may create and use new SQLite
+connections that have not been configured at any time).
+
+
+<p>
+  Refer to the <a href=http://www.sqlite.org/see/doc/trunk/www/readme.wiki>
+  SEE documentation</a> for further details regarding encryption keys.
+
+<h3> 2.2. Encrypting an Existing Database or Changing the Encryption Key</h3>
+
+<p>
+An unencrypted database may be encrypted, or the encryption key of an
+existing database changed using the "PRAGMA rekey" or "PRAGMA rehexkey" 
+commands as described under "Using the "key" PRAGMA" in the 
+<a href=http://www.sqlite.org/see/doc/trunk/www/readme.wiki>
+SEE documentation</a>. 
+
+<p>
+If using WAL mode, this suffers from the same problem as "PRAGMA key" - 
+after (re-)encrypting the database it only modifies the key used internally
+by one connection within the connection pool. Meaning that when Android
+attempts to use a different connection to access the database it throws a
+"file is encrypted or not a database" exception (SQLITE_NOTADB). Applications
+that need to modify the encryption key of a WAL mode database should therefore
+create a new SQLiteDatabase (or SQLiteOpenHelper) object to access the 
+database, specifying the new key as part of the new URI identifier, 
+immediately after running "PRAGMA rekey".
+
+
+
+<h3> 2.3. Other Differences From Non-SEE Builds </h3> 
+
+<p>Aside from supporting encrypted databases, SEE-enabled builds behave
+differently in two more respects:
+
+<ol>
+
+  <li> <p>In Android, if database corruption is encountered, or if an attempt is
+       made to open a file that is not an SQLite database, the default
+       behaviour is to delete the file and create an empty database file in 
+       its place. In a SEE-enabled build, the default behaviour is to throw
+       an exception.<br><br>
+       The reason for this is that supplying an incorrect encryption key
+       is indistinguishable from opening a file that is not a database file.
+       And it seems too dangerous to simply delete the file in this case.
+       <br><br>
+       The default behaviour can be overriden using the
+       <a href="http://developer.android.com/reference/android/database/DatabaseErrorHandler.html">DatabaseErrorHandler</a> interface.
+
+  <li> <p>Earlier versions of this module disabled WAL mode connection pooling
+       altogether for SEE-enabled builds. This 
+       <a href=http://www.sqlite.org/android/info/e8a9b149f74f517b>changed 
+       here</a> as part of the 3.19.0 development cycle.
+</ol>
