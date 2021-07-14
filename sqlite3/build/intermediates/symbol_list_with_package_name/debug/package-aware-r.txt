@@ -1,2 +1,0 @@
-org.sqlite.database
-string app_name

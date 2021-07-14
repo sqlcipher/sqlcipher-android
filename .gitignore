@@ -1,0 +1,9 @@
+.gradle
+.idea
+sqlcipher/build
+sqlciphertest/build
+.DS_Store
+*.iml
+local.properties
+sqlcipher/.cxx
+

@@ -1,0 +1,92 @@
+[
+  {
+    "level": "INFO",
+    "message": "Start JSON generation. Platform version: 16 min SDK version: x86_64",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "rebuilding JSON /Users/nparker/Desktop/sqlcipher-android/sqlcipher/.cxx/ndkBuild/debug/x86_64/android_gradle_build.json due to:",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "- expected json /Users/nparker/Desktop/sqlcipher-android/sqlcipher/.cxx/ndkBuild/debug/x86_64/android_gradle_build.json file is not present, will remove stale json folder",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "- missing previous command file /Users/nparker/Desktop/sqlcipher-android/sqlcipher/.cxx/ndkBuild/debug/x86_64/build_command.txt, will remove stale json folder",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "- command changed from previous, will remove stale json folder",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "removing stale contents from \u0027/Users/nparker/Desktop/sqlcipher-android/sqlcipher/.cxx/ndkBuild/debug/x86_64\u0027",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "created folder \u0027/Users/nparker/Desktop/sqlcipher-android/sqlcipher/.cxx/ndkBuild/debug/x86_64\u0027",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "executing ndkBuild Executable : /Users/nparker/bin/android-sdk/ndk/21.3.6528147/ndk-build\narguments : \nNDK_PROJECT_PATH\u003dnull\nAPP_BUILD_SCRIPT\u003d/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk\nNDK_APPLICATION_MK\u003d/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Application.mk\nAPP_ABI\u003dx86_64\nNDK_ALL_ABIS\u003dx86_64\nNDK_DEBUG\u003d1\nAPP_PLATFORM\u003dandroid-16\nNDK_OUT\u003d/Users/nparker/Desktop/sqlcipher-android/sqlcipher/build/intermediates/ndkBuild/debug/obj\nNDK_LIBS_OUT\u003d/Users/nparker/Desktop/sqlcipher-android/sqlcipher/build/intermediates/ndkBuild/debug/lib\nAPP_SHORT_COMMANDS\u003dfalse\nLOCAL_SHORT_COMMANDS\u003dfalse\n-B\n-n\njvmArgs : \n\n",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Executable : /Users/nparker/bin/android-sdk/ndk/21.3.6528147/ndk-build\narguments : \nNDK_PROJECT_PATH\u003dnull\nAPP_BUILD_SCRIPT\u003d/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk\nNDK_APPLICATION_MK\u003d/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Application.mk\nAPP_ABI\u003dx86_64\nNDK_ALL_ABIS\u003dx86_64\nNDK_DEBUG\u003d1\nAPP_PLATFORM\u003dandroid-16\nNDK_OUT\u003d/Users/nparker/Desktop/sqlcipher-android/sqlcipher/build/intermediates/ndkBuild/debug/obj\nNDK_LIBS_OUT\u003d/Users/nparker/Desktop/sqlcipher-android/sqlcipher/build/intermediates/ndkBuild/debug/lib\nAPP_SHORT_COMMANDS\u003dfalse\nLOCAL_SHORT_COMMANDS\u003dfalse\n-B\n-n\njvmArgs : \n\n",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "done executing ndkBuild",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "write build output /Users/nparker/Desktop/sqlcipher-android/sqlcipher/.cxx/ndkBuild/debug/x86_64/build_output.txt",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "parse and convert ndk-build output to build configuration JSON",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "found application make file /Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Application.mk",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "write command file /Users/nparker/Desktop/sqlcipher-android/sqlcipher/.cxx/ndkBuild/debug/x86_64/build_command.txt",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "JSON generation completed without problems",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlcipher/src/main/jni/Android.mk",
+    "tag": "debug|x86_64"
+  }
+]

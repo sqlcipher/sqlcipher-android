@@ -10,8 +10,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/sqlite3" />
-            <option value="$PROJECT_DIR$/sqlite3test" />
+            <option value="$PROJECT_DIR$/sqlcipher" />
+            <option value="$PROJECT_DIR$/sqlciphertest" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
