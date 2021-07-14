@@ -1,1 +1,1 @@
-include ':sqlcipher', ':sqlciphertest'
+include ':sqlcipher'
