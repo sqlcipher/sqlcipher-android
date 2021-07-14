@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sqlite.database.database_cts;
+package net.zetetic.database.database_cts;
 
 import android.database.CharArrayBuffer;
 import android.database.CursorWindow;

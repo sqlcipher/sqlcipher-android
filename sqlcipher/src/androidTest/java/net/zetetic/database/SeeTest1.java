@@ -1,4 +1,4 @@
-package org.sqlite.database;
+package net.zetetic.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,9 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.sqlite.database.sqlite.SQLiteConnection;
-import org.sqlite.database.sqlite.SQLiteDatabase;
-import org.sqlite.database.sqlite.SQLiteOpenHelper;
+import net.zetetic.database.sqlcipher.SQLiteConnection;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteOpenHelper;
 
 import java.io.File;
 import java.io.FileInputStream;

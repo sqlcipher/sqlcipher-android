@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sqlite.database.database_cts;
+package net.zetetic.database.database_cts;
 
 import android.content.Context;
 import android.database.AbstractCursor;
@@ -23,7 +23,7 @@ import android.database.ContentObserver;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.CursorWindow;
 import android.database.DataSetObserver;
-import org.sqlite.database.sqlite.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;

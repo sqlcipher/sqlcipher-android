@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package org.sqlite.database.database_cts;
+package net.zetetic.database.database_cts;
 
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import org.sqlite.database.DatabaseUtils;
-import org.sqlite.database.DatabaseUtils.InsertHelper;
-import org.sqlite.database.sqlite.SQLiteAbortException;
-import org.sqlite.database.sqlite.SQLiteDatabase;
-import org.sqlite.database.sqlite.SQLiteDoneException;
-import org.sqlite.database.sqlite.SQLiteException;
-import org.sqlite.database.sqlite.SQLiteStatement;
-import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.test.AndroidTestCase;
 import android.test.MoreAsserts;
 
+import net.zetetic.database.DatabaseUtils;
+import net.zetetic.database.DatabaseUtils.InsertHelper;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDoneException;
+import net.zetetic.database.sqlcipher.SQLiteException;
+import net.zetetic.database.sqlcipher.SQLiteStatement;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.sqlite.database.database_cts;
+package net.zetetic.database.database_cts;
 
 
 import android.content.Context;
@@ -24,7 +24,7 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.DataSetObserver;
 import android.database.StaleDataException;
-import org.sqlite.database.sqlite.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.test.AndroidTestCase;

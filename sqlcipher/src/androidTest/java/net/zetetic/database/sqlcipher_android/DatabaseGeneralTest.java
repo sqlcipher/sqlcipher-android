@@ -15,7 +15,7 @@
  */
 // modified from original source see README at the top level of this project
 
-package org.sqlite.database.sqlite_android;
+package net.zetetic.database.sqlcipher_android;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -32,9 +32,9 @@ import android.test.suitebuilder.annotation.SmallTest;
 import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
 import android.util.Pair;
-import org.sqlite.database.sqlite.SQLiteDatabase;
-import org.sqlite.database.sqlite.SQLiteStatement;
-import org.sqlite.database.DefaultDatabaseErrorHandler;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteStatement;
+import net.zetetic.database.DefaultDatabaseErrorHandler;
 import junit.framework.Assert;
 
 import java.io.File;
