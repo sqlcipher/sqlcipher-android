@@ -1,0 +1,51 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="org.sqlite.customsqlitetest"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="16"
+8-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="29" />
+9-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+10
+11    <uses-permission
+11-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:4:1-6:35
+12        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+12-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:5:6-62
+13        android:maxSdkVersion="18" />
+13-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:6:6-32
+14
+15    <application
+15-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:7:5-20:19
+16        android:allowBackup="true"
+16-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:8:9-35
+17        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+17-->[androidx.core:core:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/dda5f7f1f10b639c3356488704cb5c0a/core-1.1.0/AndroidManifest.xml:24:18-86
+18        android:debuggable="true"
+19        android:icon="@mipmap/ic_launcher"
+19-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:9:9-43
+20        android:label="@string/app_name"
+20-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:10:9-41
+21        android:supportsRtl="true"
+21-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:11:9-35
+22        android:theme="@style/AppTheme" >
+22-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:12:9-40
+23        <activity android:name="org.sqlite.customsqlitetest.MainActivity" >
+23-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:13:9-19:20
+23-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:13:19-47
+24            <intent-filter>
+24-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:14:13-18:29
+25                <action android:name="android.intent.action.MAIN" />
+25-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:15:17-69
+25-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:15:25-66
+26
+27                <category android:name="android.intent.category.LAUNCHER" />
+27-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:17:17-77
+27-->/Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:17:27-74
+28            </intent-filter>
+29        </activity>
+30    </application>
+31
+32</manifest>

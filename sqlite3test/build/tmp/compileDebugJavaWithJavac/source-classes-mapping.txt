@@ -1,0 +1,9 @@
+org/sqlite/customsqlitetest/BuildConfig.java
+ org.sqlite.customsqlitetest.BuildConfig
+org/sqlite/customsqlitetest/MainActivity.java
+ org.sqlite.customsqlitetest.DoNotDeleteErrorHandler
+ org.sqlite.customsqlitetest.MainActivity
+ org.sqlite.customsqlitetest.MainActivity$1
+ org.sqlite.customsqlitetest.MainActivity$2
+ org.sqlite.customsqlitetest.MainActivity$3
+ org.sqlite.customsqlitetest.MainActivity$MyHelper

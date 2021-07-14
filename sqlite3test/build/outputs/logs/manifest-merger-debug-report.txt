@@ -1,0 +1,140 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:2:1-22:12
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:2:1-22:12
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:2:1-22:12
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:2:1-22:12
+MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/8280962c821b0805f15d548e0bd233c1/appcompat-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [:sqlite3] /Users/nparker/Desktop/sqlcipher-android/sqlite3/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-17:12
+MERGED from [androidx.fragment:fragment:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/82b22d7baea80763c98a1642b8045398/fragment-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/8570560779c4a02fe4da70fc1dc28a53/jetified-appcompat-resources-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/231b12bb5a62b9e94621726cf88ab4a9/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/fc02a63e6b785377203750c698c9e815/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/e42e982ed1dc198ebef60db93e796601/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/11e9f25f6aad39f7cb7045d1ece4039e/jetified-activity-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/1c0aac4bdf5ce696e5383a896e116ece/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/9d412136c9c82ff4ff2afdb01169fbbb/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/9e2cbb9711c3bc969b86d78031bca2d0/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/dda5f7f1f10b639c3356488704cb5c0a/core-1.1.0/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/ec964d27a6c76ee3a834c69d787a4f9e/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/565268a3e06179d79f3ea2cadf698617/versionedparcelable-1.1.0/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/b6a74ed318ed1f6dc0e1a2d403efe895/lifecycle-runtime-2.1.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/fe43339256b31a4fce4f3d485d90a5c9/lifecycle-viewmodel-2.1.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/459c144000ebbca79ffba38273ff4079/jetified-savedstate-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/1078e15f2894a38f29110ba7e8d7e1a8/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/a6037d7a2fed21802fb831464ef2a029/lifecycle-livedata-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/97239dbd8cf903cc712ec43ced583fab/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/1d4c23896d282cc29e8ca1c77638e5cc/core-runtime-2.0.0/AndroidManifest.xml:17:1-22:12
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:2:1-22:12
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:2:1-22:12
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:2:1-22:12
+	package
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:3:5-42
+		INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+		INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:2:1-22:12
+		INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:2:1-22:12
+		INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:4:1-6:35
+	android:maxSdkVersion
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:6:6-32
+	android:name
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:5:6-62
+application
+ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:7:5-20:19
+MERGED from [:sqlite3] /Users/nparker/Desktop/sqlcipher-android/sqlite3/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-15:19
+MERGED from [:sqlite3] /Users/nparker/Desktop/sqlcipher-android/sqlite3/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-15:19
+MERGED from [androidx.core:core:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/dda5f7f1f10b639c3356488704cb5c0a/core-1.1.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/dda5f7f1f10b639c3356488704cb5c0a/core-1.1.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/565268a3e06179d79f3ea2cadf698617/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/565268a3e06179d79f3ea2cadf698617/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/dda5f7f1f10b639c3356488704cb5c0a/core-1.1.0/AndroidManifest.xml:24:18-86
+	android:supportsRtl
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:11:9-35
+	android:label
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:10:9-41
+	android:icon
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:9:9-43
+	android:allowBackup
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:8:9-35
+	android:theme
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:12:9-40
+activity#org.sqlite.customsqlitetest.MainActivity
+ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:13:9-19:20
+	android:name
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:13:19-47
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:14:13-18:29
+action#android.intent.action.MAIN
+ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:15:17-69
+	android:name
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:15:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:17:17-77
+	android:name
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml:17:27-74
+uses-sdk
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/8280962c821b0805f15d548e0bd233c1/appcompat-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/8280962c821b0805f15d548e0bd233c1/appcompat-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [:sqlite3] /Users/nparker/Desktop/sqlcipher-android/sqlite3/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:sqlite3] /Users/nparker/Desktop/sqlcipher-android/sqlite3/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [androidx.fragment:fragment:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/82b22d7baea80763c98a1642b8045398/fragment-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/82b22d7baea80763c98a1642b8045398/fragment-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/8570560779c4a02fe4da70fc1dc28a53/jetified-appcompat-resources-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/8570560779c4a02fe4da70fc1dc28a53/jetified-appcompat-resources-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/231b12bb5a62b9e94621726cf88ab4a9/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/231b12bb5a62b9e94621726cf88ab4a9/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/fc02a63e6b785377203750c698c9e815/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/fc02a63e6b785377203750c698c9e815/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/e42e982ed1dc198ebef60db93e796601/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/e42e982ed1dc198ebef60db93e796601/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/11e9f25f6aad39f7cb7045d1ece4039e/jetified-activity-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/11e9f25f6aad39f7cb7045d1ece4039e/jetified-activity-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/1c0aac4bdf5ce696e5383a896e116ece/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/1c0aac4bdf5ce696e5383a896e116ece/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/9d412136c9c82ff4ff2afdb01169fbbb/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/9d412136c9c82ff4ff2afdb01169fbbb/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/9e2cbb9711c3bc969b86d78031bca2d0/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/9e2cbb9711c3bc969b86d78031bca2d0/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/dda5f7f1f10b639c3356488704cb5c0a/core-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/dda5f7f1f10b639c3356488704cb5c0a/core-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/ec964d27a6c76ee3a834c69d787a4f9e/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/ec964d27a6c76ee3a834c69d787a4f9e/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/565268a3e06179d79f3ea2cadf698617/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/565268a3e06179d79f3ea2cadf698617/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/b6a74ed318ed1f6dc0e1a2d403efe895/lifecycle-runtime-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/b6a74ed318ed1f6dc0e1a2d403efe895/lifecycle-runtime-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/fe43339256b31a4fce4f3d485d90a5c9/lifecycle-viewmodel-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/fe43339256b31a4fce4f3d485d90a5c9/lifecycle-viewmodel-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/459c144000ebbca79ffba38273ff4079/jetified-savedstate-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/459c144000ebbca79ffba38273ff4079/jetified-savedstate-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/1078e15f2894a38f29110ba7e8d7e1a8/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/1078e15f2894a38f29110ba7e8d7e1a8/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/a6037d7a2fed21802fb831464ef2a029/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/a6037d7a2fed21802fb831464ef2a029/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/97239dbd8cf903cc712ec43ced583fab/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/97239dbd8cf903cc712ec43ced583fab/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/1d4c23896d282cc29e8ca1c77638e5cc/core-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/nparker/.gradle/caches/transforms-2/files-2.1/1d4c23896d282cc29e8ca1c77638e5cc/core-runtime-2.0.0/AndroidManifest.xml:20:5-44
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+		INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+		ADDED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml
+		INJECTED from /Users/nparker/Desktop/sqlcipher-android/sqlite3test/src/main/AndroidManifest.xml

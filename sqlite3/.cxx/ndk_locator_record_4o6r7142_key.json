@@ -1,0 +1,9 @@
+{
+  "ndkVersionFromDsl": "21.3.6528147",
+  "androidNdkHomeEnvironmentVariable": "/Users/nparker/bin/android-ndk",
+  "sdkFolder": "/Users/nparker/bin/android-sdk",
+  "sideBySideNdkFolderNames": [
+    "21.4.7075529",
+    "21.3.6528147"
+  ]
+}

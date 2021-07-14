@@ -10,11 +10,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.json.JSONObject;
-import org.sqlite.database.DatabaseErrorHandler;
-import org.sqlite.database.sqlite.SQLiteDatabase;
-import org.sqlite.database.sqlite.SQLiteStatement;
-import org.sqlite.database.sqlite.SQLiteDatabaseCorruptException;
-import org.sqlite.database.sqlite.SQLiteOpenHelper;
+import net.zetetic.database.DatabaseErrorHandler;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteStatement;
+import net.zetetic.database.sqlcipher.SQLiteDatabaseCorruptException;
+import net.zetetic.database.sqlcipher.SQLiteOpenHelper;
 
 import java.io.File;
 import java.io.FileInputStream;

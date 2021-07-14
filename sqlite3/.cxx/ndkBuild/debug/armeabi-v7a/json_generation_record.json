@@ -1,0 +1,20 @@
+[
+  {
+    "level": "INFO",
+    "message": "Start JSON generation. Platform version: 16 min SDK version: armeabi-v7a",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlite3/src/main/jni/Android.mk",
+    "tag": "debug|armeabi-v7a"
+  },
+  {
+    "level": "INFO",
+    "message": "JSON \u0027/Users/nparker/Desktop/sqlcipher-android/sqlite3/.cxx/ndkBuild/debug/armeabi-v7a/android_gradle_build.json\u0027 was up-to-date",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlite3/src/main/jni/Android.mk",
+    "tag": "debug|armeabi-v7a"
+  },
+  {
+    "level": "INFO",
+    "message": "JSON generation completed without problems",
+    "file": "/Users/nparker/Desktop/sqlcipher-android/sqlite3/src/main/jni/Android.mk",
+    "tag": "debug|armeabi-v7a"
+  }
+]

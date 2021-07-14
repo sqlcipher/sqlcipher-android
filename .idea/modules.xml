@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sqlcipher-android.iml" filepath="$PROJECT_DIR$/.idea/modules/sqlcipher-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sqlite3/sqlcipher-android.sqlite3.iml" filepath="$PROJECT_DIR$/.idea/modules/sqlite3/sqlcipher-android.sqlite3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sqlite3test/sqlcipher-android.sqlite3test.iml" filepath="$PROJECT_DIR$/.idea/modules/sqlite3test/sqlcipher-android.sqlite3test.iml" />
+    </modules>
+  </component>
+</project>

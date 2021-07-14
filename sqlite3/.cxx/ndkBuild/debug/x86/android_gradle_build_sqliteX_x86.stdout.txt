@@ -1,0 +1,8 @@
+[x86] Compile++      : sqliteX <= android_database_SQLiteCommon.cpp
+[x86] Compile++      : sqliteX <= android_database_SQLiteConnection.cpp
+[x86] Compile++      : sqliteX <= android_database_SQLiteGlobal.cpp
+[x86] Compile++      : sqliteX <= android_database_SQLiteDebug.cpp
+[x86] Compile++      : sqliteX <= JNIHelp.cpp
+[x86] Compile++      : sqliteX <= JniConstants.cpp
+[x86] Compile        : sqliteX <= sqlite3.c
+[x86] SharedLibrary  : libsqliteX.so
