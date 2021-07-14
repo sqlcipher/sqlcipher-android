@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: android.test.base">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/bin/android-sdk/platforms/android-30/optional/android.test.base.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
