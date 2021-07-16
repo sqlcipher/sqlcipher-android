@@ -88,6 +88,16 @@ public final class SQLiteDatabaseConfiguration {
     public boolean foreignKeyConstraintsEnabled;
 
     /**
+     * The password to use with a SQLCipher database
+     */
+    public byte[] password;
+
+    /**
+     * The database hook to use with a SQLCipher database
+     */
+    public SQLiteDatabaseHook databaseHook;
+
+    /**
      * The custom functions to register.
      */
     public final ArrayList<SQLiteCustomFunction> customFunctions =
@@ -101,6 +111,19 @@ public final class SQLiteDatabaseConfiguration {
      * @param openFlags Open flags for the database, such as {@link SQLiteDatabase#OPEN_READWRITE}.
      */
     public SQLiteDatabaseConfiguration(String path, int openFlags) {
+        this(path, openFlags, null, null);
+    }
+
+    /**
+     * Creates a database configuration with the required parameters for opening a
+     * database and default values for all other parameters.
+     *
+     * @param path The database path.
+     * @param openFlags Open flags for the database, such as {@link SQLiteDatabase#OPEN_READWRITE}.
+     * @param password The password to use for a SQLCipher database
+     */
+    public SQLiteDatabaseConfiguration(String path, int openFlags, byte[] password,
+                                       SQLiteDatabaseHook databaseHook) {
         if (path == null) {
             throw new IllegalArgumentException("path must not be null.");
         }
@@ -108,7 +131,8 @@ public final class SQLiteDatabaseConfiguration {
         this.path = path;
         label = stripPathForLogs(path);
         this.openFlags = openFlags;
-
+        this.password = password;
+        this.databaseHook = databaseHook;
         // Set default values for optional parameters.
         maxSqlCacheSize = 25;
         locale = Locale.getDefault();
@@ -148,6 +172,8 @@ public final class SQLiteDatabaseConfiguration {
         maxSqlCacheSize = other.maxSqlCacheSize;
         locale = other.locale;
         foreignKeyConstraintsEnabled = other.foreignKeyConstraintsEnabled;
+        password = other.password;
+        databaseHook = other.databaseHook;
         customFunctions.clear();
         customFunctions.addAll(other.customFunctions);
     }
