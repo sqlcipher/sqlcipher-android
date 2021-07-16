@@ -138,6 +138,26 @@ static int coll_localized(
   return rc;
 }
 
+static void nativeKey(JNIEnv* env, jclass clazz, jlong connectionPtr, jbyteArray keyArray) {
+    int rc = 0;
+    jsize size = 0;
+    jbyte *key = nullptr;
+    auto* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
+    if(connection) {
+        ALOGV("Keying connection %p", connection->db);
+        key = env->GetByteArrayElements(keyArray, nullptr);
+        size = env->GetArrayLength(keyArray);
+        rc = sqlite3_key(connection->db, key, size);
+    }
+    if(key) {
+        env->ReleaseByteArrayElements(keyArray, key, JNI_ABORT);
+    }
+    if (rc != SQLITE_OK) {
+        ALOGE("sqlite3_key(%p) failed: %d", connection->db, rc);
+        throw_sqlite3_exception(env, connection->db, "Could not key db.");
+    }
+}
+
 static jlong nativeOpen(JNIEnv* env, jclass clazz, jstring pathStr, jint openFlags,
         jstring labelStr, jboolean enableTrace, jboolean enableProfile) {
     int sqliteFlags;
@@ -819,7 +839,9 @@ static jboolean nativeHasCodec(JNIEnv* env, jobject clazz){
 static JNINativeMethod sMethods[] =
 {
     /* name, signature, funcPtr */
-    { "nativeOpen", "(Ljava/lang/String;ILjava/lang/String;ZZ)J",
+    {"nativeKey", "(J[B)V",
+            (void*)nativeKey },
+    {"nativeOpen", "(Ljava/lang/String;ILjava/lang/String;ZZ)J",
             (void*)nativeOpen },
     { "nativeClose", "(J)V",
             (void*)nativeClose },

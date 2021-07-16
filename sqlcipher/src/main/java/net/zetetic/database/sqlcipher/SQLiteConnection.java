@@ -20,12 +20,8 @@
 
 package net.zetetic.database.sqlcipher;
 
-import net.zetetic.database.sqlcipher.CloseGuard;
-
 import android.database.Cursor;
 import android.database.CursorWindow;
-import net.zetetic.database.DatabaseUtils;
-import net.zetetic.database.sqlcipher.SQLiteDebug.DbStats;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.os.ParcelFileDescriptor;
@@ -34,11 +30,13 @@ import android.util.Log;
 import android.util.LruCache;
 import android.util.Printer;
 
+import net.zetetic.database.DatabaseUtils;
+import net.zetetic.database.sqlcipher.SQLiteDebug.DbStats;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Represents a SQLite database connection.
@@ -119,6 +117,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
     // we can ensure that we detach the signal at the right time.
     private int mCancellationSignalAttachCount;
 
+    private static native void nativeKey(long connectionPtr, byte[] password);
     private static native long nativeOpen(String path, int openFlags, String label,
             boolean enableTrace, boolean enableProfile);
     private static native void nativeClose(long connectionPtr);
@@ -214,7 +213,15 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         mConnectionPtr = nativeOpen(mConfiguration.path, mConfiguration.openFlags,
                 mConfiguration.label,
                 SQLiteDebug.DEBUG_SQL_STATEMENTS, SQLiteDebug.DEBUG_SQL_TIME);
-
+        if(mConfiguration.databaseHook != null){
+            mConfiguration.databaseHook.preKey(this);
+        }
+        if(mConfiguration.password != null && mConfiguration.password.length > 0){
+          nativeKey(mConnectionPtr, mConfiguration.password);
+        }
+        if(mConfiguration.databaseHook != null){
+            mConfiguration.databaseHook.postKey(this);
+        }
         setPageSize();
         setForeignKeyModeFromConfiguration();
         setJournalSizeLimit();
