@@ -40,6 +40,9 @@ import net.zetetic.database.sqlcipher.CloseGuard;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -255,11 +258,12 @@ public final class SQLiteDatabase extends SQLiteClosable {
      */
     public static final int MAX_SQL_CACHE_SIZE = 100;
 
-    private SQLiteDatabase(String path, int openFlags, CursorFactory cursorFactory,
-            DatabaseErrorHandler errorHandler) {
+
+    private SQLiteDatabase(String path, byte[] password, int openFlags, CursorFactory cursorFactory,
+                           DatabaseErrorHandler errorHandler, SQLiteDatabaseHook hook) {
         mCursorFactory = cursorFactory;
         mErrorHandler = errorHandler != null ? errorHandler : new DefaultDatabaseErrorHandler();
-        mConfigurationLocked = new SQLiteDatabaseConfiguration(path, openFlags);
+        mConfigurationLocked = new SQLiteDatabaseConfiguration(path, openFlags, password, hook);
     }
 
     @Override
@@ -680,6 +684,48 @@ public final class SQLiteDatabase extends SQLiteClosable {
      * <p>Sets the locale of the database to the  the system's current locale.
      * Call {@link #setLocale} if you would like something else.</p>
      *
+     * @param path to database file to open and/or create
+     * @param password for use with a SQLCipher database
+     * @param factory an optional factory class that is called to instantiate a
+     *            cursor when query is called, or null for default
+     * @param flags to control database access mode
+     * @param databaseHook to invoke preKey and postKey operations with SQLCipher
+     * @return the newly opened database
+     * @throws SQLiteException if the database cannot be opened
+     */
+    public static SQLiteDatabase openDatabase(String path, String password, CursorFactory factory,
+                                              int flags, SQLiteDatabaseHook databaseHook) {
+        return openDatabase(path, getBytes(password), factory, flags, null, databaseHook);
+    }
+
+    /**
+     * Open the database according to the flags {@link #OPEN_READWRITE}
+     * {@link #OPEN_READONLY} {@link #CREATE_IF_NECESSARY} and/or {@link #NO_LOCALIZED_COLLATORS}.
+     *
+     * <p>Sets the locale of the database to the  the system's current locale.
+     * Call {@link #setLocale} if you would like something else.</p>
+     *
+     * @param path to database file to open and/or create
+     * @param password for use with a SQLCipher database
+     * @param factory an optional factory class that is called to instantiate a
+     *            cursor when query is called, or null for default
+     * @param flags to control database access mode
+     * @param databaseHook to invoke preKey and postKey operations with SQLCipher
+     * @return the newly opened database
+     * @throws SQLiteException if the database cannot be opened
+     */
+    public static SQLiteDatabase openDatabase(String path, byte[] password, CursorFactory factory,
+                                              int flags, SQLiteDatabaseHook databaseHook) {
+        return openDatabase(path, password, factory, flags, null, databaseHook);
+    }
+
+    /**
+     * Open the database according to the flags {@link #OPEN_READWRITE}
+     * {@link #OPEN_READONLY} {@link #CREATE_IF_NECESSARY} and/or {@link #NO_LOCALIZED_COLLATORS}.
+     *
+     * <p>Sets the locale of the database to the  the system's current locale.
+     * Call {@link #setLocale} if you would like something else.</p>
+     *
      * <p>Accepts input param: a concrete instance of {@link DatabaseErrorHandler} to be
      * used to handle corruption when sqlite reports database corruption.</p>
      *
@@ -693,8 +739,62 @@ public final class SQLiteDatabase extends SQLiteClosable {
      * @throws SQLiteException if the database cannot be opened
      */
     public static SQLiteDatabase openDatabase(String path, CursorFactory factory, int flags,
-            DatabaseErrorHandler errorHandler) {
-        SQLiteDatabase db = new SQLiteDatabase(path, flags, factory, errorHandler);
+                                              DatabaseErrorHandler errorHandler) {
+        return openDatabase(path, new byte[0], factory, flags, errorHandler, null);
+    }
+
+    /**
+     * Open the database according to the flags {@link #OPEN_READWRITE}
+     * {@link #OPEN_READONLY} {@link #CREATE_IF_NECESSARY} and/or {@link #NO_LOCALIZED_COLLATORS}.
+     *
+     * <p>Sets the locale of the database to the  the system's current locale.
+     * Call {@link #setLocale} if you would like something else.</p>
+     *
+     * <p>Accepts input param: a concrete instance of {@link DatabaseErrorHandler} to be
+     * used to handle corruption when sqlite reports database corruption.</p>
+     *
+     * @param path to database file to open and/or create
+     * @param password for use with a SQLCipher database
+     * @param factory an optional factory class that is called to instantiate a
+     *            cursor when query is called, or null for default
+     * @param flags to control database access mode
+     * @param errorHandler the {@link DatabaseErrorHandler} obj to be used to handle corruption
+     * when sqlite reports database corruption
+     * @param databaseHook to invoke preKey and postKey operations with SQLCipher
+     * @return the newly opened database
+     * @throws SQLiteException if the database cannot be opened
+     */
+    public static SQLiteDatabase openDatabase(String path, String password, CursorFactory factory,
+                                              int flags, DatabaseErrorHandler errorHandler,
+                                              SQLiteDatabaseHook databaseHook) {
+        return openDatabase(path, getBytes(password), factory, flags, errorHandler, databaseHook);
+    }
+
+    /**
+     * Open the database according to the flags {@link #OPEN_READWRITE}
+     * {@link #OPEN_READONLY} {@link #CREATE_IF_NECESSARY} and/or {@link #NO_LOCALIZED_COLLATORS}.
+     *
+     * <p>Sets the locale of the database to the  the system's current locale.
+     * Call {@link #setLocale} if you would like something else.</p>
+     *
+     * <p>Accepts input param: a concrete instance of {@link DatabaseErrorHandler} to be
+     * used to handle corruption when sqlite reports database corruption.</p>
+     *
+     * @param path to database file to open and/or create
+     * @param password for use with a SQLCipher database
+     * @param factory an optional factory class that is called to instantiate a
+     *            cursor when query is called, or null for default
+     * @param flags to control database access mode
+     * @param errorHandler the {@link DatabaseErrorHandler} obj to be used to handle corruption
+     * when sqlite reports database corruption
+     * @param databaseHook to invoke preKey and postKey operations with SQLCipher
+     * @return the newly opened database
+     * @throws SQLiteException if the database cannot be opened
+     */
+    public static SQLiteDatabase openDatabase(String path, byte[] password, CursorFactory factory,
+                                              int flags, DatabaseErrorHandler errorHandler,
+                                              SQLiteDatabaseHook databaseHook) {
+        SQLiteDatabase db = new SQLiteDatabase(path, password, flags, factory, errorHandler, databaseHook);
         db.open();
         return db;
     }
@@ -717,8 +817,84 @@ public final class SQLiteDatabase extends SQLiteClosable {
      * Equivalent to openDatabase(path, factory, CREATE_IF_NECESSARY, errorHandler).
      */
     public static SQLiteDatabase openOrCreateDatabase(String path, CursorFactory factory,
-            DatabaseErrorHandler errorHandler) {
+                                                      DatabaseErrorHandler errorHandler) {
         return openDatabase(path, factory, CREATE_IF_NECESSARY, errorHandler);
+    }
+
+    /**
+     * Equivalent to openDatabase(file.getAbsolutePath(), password, factory, CREATE_IF_NECESSARY, errorHandler, null).
+     */
+    public static SQLiteDatabase openOrCreateDatabase(File file, String password,
+                                                      CursorFactory factory,
+                                                      DatabaseErrorHandler errorHandler) {
+        return openDatabase(file.getAbsolutePath(), password, factory, CREATE_IF_NECESSARY, errorHandler, null);
+    }
+
+    /**
+     * Equivalent to openDatabase(file.getAbsolutePath(), password, factory, CREATE_IF_NECESSARY, errorHandler, null).
+     */
+    public static SQLiteDatabase openOrCreateDatabase(File file, byte[] password,
+                                                      CursorFactory factory,
+                                                      DatabaseErrorHandler errorHandler) {
+        return openDatabase(file.getAbsolutePath(), password, factory, CREATE_IF_NECESSARY, errorHandler, null);
+    }
+
+    /**
+     * Equivalent to openDatabase(path, password, factory, CREATE_IF_NECESSARY, errorHandler, null).
+     */
+    public static SQLiteDatabase openOrCreateDatabase(String path, String password,
+                                                      CursorFactory factory,
+                                                      DatabaseErrorHandler errorHandler) {
+        return openDatabase(path, password, factory, CREATE_IF_NECESSARY, errorHandler, null);
+    }
+
+    /**
+     * Equivalent to openDatabase(path, password, factory, CREATE_IF_NECESSARY, errorHandler, null).
+     */
+    public static SQLiteDatabase openOrCreateDatabase(String path, byte[] password,
+                                                      CursorFactory factory,
+                                                      DatabaseErrorHandler errorHandler) {
+        return openDatabase(path, password, factory, CREATE_IF_NECESSARY, errorHandler, null);
+    }
+
+    /**
+     * Equivalent to openDatabase(file.getAbsolutePath(), password, factory, CREATE_IF_NECESSARY, errorHandler, databaseHook).
+     */
+    public static SQLiteDatabase openOrCreateDatabase(File file, String password,
+                                                      CursorFactory factory,
+                                                      DatabaseErrorHandler errorHandler,
+                                                      SQLiteDatabaseHook databaseHook) {
+        return openDatabase(file.getAbsolutePath(), password, factory, CREATE_IF_NECESSARY, errorHandler, databaseHook);
+    }
+
+    /**
+     * Equivalent to openDatabase(file.getAbsolutePath(), password, factory, CREATE_IF_NECESSARY, errorHandler, databaseHook).
+     */
+    public static SQLiteDatabase openOrCreateDatabase(File file, byte[] password,
+                                                      CursorFactory factory,
+                                                      DatabaseErrorHandler errorHandler,
+                                                      SQLiteDatabaseHook databaseHook) {
+        return openDatabase(file.getAbsolutePath(), password, factory, CREATE_IF_NECESSARY, errorHandler, databaseHook);
+    }
+
+    /**
+     * Equivalent to openDatabase(path, password, factory, CREATE_IF_NECESSARY, errorHandler, databaseHook).
+     */
+    public static SQLiteDatabase openOrCreateDatabase(String path, String password,
+                                                      CursorFactory factory,
+                                                      DatabaseErrorHandler errorHandler,
+                                                      SQLiteDatabaseHook databaseHook) {
+        return openDatabase(path, password, factory, CREATE_IF_NECESSARY, errorHandler, databaseHook);
+    }
+
+    /**
+     * Equivalent to openDatabase(path, password, factory, CREATE_IF_NECESSARY, errorHandler, databaseHook).
+     */
+    public static SQLiteDatabase openOrCreateDatabase(String path, byte[] password,
+                                                      CursorFactory factory,
+                                                      DatabaseErrorHandler errorHandler,
+                                                      SQLiteDatabaseHook databaseHook) {
+        return openDatabase(path, password, factory, CREATE_IF_NECESSARY, errorHandler, databaseHook);
     }
 
     /**
@@ -2219,5 +2395,14 @@ public final class SQLiteDatabase extends SQLiteClosable {
 
     public void enableLocalizedCollators() {
       mConnectionPoolLocked.enableLocalizedCollators();
+    }
+
+    private static byte[] getBytes(String data) {
+        if(data == null || data.length() == 0) return new byte[0];
+        CharBuffer charBuffer = CharBuffer.wrap(data);
+        ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
+        byte[] result =  new byte[byteBuffer.limit()];
+        byteBuffer.get(result);
+        return result;
     }
 }
