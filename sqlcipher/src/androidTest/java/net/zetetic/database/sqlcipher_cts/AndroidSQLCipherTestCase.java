@@ -27,12 +27,14 @@ public abstract class AndroidSQLCipherTestCase {
 
   @Before
   public void setUp() throws Exception {
-    Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     System.loadLibrary("sqliteX");
     File databasePath = context.getDatabasePath(DATABASE_NAME);
     databasePath.mkdirs();
-    if (databasePath.exists()) { databasePath.delete(); }
-    database = SQLiteDatabase.openOrCreateDatabase(databasePath,null);
+    if (databasePath.exists()) {
+      databasePath.delete();
+    }
+    database = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
     assertNotNull(database);
   }
 

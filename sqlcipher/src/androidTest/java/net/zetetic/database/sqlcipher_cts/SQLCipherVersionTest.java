@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.StringContains.containsString;
 
 public class SQLCipherVersionTest extends AndroidSQLCipherTestCase {
 
@@ -17,6 +18,6 @@ public class SQLCipherVersionTest extends AndroidSQLCipherTestCase {
       cipherVersion = cursor.getString(0);
       cursor.close();
     }
-    assertThat(cipherVersion, equalTo("4.4.3 zetetic"));
+    assertThat(cipherVersion, containsString("4.4.3"));
   }
 }
