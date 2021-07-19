@@ -26,6 +26,9 @@ import net.zetetic.database.DatabaseErrorHandler;
 import net.zetetic.database.sqlcipher.SQLiteDatabase.CursorFactory;
 import android.util.Log;
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
 /**
  * A helper class to manage database creation and version management.
@@ -63,9 +66,11 @@ public abstract class SQLiteOpenHelper {
     private final int mMinimumSupportedVersion;
 
     private SQLiteDatabase mDatabase;
+    private byte[] mPassword;
     private boolean mIsInitializing;
     private boolean mEnableWriteAheadLogging;
     private final DatabaseErrorHandler mErrorHandler;
+    private final SQLiteDatabaseHook mDatabaseHook;
 
     /**
      * Create a helper object to create, open, and/or manage a database.
@@ -131,13 +136,79 @@ public abstract class SQLiteOpenHelper {
      */
     public SQLiteOpenHelper(Context context, String name, CursorFactory factory, int version,
             int minimumSupportedVersion, DatabaseErrorHandler errorHandler) {
+        this(context, name, new byte[0], factory, version, minimumSupportedVersion,
+            errorHandler, null);
+    }
+
+    /**
+     * Same as {@link #SQLiteOpenHelper(Context, String, CursorFactory, int, DatabaseErrorHandler)}
+     * but also accepts an integer minimumSupportedVersion as a convenience for upgrading very old
+     * versions of this database that are no longer supported. If a database with older version that
+     * minimumSupportedVersion is found, it is simply deleted and a new database is created with the
+     * given name and version
+     *
+     * @param context to use to open or create the database
+     * @param name the name of the database file, null for a temporary in-memory database
+     * @param password for use with SQLCipher
+     * @param factory to use for creating cursor objects, null for default
+     * @param version the required version of the database
+     * @param minimumSupportedVersion the minimum version that is supported to be upgraded to
+     *            {@code version} via {@link #onUpgrade}. If the current database version is lower
+     *            than this, database is simply deleted and recreated with the version passed in
+     *            {@code version}. {@link #onBeforeDelete} is called before deleting the database
+     *            when this happens. This is 0 by default.
+     * @param errorHandler the {@link DatabaseErrorHandler} to be used when sqlite reports database
+     *            corruption, or null to use the default error handler.
+     * @param databaseHook for preKey and postKey events with SQLCipher.
+     * @see #onBeforeDelete(SQLiteDatabase)
+     * @see #SQLiteOpenHelper(Context, String, CursorFactory, int, DatabaseErrorHandler)
+     * @see #onUpgrade(SQLiteDatabase, int, int)
+     * @hide
+     */
+    public SQLiteOpenHelper(Context context, String name, String password, CursorFactory factory,
+                            int version, int minimumSupportedVersion,
+                            DatabaseErrorHandler errorHandler, SQLiteDatabaseHook databaseHook){
+        this(context, name, getBytes(password), factory, version, minimumSupportedVersion,
+            errorHandler, databaseHook);
+    }
+
+    /**
+     * Same as {@link #SQLiteOpenHelper(Context, String, CursorFactory, int, DatabaseErrorHandler)}
+     * but also accepts an integer minimumSupportedVersion as a convenience for upgrading very old
+     * versions of this database that are no longer supported. If a database with older version that
+     * minimumSupportedVersion is found, it is simply deleted and a new database is created with the
+     * given name and version
+     *
+     * @param context to use to open or create the database
+     * @param name the name of the database file, null for a temporary in-memory database
+     * @param password for use with SQLCipher
+     * @param factory to use for creating cursor objects, null for default
+     * @param version the required version of the database
+     * @param minimumSupportedVersion the minimum version that is supported to be upgraded to
+     *            {@code version} via {@link #onUpgrade}. If the current database version is lower
+     *            than this, database is simply deleted and recreated with the version passed in
+     *            {@code version}. {@link #onBeforeDelete} is called before deleting the database
+     *            when this happens. This is 0 by default.
+     * @param errorHandler the {@link DatabaseErrorHandler} to be used when sqlite reports database
+     *            corruption, or null to use the default error handler.
+     * @param databaseHook for preKey and postKey events with SQLCipher.
+     * @see #onBeforeDelete(SQLiteDatabase)
+     * @see #SQLiteOpenHelper(Context, String, CursorFactory, int, DatabaseErrorHandler)
+     * @see #onUpgrade(SQLiteDatabase, int, int)
+     * @hide
+     */
+    public SQLiteOpenHelper(Context context, String name, byte[] password, CursorFactory factory,
+                            int version, int minimumSupportedVersion,
+                            DatabaseErrorHandler errorHandler, SQLiteDatabaseHook databaseHook) {
         if (version < 1) throw new IllegalArgumentException("Version must be >= 1, was " + version);
 
         mContext = context;
         mName = name;
+        mPassword = password;
         mFactory = factory;
         mNewVersion = version;
         mErrorHandler = errorHandler;
+        mDatabaseHook = databaseHook;
         mMinimumSupportedVersion = Math.max(0, minimumSupportedVersion);
     }
 
@@ -253,11 +324,11 @@ public abstract class SQLiteOpenHelper {
                 try {
                     if (DEBUG_STRICT_READONLY && !writable) {
                         final String path = mContext.getDatabasePath(mName).getPath();
-                        db = SQLiteDatabase.openDatabase(path, mFactory,
-                                SQLiteDatabase.OPEN_READONLY, mErrorHandler);
+                        db = SQLiteDatabase.openDatabase(path, mPassword, mFactory,
+                                SQLiteDatabase.OPEN_READONLY, mErrorHandler, mDatabaseHook);
                     } else {
                         db = SQLiteDatabase.openOrCreateDatabase(
-                            mName, mFactory, mErrorHandler
+                            mName, mPassword, mFactory, mErrorHandler, mDatabaseHook
                         );
                     }
                 } catch (SQLiteException ex) {
@@ -267,8 +338,8 @@ public abstract class SQLiteOpenHelper {
                     Log.e(TAG, "Couldn't open " + mName
                             + " for writing (will try read-only):", ex);
                     final String path = mContext.getDatabasePath(mName).getPath();
-                    db = SQLiteDatabase.openDatabase(path, mFactory,
-                            SQLiteDatabase.OPEN_READONLY, mErrorHandler);
+                    db = SQLiteDatabase.openDatabase(path, mPassword, mFactory,
+                            SQLiteDatabase.OPEN_READONLY, mErrorHandler, mDatabaseHook);
                 }
             }
 
@@ -438,4 +509,13 @@ public abstract class SQLiteOpenHelper {
      * @param db The database.
      */
     public void onOpen(SQLiteDatabase db) {}
+
+    private static byte[] getBytes(String data) {
+        if(data == null || data.length() == 0) return new byte[0];
+        CharBuffer charBuffer = CharBuffer.wrap(data);
+        ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
+        byte[] result =  new byte[byteBuffer.limit()];
+        byteBuffer.get(result);
+        return result;
+    }
 }
