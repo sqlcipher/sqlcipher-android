@@ -961,7 +961,11 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         assertTrue(dbfile.exists());
         try {
             errorHandler.onCorruption(mDatabase);
-            assertFalse(dbfile.exists());
+            if(SQLiteDatabase.hasCodec()){
+                assertTrue(dbfile.exists());
+            } else {
+                assertFalse(dbfile.exists());
+            }
         } catch (Exception e) {
             fail("unexpected");
         }
@@ -984,7 +988,11 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         assertTrue(dbObj.isOpen());
         try {
             errorHandler.onCorruption(dbObj);
-            assertFalse(dbfile.exists());
+            if(SQLiteDatabase.hasCodec()){
+                assertTrue(dbfile.exists());
+            } else{
+                assertFalse(dbfile.exists());
+            }
         } catch (Exception e) {
             fail("unexpected");
         }
@@ -1005,8 +1013,16 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         List<Pair<String, String>> attachedDbs = dbObj.getAttachedDbs();
         try {
             errorHandler.onCorruption(dbObj);
-            assertFalse(dbfile.exists());
-            assertFalse(new File(attachedDb1File).exists());
+            if(SQLiteDatabase.hasCodec()){
+                assertTrue(dbfile.exists());
+            } else {
+                assertFalse(dbfile.exists());
+            }
+            if(SQLiteDatabase.hasCodec()){
+                assertTrue(new File(attachedDb1File).exists());
+            } else {
+                assertFalse(new File(attachedDb1File).exists());
+            }
         } catch (Exception e) {
             fail("unexpected");
         }
@@ -1032,9 +1048,17 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         attachedDbs = dbObj.getAttachedDbs();
         try {
             errorHandler.onCorruption(dbObj);
-            assertFalse(dbfile.exists());
+            if(SQLiteDatabase.hasCodec()){
+                assertTrue(dbfile.exists());
+            } else {
+                assertFalse(dbfile.exists());
+            }
             for (int i = 0; i < N; i++) {
-                assertFalse(new File(attachedDbFiles.get(i)).exists());
+                if(SQLiteDatabase.hasCodec()){
+                    assertTrue(new File(attachedDbFiles.get(i)).exists());
+                } else {
+                    assertFalse(new File(attachedDbFiles.get(i)).exists());
+                }
             }
         } catch (Exception e) {
             fail("unexpected");
