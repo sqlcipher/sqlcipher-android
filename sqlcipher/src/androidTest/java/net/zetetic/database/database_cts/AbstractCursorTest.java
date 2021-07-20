@@ -56,7 +56,7 @@ public class AbstractCursorTest extends InstrumentationTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        System.loadLibrary("sqliteX");
+        System.loadLibrary("sqlcipher");
         setupDatabase();
         ArrayList<ArrayList> list = createTestList(ROW_MAX, COLUMN_NAMES.length);
         mTestAbstractCursor = new TestAbstractCursor(COLUMN_NAMES, list);

@@ -400,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
     private static boolean mLibIsLoaded = false;
     private static void loadLibrary() {
         if (!mLibIsLoaded) {
-            System.loadLibrary("sqliteX");
+            System.loadLibrary("sqlcipher");
             mLibIsLoaded = true;
         }
     }

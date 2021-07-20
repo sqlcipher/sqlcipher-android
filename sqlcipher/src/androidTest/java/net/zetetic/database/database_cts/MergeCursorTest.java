@@ -57,7 +57,7 @@ public class MergeCursorTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        System.loadLibrary("sqliteX");
+        System.loadLibrary("sqlcipher");
         setupDatabase();
         mCursors = new Cursor[2];
     }

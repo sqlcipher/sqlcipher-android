@@ -53,7 +53,7 @@ public class DatabaseCursorTest extends AndroidTestCase implements PerformanceTe
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        System.loadLibrary("sqliteX");
+        System.loadLibrary("sqlcipher");
         File dbDir = getContext().getDir("tests", Context.MODE_PRIVATE);
         mDatabaseFile = new File(dbDir, "database_test.db");
         if (mDatabaseFile.exists()) {

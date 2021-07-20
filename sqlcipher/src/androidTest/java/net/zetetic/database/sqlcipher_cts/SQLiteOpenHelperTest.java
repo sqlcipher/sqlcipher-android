@@ -46,7 +46,7 @@ public class SQLiteOpenHelperTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        System.loadLibrary("sqliteX");
+        System.loadLibrary("sqlcipher");
         DATABASE_PATH = mContext.getDatabasePath(TEST_DATABASE_NAME).toString();
         mOpenHelper = getOpenHelper();
     }

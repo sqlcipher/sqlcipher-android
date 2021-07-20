@@ -36,7 +36,7 @@ public class SQLiteProgramTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        System.loadLibrary("sqliteX");
+        System.loadLibrary("sqlcipher");
         File f = mContext.getDatabasePath(DATABASE_NAME);
         f.mkdirs();
         if (f.exists()) { f.delete(); }

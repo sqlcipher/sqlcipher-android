@@ -28,7 +28,7 @@ public abstract class AndroidSQLCipherTestCase {
   @Before
   public void setUp() throws Exception {
     context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    System.loadLibrary("sqliteX");
+    System.loadLibrary("sqlcipher");
     File databasePath = context.getDatabasePath(DATABASE_NAME);
     databasePath.mkdirs();
     if (databasePath.exists()) {

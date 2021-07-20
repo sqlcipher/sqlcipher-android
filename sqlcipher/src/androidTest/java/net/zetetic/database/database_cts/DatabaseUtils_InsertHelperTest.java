@@ -36,7 +36,7 @@ public class DatabaseUtils_InsertHelperTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        System.loadLibrary("sqliteX");
+        System.loadLibrary("sqlcipher");
         getContext().deleteDatabase(DATABASE_NAME);
         File f = mContext.getDatabasePath(DATABASE_NAME);
         mDatabase = SQLiteDatabase.openOrCreateDatabase(f, null);

@@ -70,7 +70,7 @@ public class SeeTest1 {
     @Before
     public void setup() throws Exception {
 
-        System.loadLibrary("sqliteX");
+        System.loadLibrary("sqlcipher");
 
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 

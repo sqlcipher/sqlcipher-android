@@ -43,7 +43,7 @@ public class SQLiteFtsTest extends AndroidTestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        System.loadLibrary("sqliteX");
+        System.loadLibrary("sqlcipher");
         File f = mContext.getDatabasePath("CTS_FTS");
         f.mkdirs();
         if (f.exists()) { f.delete(); }

@@ -47,7 +47,7 @@ public class CursorJoinerTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        System.loadLibrary("sqliteX");
+        System.loadLibrary("sqlcipher");
         setupDatabase();
     }
 

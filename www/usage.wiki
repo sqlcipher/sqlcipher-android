@@ -8,7 +8,7 @@
   library must be loaded into the application using the following code:
 
 <verbatim>
-  System.loadLibrary("sqliteX");
+  System.loadLibrary("sqlcipher");
 </verbatim>
 
 <p>
