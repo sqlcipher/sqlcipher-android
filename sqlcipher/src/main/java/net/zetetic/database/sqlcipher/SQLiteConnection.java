@@ -222,6 +222,10 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         if(mConfiguration.databaseHook != null){
             mConfiguration.databaseHook.postKey(this);
         }
+        if(mConfiguration.password != null && mConfiguration.password.length > 0) {
+            CancellationSignal signal = new CancellationSignal();
+            executeForLong("SELECT COUNT(*) FROM sqlite_schema;", new Object[]{}, signal);
+        }
         setPageSize();
         setForeignKeyModeFromConfiguration();
         setJournalSizeLimit();
