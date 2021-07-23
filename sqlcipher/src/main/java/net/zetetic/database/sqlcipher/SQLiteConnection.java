@@ -263,7 +263,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
     }
 
     private void setPageSize() {
-        if (!mConfiguration.isInMemoryDb() && !mIsReadOnlyConnection) {
+        if (!mConfiguration.isInMemoryDb() && !mIsReadOnlyConnection && !SQLiteDatabase.hasCodec()) {
             final long newValue = SQLiteGlobal.getDefaultPageSize();
             long value = executeForLong("PRAGMA page_size", null, null);
             if (value != newValue) {
