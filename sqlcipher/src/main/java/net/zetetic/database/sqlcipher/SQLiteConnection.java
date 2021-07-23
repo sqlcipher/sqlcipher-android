@@ -117,7 +117,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
     // we can ensure that we detach the signal at the right time.
     private int mCancellationSignalAttachCount;
 
-    private static native void nativeKey(long connectionPtr, byte[] password);
+    private static native int nativeKey(long connectionPtr, byte[] password);
     private static native long nativeOpen(String path, int openFlags, String label,
             boolean enableTrace, boolean enableProfile);
     private static native void nativeClose(long connectionPtr);
@@ -217,7 +217,8 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             mConfiguration.databaseHook.preKey(this);
         }
         if(mConfiguration.password != null && mConfiguration.password.length > 0){
-          nativeKey(mConnectionPtr, mConfiguration.password);
+          int rc = nativeKey(mConnectionPtr, mConfiguration.password);
+          Log.i(TAG, String.format("Database keying operation returned:%s", rc));
         }
         if(mConfiguration.databaseHook != null){
             mConfiguration.databaseHook.postKey(this);
