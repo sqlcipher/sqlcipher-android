@@ -740,7 +740,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
      */
     public static SQLiteDatabase openDatabase(String path, CursorFactory factory, int flags,
                                               DatabaseErrorHandler errorHandler) {
-        return openDatabase(path, new byte[0], factory, flags, errorHandler, null);
+        return openDatabase(path, new byte[]{}, factory, flags, errorHandler, null);
     }
 
     /**
@@ -2398,11 +2398,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
     }
 
     private static byte[] getBytes(String data) {
-        if(data == null || data.length() == 0) return new byte[0];
-        CharBuffer charBuffer = CharBuffer.wrap(data);
-        ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
-        byte[] result =  new byte[byteBuffer.limit()];
-        byteBuffer.get(result);
-        return result;
+        if(data == null || data.length() == 0) return new byte[]{};
+        return data.getBytes(Charset.forName("UTF-8"));
     }
 }
