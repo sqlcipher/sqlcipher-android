@@ -41,7 +41,7 @@ public final class SQLiteGlobal {
     private static final String TAG = "SQLiteGlobal";
 
     private static final Object sLock = new Object();
-    private static int sDefaultPageSize;
+    private static int sDefaultPageSize = 4096;
 
     private static native int nativeReleaseMemory();
 
@@ -68,7 +68,7 @@ public final class SQLiteGlobal {
                 // wrong that we just let the IllegalArgumentException propagate.
                 sDefaultPageSize = new StatFs("/data").getBlockSize();
             }
-            return 1024;
+            return 4096;
         }
     }
 
