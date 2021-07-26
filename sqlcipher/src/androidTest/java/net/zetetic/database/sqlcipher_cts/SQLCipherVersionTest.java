@@ -2,6 +2,8 @@ package net.zetetic.database.sqlcipher_cts;
 
 import android.database.Cursor;
 
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,7 +15,8 @@ public class SQLCipherVersionTest extends AndroidSQLCipherTestCase {
   @Test
   public void testCipherVersionReported(){
     String cipherVersion = "";
-    Cursor cursor = database.rawQuery("PRAGMA cipher_version;", new String[]{});
+    database = SQLiteDatabase.openOrCreateDatabase(databasePath, "foo", null, null);
+    Cursor cursor = database.rawQuery("PRAGMA cipher_version;");
     if(cursor != null && cursor.moveToFirst()){
       cipherVersion = cursor.getString(0);
       cursor.close();

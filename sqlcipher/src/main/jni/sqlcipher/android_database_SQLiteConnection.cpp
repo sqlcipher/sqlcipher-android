@@ -159,6 +159,27 @@ static jint nativeKey(JNIEnv* env, jclass clazz, jlong connectionPtr, jbyteArray
     return rc;
 }
 
+    static jint nativeReKey(JNIEnv* env, jclass clazz, jlong connectionPtr, jbyteArray keyArray) {
+        int rc = SQLITE_ERROR;
+        jsize size = 0;
+        jbyte *key = nullptr;
+        auto* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
+        if(connection) {
+            ALOGV("ReKeying connection %p", connection->db);
+            key = env->GetByteArrayElements(keyArray, nullptr);
+            size = env->GetArrayLength(keyArray);
+            rc = sqlite3_rekey(connection->db, key, size);
+        }
+        if(key) {
+            env->ReleaseByteArrayElements(keyArray, key, JNI_ABORT);
+        }
+        if (rc != SQLITE_OK) {
+            ALOGE("sqlite3_rekey(%p) failed: %d", connection->db, rc);
+            throw_sqlite3_exception(env, connection->db, "Could not rekey db.");
+        }
+        return rc;
+    }
+
 static jlong nativeOpen(JNIEnv* env, jclass clazz, jstring pathStr, jint openFlags,
         jstring labelStr, jboolean enableTrace, jboolean enableProfile) {
     int sqliteFlags;
@@ -835,6 +856,8 @@ static JNINativeMethod sMethods[] =
     /* name, signature, funcPtr */
     {"nativeKey", "(J[B)I",
             (void*)nativeKey },
+    {"nativeReKey", "(J[B)I",
+            (void*)nativeReKey },
     {"nativeOpen", "(Ljava/lang/String;ILjava/lang/String;ZZ)J",
             (void*)nativeOpen },
     { "nativeClose", "(J)V",

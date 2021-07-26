@@ -31,6 +31,7 @@ import android.util.Printer;
 
 import java.io.Closeable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -292,6 +293,13 @@ public final class SQLiteConnectionPool implements Closeable {
                             + "progress.  Finish all transactions and release all active "
                             + "database connections first.");
                 }
+            }
+
+            boolean passwordChanged = !Arrays.equals(configuration.password, mConfiguration.password);
+            if(passwordChanged){
+                mAvailablePrimaryConnection.changePassword(configuration.password);
+                mConfiguration.updateParametersFrom(configuration);
+                reconfigureAllConnectionsLocked();
             }
 
             if (mConfiguration.openFlags != configuration.openFlags) {

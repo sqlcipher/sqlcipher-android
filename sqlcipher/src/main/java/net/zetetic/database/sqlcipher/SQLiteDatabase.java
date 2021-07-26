@@ -2375,6 +2375,30 @@ public final class SQLiteDatabase extends SQLiteClosable {
         return true;
     }
 
+    public void changePassword(String newPassword) {
+        changePassword(getBytes(newPassword));
+    }
+
+    public void changePassword(byte[] newPassword) {
+        synchronized (mLock) {
+            throwIfNotOpenLocked();
+            if (isReadOnlyLocked()) {
+                throw new IllegalStateException("Can't change password for readonly databases.");
+            }
+            if (mConfigurationLocked.isInMemoryDb()) {
+                throw new IllegalStateException("Can't change password for in-memory databases.");
+            }
+            byte[] originalPassword = mConfigurationLocked.password;
+            mConfigurationLocked.password = newPassword;
+            try {
+                mConnectionPoolLocked.reconfigure(mConfigurationLocked);
+            } catch (RuntimeException ex) {
+                mConfigurationLocked.password = originalPassword;
+                throw ex;
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return "SQLiteDatabase: " + getPath();

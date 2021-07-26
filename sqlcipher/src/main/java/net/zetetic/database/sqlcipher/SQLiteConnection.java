@@ -118,6 +118,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
     private int mCancellationSignalAttachCount;
 
     private static native int nativeKey(long connectionPtr, byte[] password);
+    private static native int nativeReKey(long connectionPtr, byte[] newPassword);
     private static native long nativeOpen(String path, int openFlags, String label,
             boolean enableTrace, boolean enableProfile);
     private static native void nativeClose(long connectionPtr);
@@ -207,6 +208,14 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
     // Do not call methods on the connection after it is closed.  It will probably crash.
     void close() {
         dispose(false);
+    }
+
+    void changePassword(byte[] newPassword){
+        int result = nativeReKey(mConnectionPtr, newPassword);
+        Log.i(TAG, String.format("Database rekey operation returned:%s", result));
+        if(result != 0){
+            throw new SQLiteException(String.format("Failed to rekey database, result code:%s", result));
+        }
     }
 
     private void open() {
