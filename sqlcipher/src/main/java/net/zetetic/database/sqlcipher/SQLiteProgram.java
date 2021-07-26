@@ -206,6 +206,22 @@ public abstract class SQLiteProgram extends SQLiteClosable {
         }
     }
 
+    /**
+     * Given a varargs of Object bindArgs, this method binds all of them in one single call.
+     *
+     * @param bindArgs the varargs of bind args, none of which must be null.
+     */
+    public void bindAllArgs(Object... bindArgs){
+        if (bindArgs != null) {
+            for (int i = bindArgs.length; i != 0; i--) {
+                if (bindArgs[i - 1] == null) {
+                    throw new IllegalArgumentException("the bind value at index " + i + " is null");
+                }
+                bind(i, bindArgs[i - 1]);
+            }
+        }
+    }
+
     @Override
     protected void onAllReferencesReleased() {
         clearBindings();

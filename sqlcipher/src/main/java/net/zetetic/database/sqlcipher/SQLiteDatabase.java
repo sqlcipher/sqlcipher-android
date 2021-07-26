@@ -1439,6 +1439,26 @@ public final class SQLiteDatabase extends SQLiteClosable {
      * Runs the provided SQL and returns a {@link Cursor} over the result set.
      *
      * @param sql the SQL query. The SQL string must not be ; terminated
+     * @param bindingArgs You may include ?s in where clause in the query,
+     *     which will be replaced by the values from bindingArgs. The
+     *     values will be bound as Objects.
+     * @return A {@link Cursor} object, which is positioned before the first entry. Note that
+     * {@link Cursor}s are not synchronized, see the documentation for more details.
+     */
+    public Cursor rawQuery(String sql, Object... bindingArgs) {
+        acquireReference();
+        try {
+            SQLiteDirectCursorDriver driver = new SQLiteDirectCursorDriver(this, sql, null, null);
+            return driver.query(mCursorFactory, bindingArgs);
+        } finally {
+            releaseReference();
+        }
+    }
+
+    /**
+     * Runs the provided SQL and returns a {@link Cursor} over the result set.
+     *
+     * @param sql the SQL query. The SQL string must not be ; terminated
      * @param selectionArgs You may include ?s in where clause in the query,
      *     which will be replaced by the values from selectionArgs. The
      *     values will be bound as Strings.

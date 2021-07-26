@@ -23,19 +23,18 @@ public abstract class AndroidSQLCipherTestCase {
   protected SQLiteDatabase database;
   protected String DATABASE_NAME = "database_test.db";
   protected String TAG = getClass().getSimpleName();
+  protected File databasePath = null;
   protected Context context = null;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     System.loadLibrary("sqlcipher");
-    File databasePath = context.getDatabasePath(DATABASE_NAME);
+    databasePath = context.getDatabasePath(DATABASE_NAME);
     databasePath.mkdirs();
     if (databasePath.exists()) {
       databasePath.delete();
     }
-    database = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
-    assertNotNull(database);
   }
 
   @After

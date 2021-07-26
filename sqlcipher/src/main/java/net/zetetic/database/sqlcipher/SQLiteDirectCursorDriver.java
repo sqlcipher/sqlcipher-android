@@ -64,6 +64,26 @@ public final class SQLiteDirectCursorDriver implements SQLiteCursorDriver {
         return cursor;
     }
 
+    public Cursor query(CursorFactory factory, Object... bindingArgs){
+        final SQLiteQuery query = new SQLiteQuery(mDatabase, mSql, mCancellationSignal);
+        final Cursor cursor;
+        try {
+            query.bindAllArgs(bindingArgs);
+
+            if (factory == null) {
+                cursor = new SQLiteCursor(this, mEditTable, query);
+            } else {
+                cursor = factory.newCursor(mDatabase, this, mEditTable, query);
+            }
+        } catch (RuntimeException ex) {
+            query.close();
+            throw ex;
+        }
+
+        mQuery = query;
+        return cursor;
+    }
+
     public void cursorClosed() {
         // Do nothing
     }
