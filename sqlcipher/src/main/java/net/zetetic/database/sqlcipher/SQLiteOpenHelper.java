@@ -327,8 +327,19 @@ public abstract class SQLiteOpenHelper {
                         db = SQLiteDatabase.openDatabase(path, mPassword, mFactory,
                                 SQLiteDatabase.OPEN_READONLY, mErrorHandler, mDatabaseHook);
                     } else {
-                        db = SQLiteDatabase.openOrCreateDatabase(
-                            mName, mPassword, mFactory, mErrorHandler, mDatabaseHook
+                        /*
+                         Modified by Zetetic to support propagation of the mEnableWriteAheadLogging
+                         should a user invoke setWriteAheadLoggingEnabled() when the mDatabase
+                         instance has not yet been created via getWritableDatabase(). This allows
+                         setWriteAheadLoggingEnabled() to be set in the constructor of a
+                         SQLiteOpenHelper subclass.
+                         */
+                        int flags = SQLiteDatabase.CREATE_IF_NECESSARY;
+                        if(mEnableWriteAheadLogging) {
+                            flags |= SQLiteDatabase.ENABLE_WRITE_AHEAD_LOGGING;
+                        }
+                        db = SQLiteDatabase.openDatabase(
+                            mName, mPassword, mFactory, flags, mErrorHandler, mDatabaseHook
                         );
                     }
                 } catch (SQLiteException ex) {
