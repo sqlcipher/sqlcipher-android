@@ -322,26 +322,21 @@ public abstract class SQLiteOpenHelper {
                 db = SQLiteDatabase.create(null);
             } else {
                 try {
-                    if (DEBUG_STRICT_READONLY && !writable) {
-                        final String path = mContext.getDatabasePath(mName).getPath();
-                        db = SQLiteDatabase.openDatabase(path, mPassword, mFactory,
-                                SQLiteDatabase.OPEN_READONLY, mErrorHandler, mDatabaseHook);
-                    } else {
-                        /*
-                         Modified by Zetetic to support propagation of the mEnableWriteAheadLogging
-                         should a user invoke setWriteAheadLoggingEnabled() when the mDatabase
-                         instance has not yet been created via getWritableDatabase(). This allows
-                         setWriteAheadLoggingEnabled() to be set in the constructor of a
-                         SQLiteOpenHelper subclass.
-                         */
-                        int flags = SQLiteDatabase.CREATE_IF_NECESSARY;
-                        if(mEnableWriteAheadLogging) {
-                            flags |= SQLiteDatabase.ENABLE_WRITE_AHEAD_LOGGING;
-                        }
-                        db = SQLiteDatabase.openDatabase(
-                            mName, mPassword, mFactory, flags, mErrorHandler, mDatabaseHook
-                        );
+                    final String path = mContext.getDatabasePath(mName).getPath();
+                    /*
+                     Modified by Zetetic to support propagation of the mEnableWriteAheadLogging
+                     should a user invoke setWriteAheadLoggingEnabled() when the mDatabase
+                     instance has not yet been created via getWritableDatabase(). This allows
+                     setWriteAheadLoggingEnabled() to be set in the constructor of a
+                     SQLiteOpenHelper subclass.
+                     */
+                    int flags = SQLiteDatabase.CREATE_IF_NECESSARY;
+                    if(mEnableWriteAheadLogging) {
+                        flags |= SQLiteDatabase.ENABLE_WRITE_AHEAD_LOGGING;
                     }
+                    db = SQLiteDatabase.openDatabase(
+                        path, mPassword, mFactory, flags, mErrorHandler, mDatabaseHook
+                    );
                 } catch (SQLiteException ex) {
                     if (writable) {
                         throw ex;
