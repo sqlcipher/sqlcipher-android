@@ -8,20 +8,26 @@ import android.database.Cursor;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteDatabaseConfiguration;
+import net.zetetic.database.sqlcipher.SQLiteDatabaseCorruptException;
 import net.zetetic.database.sqlcipher.SQLiteException;
 
 import org.junit.Test;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+
 public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
 
   @Test
-  public void testConnectionWithPassword() {
+  public void testCreateDatabaseConnectionWithStringPassword() {
     try {
       int a = 0, b = 0;
       closeAndDelete(database);
       database = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("foo.db"), "foo", null, null);
       database.execSQL("create table t1(a,b);");
       database.execSQL("insert into t1(a,b) values(?,?)", new Object[]{1, 2});
+      database.close();
+      database = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("foo.db"), "foo", null, null);
       Cursor cursor = database.rawQuery("select * from t1;", new String[]{});
       if (cursor != null && cursor.moveToFirst()) {
         a = cursor.getInt(0);
@@ -32,6 +38,125 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
       assertThat(b, is(2));
     } finally {
       delete(context.getDatabasePath("foo.db"));
+    }
+  }
+
+  @Test
+  public void testCreateDatabaseConnectionWithStringByteArray() {
+    try {
+      int a = 0, b = 0;
+      closeAndDelete(database);
+      byte[] generatedPassword = generateRandomBytes(64);
+      database = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("foo.db"), generatedPassword, null, null);
+      database.execSQL("create table t1(a,b);");
+      database.execSQL("insert into t1(a,b) values(?,?)", new Object[]{1, 2});
+      database.close();
+      database = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("foo.db"), generatedPassword, null, null);
+      Cursor cursor = database.rawQuery("select * from t1;", new String[]{});
+      if (cursor != null && cursor.moveToFirst()) {
+        a = cursor.getInt(0);
+        b = cursor.getInt(1);
+        cursor.close();
+      }
+      assertThat(a, is(1));
+      assertThat(b, is(2));
+    } finally {
+      delete(context.getDatabasePath("foo.db"));
+    }
+  }
+
+  @Test(expected = SQLiteDatabaseCorruptException.class)
+  public void testOpenDatabaseConnectionWithInvalidStringPassword() {
+    try {
+      int a = 0, b = 0;
+      closeAndDelete(database);
+      database = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("foo.db"), "foo", null, null);
+      database.execSQL("create table t1(a,b);");
+      database.execSQL("insert into t1(a,b) values(?,?)", new Object[]{1, 2});
+      database.close();
+      database = SQLiteDatabase.openDatabase(context.getDatabasePath("foo.db").getPath(), "bar", null, SQLiteDatabase.OPEN_READWRITE, null);
+    } finally {
+      delete(context.getDatabasePath("foo.db"));
+    }
+  }
+
+  @Test(expected = SQLiteDatabaseCorruptException.class)
+  public void testOpenDatabaseConnectionWithInvalidByteArrayPassword() {
+    try {
+      int a = 0, b = 0;
+      closeAndDelete(database);
+      byte[] initialPassword = generateRandomBytes(64);
+      byte[] otherPassword = generateRandomBytes(64);
+      database = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("foo.db"), initialPassword, null, null);
+      database.execSQL("create table t1(a,b);");
+      database.execSQL("insert into t1(a,b) values(?,?)", new Object[]{1, 2});
+      database.close();
+      database = SQLiteDatabase.openDatabase(context.getDatabasePath("foo.db").getPath(), otherPassword, null, SQLiteDatabase.OPEN_READWRITE, null);
+    } finally {
+      delete(context.getDatabasePath("foo.db"));
+    }
+  }
+
+  @Test
+  public void openExistingSQLCipherDatabaseWithStringPassword(){
+    File databasePath = null;
+    int a = 0, b = 0;
+    try {
+      closeAndDelete(database);
+      databasePath = extractAssetToDatabaseDirectory("sqlcipher-4.x-testkey.db");
+      database = SQLiteDatabase.openDatabase(databasePath.getPath(), "testkey", null, SQLiteDatabase.OPEN_READWRITE, null);
+      Cursor cursor = database.rawQuery("SELECT * FROM t1;");
+      if(cursor != null && cursor.moveToFirst()){
+        a = cursor.getInt(0);
+        b = cursor.getInt(1);
+        cursor.close();
+      }
+      assertThat(a, is(1));
+      assertThat(b, is(2));
+    } finally {
+      delete(databasePath);
+    }
+  }
+
+  @Test
+  public void openExistingSQLCipherDatabaseWithByteArrayPassword(){
+    File databasePath = null;
+    int a = 0, b = 0;
+    try {
+      closeAndDelete(database);
+      databasePath = extractAssetToDatabaseDirectory("sqlcipher-4.x-testkey.db");
+      database = SQLiteDatabase.openDatabase(databasePath.getPath(), "testkey".getBytes(StandardCharsets.UTF_8), null, SQLiteDatabase.OPEN_READWRITE, null);
+      Cursor cursor = database.rawQuery("SELECT * FROM t1;");
+      if(cursor != null && cursor.moveToFirst()){
+        a = cursor.getInt(0);
+        b = cursor.getInt(1);
+        cursor.close();
+      }
+      assertThat(a, is(1));
+      assertThat(b, is(2));
+    } finally {
+      delete(databasePath);
+    }
+  }
+
+  @Test
+  public void openExistingSQLitePlaintextDatabase(){
+    File databasePath = null;
+    int a = 0, b = 0;
+    try {
+      closeAndDelete(database);
+      databasePath = extractAssetToDatabaseDirectory("sqlite-plaintext.db");
+      database = SQLiteDatabase.openDatabase(databasePath.getPath(), "", null, SQLiteDatabase.OPEN_READWRITE, null);
+      Cursor cursor = database.rawQuery("SELECT * FROM t1;");
+      if(cursor != null && cursor.moveToFirst()){
+        a = cursor.getInt(0);
+        b = cursor.getInt(1);
+        cursor.close();
+      }
+      assertThat(a, is(1));
+      assertThat(b, is(2));
+    } finally {
+      delete(databasePath);
     }
   }
 
