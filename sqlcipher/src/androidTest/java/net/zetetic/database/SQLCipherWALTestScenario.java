@@ -26,7 +26,7 @@ class MyHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "mydb.db";
 
     public MyHelper(Context ctx){
-        super(ctx, "file:" + ctx.getDatabasePath(DATABASE_NAME).getAbsolutePath() + "?key=secret", null, 1);
+        super(ctx, ctx.getDatabasePath(DATABASE_NAME).getAbsolutePath(), "secret", null, 1, 1, null, null);
     }
     public void onConfigure(SQLiteDatabase db){
         db.enableWriteAheadLogging();
@@ -43,7 +43,7 @@ class MyHelper extends SQLiteOpenHelper {
  * Created by dan on 5/3/17.
  */
 @RunWith(AndroidJUnit4.class)
-public class SeeTest1 {
+public class SQLCipherWALTestScenario {
     private Context mContext;
 
     /*
