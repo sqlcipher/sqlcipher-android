@@ -76,6 +76,27 @@ public final class SQLiteStatement extends SQLiteProgram {
     }
 
     /**
+     * Execute this SQL statement, if the the number of rows affected by execution of this SQL
+     * statement is of any importance to the caller - for example, UPDATE / DELETE SQL statements.
+     * No transaction state checking is performed.
+     * @return the number of rows affected by this SQL statement execution.
+     * @throws android.database.SQLException If the SQL string is invalid for
+     *         some reason
+     */
+    public int executeUpdateDeleteRaw() {
+        acquireReference();
+        try {
+            return getSession().executeForChangedRowCountRaw(
+                getSql(), getBindArgs(), getConnectionFlags(), null);
+        } catch (SQLiteDatabaseCorruptException ex) {
+            onCorruption();
+            throw ex;
+        } finally {
+            releaseReference();
+        }
+    }
+
+    /**
      * Execute this SQL statement and return the ID of the row inserted due to this call.
      * The SQL statement should be an INSERT for this to be a useful call.
      *

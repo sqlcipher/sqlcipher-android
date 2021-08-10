@@ -1856,6 +1856,28 @@ public final class SQLiteDatabase extends SQLiteClosable {
         executeSql(sql, bindArgs);
     }
 
+    /**
+     * Executes a statement that returns a count of the number of rows
+     * that were changed. No transaction state checking is performed.
+     * @param sql The SQL statement to execute.
+     * @param bindArgs The arguments to bind.
+     * @return The number of rows that were changed.
+     */
+    public int rawExecSQL(String sql, Object...bindArgs) throws SQLException {
+        acquireReference();
+        try {
+            SQLiteStatement statement = new SQLiteStatement(this, sql, bindArgs);
+            try {
+                return statement.executeUpdateDeleteRaw();
+            } finally {
+                statement.close();
+            }
+
+        } finally {
+            releaseReference();
+        }
+    }
+
     private int executeSql(String sql, Object[] bindArgs) throws SQLException {
         acquireReference();
         try {

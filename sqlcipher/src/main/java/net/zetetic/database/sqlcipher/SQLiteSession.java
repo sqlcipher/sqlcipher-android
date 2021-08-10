@@ -763,6 +763,37 @@ public final class SQLiteSession {
     }
 
     /**
+     * Executes a statement that returns a count of the number of rows
+     * that were changed.  Use for UPDATE or DELETE SQL statements. Does not
+     * perform additional transaction process verification.
+     *
+     * @param sql The SQL statement to execute.
+     * @param bindArgs The arguments to bind, or null if none.
+     * @param connectionFlags The connection flags to use if a connection must be
+     * acquired by this operation.  Refer to {@link SQLiteConnectionPool}.
+     * @param cancellationSignal A signal to cancel the operation in progress, or null if none.
+     * @return The number of rows that were changed.
+     *
+     * @throws SQLiteException if an error occurs, such as a syntax error
+     * or invalid number of bind arguments.
+     * @throws OperationCanceledException if the operation was canceled.
+     */
+    public int executeForChangedRowCountRaw(String sql, Object[] bindArgs, int connectionFlags,
+                                         CancellationSignal cancellationSignal) {
+        if (sql == null) {
+            throw new IllegalArgumentException("sql must not be null.");
+        }
+
+        acquireConnection(sql, connectionFlags, cancellationSignal); // might throw
+        try {
+            return mConnection.executeForChangedRowCount(sql, bindArgs,
+                cancellationSignal); // might throw
+        } finally {
+            releaseConnection(); // might throw
+        }
+    }
+
+    /**
      * Executes a statement that returns the row id of the last row inserted
      * by the statement.  Use for INSERT SQL statements.
      *
