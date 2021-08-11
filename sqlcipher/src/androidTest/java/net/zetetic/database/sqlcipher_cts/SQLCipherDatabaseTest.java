@@ -397,4 +397,52 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
     long count = statement.simpleQueryForLong();
     assertThat(count, is(1L));
   }
+
+  @Test(expected = SQLiteException.class)
+  public void shouldThrowExceptionWithSelectStatementUsingRawExecSQL(){
+    database.rawExecSQL("SELECT count(*) FROM sqlite_schema;");
+  }
+
+  @Test
+  public void shouldPerformInsertUsingRawExecSQL(){
+    int a = 0, b = 0;
+    database.execSQL("create table t1(a,b);");
+    database.rawExecSQL("insert into t1(a,b) values(?, ?);", 1, 2);
+    Cursor cursor = database.rawQuery("select * from t1;");
+    if(cursor != null && cursor.moveToFirst()){
+      a = cursor.getInt(0);
+      b = cursor.getInt(1);
+      cursor.close();
+    }
+    assertThat(a, is(1));
+    assertThat(b, is(2));
+  }
+
+  @Test
+  public void shouldPerformUpdateUsingRawExecSQL(){
+    int a = 0, b = 0, c = 0;
+    database.execSQL("create table t1(a,b,c);");
+    database.execSQL("insert into t1(a,b,c) values(?, ?, ?);", new Object[]{1, 2, 3});
+    database.rawExecSQL("update t1 set b = ?, c = ? where a = ?", 4, 5, 1);
+    Cursor cursor = database.rawQuery("select * from t1;");
+    if(cursor != null && cursor.moveToFirst()){
+      a = cursor.getInt(0);
+      b = cursor.getInt(1);
+      c = cursor.getInt(2);
+      cursor.close();
+    }
+    assertThat(a, is(1));
+    assertThat(b, is(4));
+    assertThat(c, is(5));
+  }
+
+  @Test
+  public void shouldDeleteDataUsingRawExecSQL(){
+    database.execSQL("create table t1(a,b,c);");
+    database.execSQL("insert into t1(a,b,c) values(?, ?, ?);", new Object[]{1, 2, 3});
+    SQLiteStatement statement = database.compileStatement("select count(*) from t1;");
+    assertThat(statement.simpleQueryForLong(), is(1L));
+    database.rawExecSQL("delete from t1;");
+    assertThat(statement.simpleQueryForLong(), is(0L));
+  }
 }
