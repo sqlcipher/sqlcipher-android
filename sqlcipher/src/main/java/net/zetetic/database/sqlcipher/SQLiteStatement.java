@@ -22,6 +22,8 @@ package net.zetetic.database.sqlcipher;
 
 import android.os.ParcelFileDescriptor;
 
+import androidx.sqlite.db.SupportSQLiteStatement;
+
 /**
  * Represents a statement that can be executed against a database.  The statement
  * cannot return multiple rows or columns, but single value (1 x 1) result sets
@@ -30,7 +32,7 @@ import android.os.ParcelFileDescriptor;
  * This class is not thread-safe.
  * </p>
  */
-public final class SQLiteStatement extends SQLiteProgram {
+public final class SQLiteStatement extends SQLiteProgram implements SupportSQLiteStatement {
     SQLiteStatement(SQLiteDatabase db, String sql, Object[] bindArgs) {
         super(db, sql, bindArgs, null);
     }

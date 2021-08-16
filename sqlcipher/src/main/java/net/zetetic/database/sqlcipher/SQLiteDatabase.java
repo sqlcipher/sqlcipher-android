@@ -36,6 +36,9 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Printer;
 
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.sqlite.db.SupportSQLiteQuery;
+
 import net.zetetic.database.sqlcipher.CloseGuard;
 
 import java.io.File;
@@ -71,7 +74,7 @@ import java.util.WeakHashMap;
  * to the current locale.
  * </p>
  */
-public final class SQLiteDatabase extends SQLiteClosable {
+public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLiteDatabase {
     private static final String TAG = "SQLiteDatabase";
 
     private static final int EVENT_DB_CORRUPT = 75004;
@@ -446,6 +449,46 @@ public final class SQLiteDatabase extends SQLiteClosable {
      */
     public void beginTransactionNonExclusive() {
         beginTransaction(null /* transactionStatusCallback */, false);
+    }
+
+    @Override
+    public void beginTransactionWithListener(final android.database.sqlite.SQLiteTransactionListener transactionListener) {
+        beginTransaction(new SQLiteTransactionListener() {
+            @Override
+            public void onBegin() {
+                transactionListener.onBegin();
+            }
+
+            @Override
+            public void onCommit() {
+                transactionListener.onCommit();
+            }
+
+            @Override
+            public void onRollback() {
+                transactionListener.onRollback();
+            }
+        }, true);
+    }
+
+    @Override
+    public void beginTransactionWithListenerNonExclusive(final android.database.sqlite.SQLiteTransactionListener transactionListener) {
+        beginTransactionWithListenerNonExclusive(new SQLiteTransactionListener() {
+            @Override
+            public void onBegin() {
+                transactionListener.onBegin();
+            }
+
+            @Override
+            public void onCommit() {
+                transactionListener.onCommit();
+            }
+
+            @Override
+            public void onRollback() {
+                transactionListener.onRollback();
+            }
+        });
     }
 
     /**
@@ -1100,6 +1143,58 @@ public final class SQLiteDatabase extends SQLiteClosable {
      */
     public void setPageSize(long numBytes) {
         execSQL("PRAGMA page_size = " + numBytes);
+    }
+
+    @Override
+    public Cursor query(String query) {
+        return rawQuery(query);
+    }
+
+    @Override
+    public Cursor query(String query, Object[] bindArgs) {
+        return rawQuery(query, bindArgs);
+    }
+
+    @Override
+    public Cursor query(SupportSQLiteQuery query) {
+        return query(query, null);
+    }
+
+    @Override
+    public Cursor query(SupportSQLiteQuery query, CancellationSignal cancellationSignal) {
+        acquireReference();
+        try {
+            String sql = query.getSql();
+            SQLiteDirectCursorDriver driver = new SQLiteDirectCursorDriver(this, sql, "", cancellationSignal);
+            SQLiteQuery sqliteQuery = new SQLiteQuery(this, sql, cancellationSignal);
+            query.bindTo(sqliteQuery);
+            return new SQLiteCursor(driver, "", sqliteQuery);
+        } finally {
+            releaseReference();
+        }
+    }
+
+    @Override
+    public long insert(String table, int conflictAlgorithm, ContentValues values) throws android.database.SQLException {
+        return insertWithOnConflict(table, null, values, conflictAlgorithm);
+    }
+
+    @Override
+    public int delete(String table, String whereClause, Object[] whereArgs) {
+        String[] args = new String[whereArgs.length];
+        for(int index = 0; index < whereArgs.length; index++) {
+            args[index] = whereArgs[index].toString();
+        }
+        return delete(table, whereClause, args);
+    }
+
+    @Override
+    public int update(String table, int conflictAlgorithm, ContentValues values, String whereClause, Object[] whereArgs) {
+        String[] args = new String[whereArgs.length];
+        for(int index = 0; index < whereArgs.length; index++) {
+           args[index] = whereArgs[index].toString();
+        }
+        return updateWithOnConflict(table, values, whereClause, args, conflictAlgorithm);
     }
 
     /**

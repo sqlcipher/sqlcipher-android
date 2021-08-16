@@ -25,6 +25,9 @@ import android.content.Context;
 import net.zetetic.database.DatabaseErrorHandler;
 import net.zetetic.database.sqlcipher.SQLiteDatabase.CursorFactory;
 import android.util.Log;
+
+import androidx.sqlite.db.SupportSQLiteOpenHelper;
+
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -48,7 +51,7 @@ import java.nio.charset.Charset;
  * <p class="note"><strong>Note:</strong> this class assumes
  * monotonically increasing version numbers for upgrades.</p>
  */
-public abstract class SQLiteOpenHelper {
+public abstract class SQLiteOpenHelper implements SupportSQLiteOpenHelper {
     private static final String TAG = SQLiteOpenHelper.class.getSimpleName();
 
     // When true, getReadableDatabase returns a read-only database if it is just being opened.

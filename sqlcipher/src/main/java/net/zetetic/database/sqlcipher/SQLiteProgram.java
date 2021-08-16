@@ -23,6 +23,8 @@ package net.zetetic.database.sqlcipher;
 import android.database.DatabaseUtils;
 import android.os.CancellationSignal;
 
+import androidx.sqlite.db.SupportSQLiteProgram;
+
 import java.util.Arrays;
 
 /**
@@ -31,7 +33,7 @@ import java.util.Arrays;
  * This class is not thread-safe.
  * </p>
  */
-public abstract class SQLiteProgram extends SQLiteClosable {
+public abstract class SQLiteProgram extends SQLiteClosable implements SupportSQLiteProgram {
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     private final SQLiteDatabase mDatabase;
@@ -88,7 +90,7 @@ public abstract class SQLiteProgram extends SQLiteClosable {
         return mDatabase;
     }
 
-    final String getSql() {
+    String getSql() {
         return mSql;
     }
 
