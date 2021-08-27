@@ -34,13 +34,13 @@ SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
 
 ### Building 
 
-This repository is not batteries-included. Specificially, you will need to build `libcrypto.so`, the shared library from OpenSSL using the NDK for the [supported platforms](#compatibility), and bundle the top-level `include` folder from OpenSSL. Additionally, you will need to build a SQLCipher amalgamation. These files will need to be placed in the following locations:
+This repository is not batteries-included. Specificially, you will need to build `libcrypto.a`, the static library from OpenSSL using the NDK for the [supported platforms](#compatibility), and bundle the top-level `include` folder from OpenSSL. Additionally, you will need to build a SQLCipher amalgamation. These files will need to be placed in the following locations:
 
 ```
-<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/armeabi-v7a/libcrypto.so
-<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/x86/libcrypto.so
-<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/x86_64/libcrypto.so
-<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/arm64_v8a/libcrypto.so
+<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/armeabi-v7a/libcrypto.a
+<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/x86/libcrypto.a
+<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/x86_64/libcrypto.a
+<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/arm64_v8a/libcrypto.a
 <project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/include/
 <project-root>/sqlcipher/src/main/jni/sqlcipher/sqlite3.c
 <project-root>/sqlcipher/src/main/jni/sqlcipher/sqlite3.h

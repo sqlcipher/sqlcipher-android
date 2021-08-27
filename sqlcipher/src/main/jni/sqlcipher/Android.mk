@@ -32,11 +32,11 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH) $(LOCAL_PATH)/nativehelper/ $(LOCAL_PATH)/andr
 
 LOCAL_MODULE:= libsqlcipher
 LOCAL_LDLIBS += -ldl -llog
-LOCAL_SHARED_LIBRARIES += shared-libcrypto
+LOCAL_STATIC_LIBRARIES += static-libcrypto
 
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := shared-libcrypto
-LOCAL_SRC_FILES := $(LOCAL_PATH)/android-libs/$(TARGET_ARCH_ABI)/libcrypto.so
-include $(PREBUILT_SHARED_LIBRARY)
+LOCAL_MODULE := static-libcrypto
+LOCAL_SRC_FILES := $(LOCAL_PATH)/android-libs/$(TARGET_ARCH_ABI)/libcrypto.a
+include $(PREBUILT_STATIC_LIBRARY)
