@@ -325,7 +325,18 @@ public abstract class SQLiteOpenHelper implements SupportSQLiteOpenHelper {
                 db = SQLiteDatabase.create(null);
             } else {
                 try {
-                    final String path = mContext.getDatabasePath(mName).getPath();
+                    final File filePath = mContext.getDatabasePath(mName);
+                    final String path = filePath.getPath();
+                    /*
+                    Modified by Zetetic, newer Android OS versions will create the
+                    databases directory upon installation of the APK, whereas older
+                    versions, such as some devices running API 21 the databases directory
+                    does not exist.
+                     */
+                    final File databasesDirectory = new File(filePath.getParent());
+                    if(!databasesDirectory.exists()){
+                        databasesDirectory.mkdirs();
+                    }
                     /*
                      Modified by Zetetic to support propagation of the mEnableWriteAheadLogging
                      should a user invoke setWriteAheadLoggingEnabled() when the mDatabase
