@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+////apply from: 'maven.gradle'
+//apply plugin: 'maven-publish'
+//apply plugin: 'signing'
 
 android {
     compileSdkVersion 30
@@ -7,7 +10,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
-        versionName "4.4.3"
+        versionName rootProject.ext.libraryVersion
         project.archivesBaseName = "sqlcipher-android-${versionName}"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
@@ -72,4 +75,55 @@ allprojects {
         google()
         jcenter()
     }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = "net.zetetic"
+                artifactId = "sqlcipher-android"
+                version = "${rootProject.ext.mavenVersionName}"
+                from components.release
+                artifact androidSourcesJar
+                pom {
+                    name = "sqlcipher-android"
+                    packaging = "aar"
+                    description = "SQLCipher for Android a library that provides full database encryption."
+                    url = "https://www.zetetic.net/sqlcipher"
+                    scm {
+                        url = "https://github.com/sqlcipher/sqlcipher-android.git"
+                        connection = "scm:git:https://github.com/sqlcipher/sqlcipher-android.git"
+                        developerConnection = "scm:git:https://github.com/sqlcipher/sqlcipher-android.git"
+                    }
+                    licenses {
+                        license {
+                            url = "https://www.zetetic.net/sqlcipher/license/"
+                        }
+                    }
+                    developers {
+                        developer {
+                            name = "Zetetic Support"
+                            email = "support@zetetic.net"
+                            organization = "Zetetic LLC"
+                            organizationUrl = "https://www.zetetic.net"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications
+    }
+}
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives androidSourcesJar
 }

@@ -1,16 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     repositories {
         jcenter()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.android.tools.build:gradle:4.0.2'
     }
+}
+
+plugins {
+    id('maven-publish')
+    id('signing')
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
 allprojects {
@@ -20,6 +22,49 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+project.ext {
+    libraryVersion = "4.4.3"
+    mavenLocalRepositoryPrefix = "file://"
+    if(project.hasProperty('publishLocal') && publishLocal.toBoolean()){
+        mavenSnapshotRepositoryUrl = "outputs/snapshot"
+        mavenReleaseRepositoryUrl = "outputs/release"
+    } else {
+        mavenLocalRepositoryPrefix = ""
+        mavenSnapshotRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+        mavenReleaseRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+    }
+    if(project.hasProperty('publishSnapshot') && publishSnapshot.toBoolean()){
+        mavenVersionName = "${libraryVersion}-SNAPSHOT"
+    } else {
+        mavenVersionName = "${libraryVersion}"
+    }
+    if(project.hasProperty('nexusUsername')){
+        nexusUsername = "${nexusUsername}"
+    }
+    if(project.hasProperty('nexusPassword')){
+        nexusPassword = "${nexusPassword}"
+    }
+    nexusUsername = "${nexusUsername}"
+    nexusPassword = "${nexusPassword}"
+    nexusStagingProfileId = "${nexusStagingProfileId}"
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl = uri("https://oss.sonatype.org/")
+            snapshotRepositoryUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+            username = "${rootProject.ext.nexusUsername}"
+            password = "${rootProject.ext.nexusPassword}"
+            stagingProfileId = "${rootProject.ext.nexusStagingProfileId}"
+        }
+        localNexus {
+            useStaging = false
+            nexusUrl = uri("http://localhost:8081/")
+            snapshotRepositoryUrl = uri("http://localhost:8081/repository/maven-snapshots/")
+            username = "${rootProject.ext.nexusUsername}"
+            password = "${rootProject.ext.nexusPassword}"
+            stagingProfileId = ""
+        }
+    }
 }
