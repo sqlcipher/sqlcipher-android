@@ -4,6 +4,7 @@
 GRADLE = ./gradlew
 
 clean:
+	-rm -rf build
 	$(GRADLE) clean
 
 build-debug:
