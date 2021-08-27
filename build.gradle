@@ -44,9 +44,9 @@ project.ext {
     if(project.hasProperty('nexusPassword')){
         nexusPassword = "${nexusPassword}"
     }
-    nexusUsername = "${nexusUsername}"
-    nexusPassword = "${nexusPassword}"
-    nexusStagingProfileId = "${nexusStagingProfileId}"
+    nexusUsername = project.hasProperty('nexusUsername') ? "${nexusUsername}" : ""
+    nexusPassword = project.hasProperty('nexusPassword') ? "${nexusPassword}" : ""
+    nexusStagingProfileId = project.hasProperty('nexusStagingProfileId') ? "${nexusStagingProfileId}" : ""
 }
 
 nexusPublishing {
