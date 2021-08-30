@@ -51,7 +51,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // Needed for the Support API interfaces
-    implementation 'androidx.sqlite:sqlite:2.1.0'
+    implementation "androidx.sqlite:sqlite:${rootProject.ext.androidXSQLiteVersion}"
 
     // Needed for the Support API in tests
     androidTestImplementation 'androidx.room:room-common:2.3.0'
