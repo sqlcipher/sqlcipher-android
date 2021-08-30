@@ -10,7 +10,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
-        versionName rootProject.ext.libraryVersion
+        versionName "${rootProject.ext.libraryVersion}"
         project.archivesBaseName = "sqlcipher-android-${versionName}"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
