@@ -1,7 +1,4 @@
 apply plugin: 'com.android.library'
-////apply from: 'maven.gradle'
-//apply plugin: 'maven-publish'
-//apply plugin: 'signing'
 
 android {
     compileSdkVersion 30
