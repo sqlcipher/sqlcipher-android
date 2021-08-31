@@ -26,6 +26,7 @@ allprojects {
 project.ext {
     libraryVersion = "4.4.3"
     androidXSQLiteVersion = "2.1.0"
+    androidNdkVersion = "23.0.7599858"
     mavenLocalRepositoryPrefix = "file://"
     if(project.hasProperty('publishLocal') && publishLocal.toBoolean()){
         mavenSnapshotRepositoryUrl = "outputs/snapshot"
@@ -77,7 +78,8 @@ task generateReadMe {
     def reader = new FileReader("README.md.template")
     def binding = [
                     libraryVersion: project.ext.libraryVersion,
-                    androidXSQLiteVersion: project.ext.androidXSQLiteVersion
+                    androidXSQLiteVersion: project.ext.androidXSQLiteVersion,
+                    androidNdkVersion: project.ext.androidNdkVersion
                   ]
     def template = engine.createTemplate(reader).make(binding)
     readme.write(template.toString())

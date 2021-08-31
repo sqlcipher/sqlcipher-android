@@ -35,7 +35,7 @@ android {
         }
     }
 
-    ndkVersion '23.0.7599858'
+    ndkVersion "${rootProject.ext.androidNdkVersion}"
 
     useLibrary 'android.test.base' // for android.test.AndroidTestCase
     useLibrary 'android.test.runner' // for android.test.MoreAsserts

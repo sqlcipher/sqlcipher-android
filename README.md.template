@@ -40,6 +40,12 @@ SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
 
 ### Building 
 
+## Android NDK
+
+Currently, SQLCipher for Android uses NDK version "<%=androidNdkVersion%>".
+
+## External dependencies:
+
 This repository is not batteries-included. Specificially, you will need to build `libcrypto.a`, the static library from OpenSSL using the NDK for the [supported platforms](#compatibility), and bundle the top-level `include` folder from OpenSSL. Additionally, you will need to build a SQLCipher amalgamation. These files will need to be placed in the following locations:
 
 ```
