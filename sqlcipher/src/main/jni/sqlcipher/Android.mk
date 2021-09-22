@@ -17,7 +17,7 @@ endif
 
 LOCAL_CPPFLAGS += -Wno-conversion-null
 
-#$(info "SQLCipher LOCAL CFLAGS:${LOCAL_CFLAGS}")
+$(info SQLCipher LOCAL_CFLAGS:${LOCAL_CFLAGS})
 
 LOCAL_SRC_FILES:=                             \
 	android_database_SQLiteCommon.cpp     \
