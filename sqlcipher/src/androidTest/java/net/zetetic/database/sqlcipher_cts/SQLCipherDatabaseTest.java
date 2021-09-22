@@ -445,4 +445,10 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
     database.rawExecSQL("delete from t1;");
     assertThat(statement.simpleQueryForLong(), is(0L));
   }
+
+  @Test(expected = IllegalStateException.class)
+  public void shouldReportErrorAfterDatabaseCloseWhenCheckingTransactionState(){
+    database.close();
+    database.inTransaction();
+  }
 }
