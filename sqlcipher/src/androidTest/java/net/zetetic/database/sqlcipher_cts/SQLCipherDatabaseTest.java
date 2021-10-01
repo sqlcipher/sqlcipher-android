@@ -2,11 +2,14 @@ package net.zetetic.database.sqlcipher_cts;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.fail;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import net.zetetic.database.sqlcipher.SQLiteCursor;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteDatabaseConfiguration;
 import net.zetetic.database.sqlcipher.SQLiteDatabaseCorruptException;
@@ -18,6 +21,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
 
@@ -450,5 +454,55 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
   public void shouldReportErrorAfterDatabaseCloseWhenCheckingTransactionState(){
     database.close();
     database.inTransaction();
+  }
+
+  @Test
+  public void shouldRetrieveLargeSingleRowResultFromCursor(){
+    try {
+      int id = 1;
+      byte[] queriedData = null;
+      int size = 256;
+      SQLiteCursor.setCursorWindowSize(size);
+      byte[] data = generateRandomBytes(size);
+      database.execSQL("create table t1(a,b);");
+      database.execSQL("insert into t1(a,b) values(?,?);", new Object[]{id, data});
+      Cursor cursor = database.rawQuery("select b from t1 where a = ?;", new Object[]{id});
+      if(cursor != null && cursor.moveToFirst()){
+        queriedData = cursor.getBlob(0);
+        cursor.close();
+      }
+      assertThat(Arrays.equals(queriedData, data), is(true));
+    } finally {
+      SQLiteCursor.resetCursorWindowSize();
+    }
+  }
+
+  @Test
+  public void shouldAllowCursorWindowToResize(){
+    try {
+      Cursor cursor;
+      int id = 1, extra = 100, size = 256;
+      byte[] tooLargeQueriedData = null;
+      SQLiteCursor.setCursorWindowSize(size);
+      byte[] tooLargeData = generateRandomBytes(size + extra);
+      database.execSQL("create table t1(a,b);");
+      database.execSQL("insert into t1(a,b) values(?,?);", new Object[]{id, tooLargeData});
+      try {
+        cursor = database.rawQuery("select b from t1 where a = ?;", new Object[]{id});
+        if(cursor != null && cursor.moveToFirst()) {
+          fail("CursorWindow should be too small to fill query results");
+        }
+      } catch (Exception ex){
+        SQLiteCursor.setCursorWindowSize(size + extra);
+        cursor = database.rawQuery("select b from t1 where a = ?;", new Object[]{id});
+        if(cursor != null && cursor.moveToFirst()) {
+          tooLargeQueriedData = cursor.getBlob(0);
+          cursor.close();
+        }
+      }
+      assertThat(Arrays.equals(tooLargeQueriedData, tooLargeData), is(true));
+    } finally {
+      SQLiteCursor.resetCursorWindowSize();
+    }
   }
 }

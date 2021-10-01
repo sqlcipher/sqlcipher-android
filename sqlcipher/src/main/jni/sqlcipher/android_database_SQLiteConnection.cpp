@@ -24,7 +24,6 @@
 #include <JNIHelp.h>
 #include "ALog-priv.h"
 
-
 #include <sys/mman.h>
 #include <string.h>
 #include <unistd.h>
@@ -755,7 +754,7 @@ static jlong nativeExecuteForCursorWindow(
   int nRow;
   jboolean bOk;
   int iStart;                     /* First row copied to CursorWindow */
-
+  int rc_step;
   /* Locate all required CursorWindow methods. */
   cls = pEnv->FindClass("android/database/CursorWindow");
   for(i=0; i<(sizeof(aMethod)/sizeof(struct CWMethod)); i++){
@@ -775,7 +774,7 @@ static jlong nativeExecuteForCursorWindow(
 
   nRow = 0;
   iStart = startPos;
-  while( sqlite3_step(pStmt)==SQLITE_ROW ){
+  while( (rc_step = sqlite3_step(pStmt))==SQLITE_ROW ){
     /* Only copy in rows that occur at or after row index iStart. */
     if( nRow>=iStart && bOk ){
       bOk = copyRowToWindow(pEnv, win, (nRow - iStart), pStmt, aMethod);
@@ -808,6 +807,22 @@ static jlong nativeExecuteForCursorWindow(
   int rc = sqlite3_reset(pStmt);
   if( rc!=SQLITE_OK ){
     throw_sqlite3_exception(pEnv, sqlite3_db_handle(pStmt));
+    return 0;
+  }
+
+  if( bOk==0 && countAllRows==0 && nRow <= iRowRequired ) {
+    char *msg = sqlite3_mprintf("Row too big to fit into CursorWindow requiredPos=%d, totalRows=%d",
+                                    iRowRequired, nRow);
+    throw_sqlite3_exception(pEnv, pConnection->db, msg);
+    sqlite3_free(msg);
+    return 0;
+  }
+
+  if ( rc_step != SQLITE_DONE && rc_step != SQLITE_ROW ) {
+    char *msg = sqlite3_mprintf("Unexpected result code=%d while stepping through result",
+                                 rc_step);
+    throw_sqlite3_exception(pEnv, pConnection->db, msg);
+    sqlite3_free(msg);
     return 0;
   }
 

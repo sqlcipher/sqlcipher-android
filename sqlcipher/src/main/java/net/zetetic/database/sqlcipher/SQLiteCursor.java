@@ -20,13 +20,15 @@
 
 package net.zetetic.database.sqlcipher;
 
+import android.annotation.SuppressLint;
 import android.database.AbstractWindowedCursor;
 import android.database.CursorWindow;
 import net.zetetic.database.DatabaseUtils;
 
-import android.os.StrictMode;
+import android.os.Build;
 import android.util.Log;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +42,10 @@ import java.util.Map;
 public class SQLiteCursor extends AbstractWindowedCursor {
     static final String TAG = "SQLiteCursor";
     static final int NO_COUNT = -1;
+    private static final int CURSOR_WINDOW_EXTRA = 512;
+    private static boolean CURSOR_WINDOW_NEEDS_RECREATED = false;
+    private static final int DEFAULT_CURSOR_WINDOW_SIZE = (int)(8 * Math.pow(1024, 2));
+    public static int PREFERRED_CURSOR_WINDOW_SIZE = DEFAULT_CURSOR_WINDOW_SIZE;
 
     /** The name of the table to edit */
     private final String mEditTable;
@@ -131,21 +137,52 @@ public class SQLiteCursor extends AbstractWindowedCursor {
         return mCount;
     }
 
+    public static void setCursorWindowSize(int size) {
+        PREFERRED_CURSOR_WINDOW_SIZE = size;
+        CURSOR_WINDOW_NEEDS_RECREATED = true;
+    }
+
+    public static void resetCursorWindowSize() {
+        PREFERRED_CURSOR_WINDOW_SIZE = DEFAULT_CURSOR_WINDOW_SIZE;
+        CURSOR_WINDOW_NEEDS_RECREATED = true;
+    }
+
     /* 
     ** The AbstractWindowClass contains protected methods clearOrCreateWindow() and
     ** closeWindow(), which are used by the android.database.sqlite.* version of this
     ** class. But, since they are marked with "@hide", the following replacement 
     ** versions are required.
     */
-    private void awc_clearOrCreateWindow(String name){
-      CursorWindow win = getWindow();
-      if( win==null ){
-        win = new CursorWindow(name);
-        setWindow(win);
-      }else{
-        win.clear();
+    private void awc_clearOrCreateWindow(String name) {
+        int cursorWindowAllocationSize = PREFERRED_CURSOR_WINDOW_SIZE + CURSOR_WINDOW_EXTRA;
+        if (CURSOR_WINDOW_NEEDS_RECREATED) {
+            awc_closeWindow();
+            CURSOR_WINDOW_NEEDS_RECREATED = false;
+        }
+        CursorWindow win = getWindow();
+        if ( win==null ) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                win = new CursorWindow(name, cursorWindowAllocationSize);
+            } else {
+                try {
+                    @SuppressLint("DiscouragedPrivateApi")
+                    Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
+                    if (field != null) {
+                        field.setAccessible(true);
+                        field.set(null, cursorWindowAllocationSize);
+                        Log.i(TAG, String.format("Set CursorWindow allocation size to %s", cursorWindowAllocationSize));
+                    }
+                } catch (Exception ex) {
+                    Log.e(TAG, "Failed to override CursorWindow allocation size", ex);
+                }
+                win = new CursorWindow(name);
+            }
+            setWindow(win);
+        }else{
+            win.clear();
       }
     }
+
     private void awc_closeWindow(){
       setWindow(null);
     }
