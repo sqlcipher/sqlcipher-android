@@ -250,14 +250,17 @@ public abstract class SQLiteOpenHelper {
             } else if (mName == null) {
                 db = SQLiteDatabase.create(null);
             } else {
+                String path = mName;
+                if (!path.startsWith("file:")) {
+                  path = mContext.getDatabasePath(path).getPath();
+                }
                 try {
                     if (DEBUG_STRICT_READONLY && !writable) {
-                        final String path = mContext.getDatabasePath(mName).getPath();
                         db = SQLiteDatabase.openDatabase(path, mFactory,
                                 SQLiteDatabase.OPEN_READONLY, mErrorHandler);
                     } else {
                         db = SQLiteDatabase.openOrCreateDatabase(
-                            mName, mFactory, mErrorHandler
+                            path, mFactory, mErrorHandler
                         );
                     }
                 } catch (SQLiteException ex) {
@@ -266,7 +269,6 @@ public abstract class SQLiteOpenHelper {
                     }
                     Log.e(TAG, "Couldn't open " + mName
                             + " for writing (will try read-only):", ex);
-                    final String path = mContext.getDatabasePath(mName).getPath();
                     db = SQLiteDatabase.openDatabase(path, mFactory,
                             SQLiteDatabase.OPEN_READONLY, mErrorHandler);
                 }
