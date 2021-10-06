@@ -324,6 +324,10 @@ public abstract class SQLiteOpenHelper implements SupportSQLiteOpenHelper {
             } else if (mName == null) {
                 db = SQLiteDatabase.create(null);
             } else {
+                String path = mName;
+                if (!path.startsWith("file:")) {
+                  path = mContext.getDatabasePath(path).getPath();
+                }
                 try {
                     final File filePath = mContext.getDatabasePath(mName);
                     final String path = filePath.getPath();
