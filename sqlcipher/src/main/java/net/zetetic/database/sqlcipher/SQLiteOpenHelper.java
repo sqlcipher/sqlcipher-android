@@ -324,19 +324,18 @@ public abstract class SQLiteOpenHelper implements SupportSQLiteOpenHelper {
             } else if (mName == null) {
                 db = SQLiteDatabase.create(null);
             } else {
-                String path = mName;
-                if (!path.startsWith("file:")) {
-                  path = mContext.getDatabasePath(path).getPath();
-                }
                 try {
-                    final File filePath = mContext.getDatabasePath(mName);
-                    final String path = filePath.getPath();
+                    String path = mName;
+                    if (!path.startsWith("file:")) {
+                        path = mContext.getDatabasePath(path).getPath();
+                    }
                     /*
                     Modified by Zetetic, newer Android OS versions will create the
                     databases directory upon installation of the APK, whereas older
                     versions, such as some devices running API 21 the databases directory
                     does not exist.
                      */
+                    File filePath = new File(path);
                     final File databasesDirectory = new File(filePath.getParent());
                     if(!databasesDirectory.exists()){
                         databasesDirectory.mkdirs();
