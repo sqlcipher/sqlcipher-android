@@ -16,7 +16,7 @@ We welcome contributions, to contribute to SQLCipher for Android, a [contributor
 When available on Maven Central, add a reference to the library and dependency:
 
 ```
-implementation "net.zetetic:sqlcipher-android:4.4.3"
+implementation "net.zetetic:sqlcipher-android:4.5.0"
 implementation "androidx.sqlite:sqlite:2.1.0"
 ```
 

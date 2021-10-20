@@ -24,7 +24,11 @@ allprojects {
 }
 
 project.ext {
-    libraryVersion = "4.4.3"
+    if(project.hasProperty('sqlcipherAndroidVersion') && "${sqlcipherAndroidVersion}") {
+        libraryVersion = "${sqlcipherAndroidVersion}"
+    } else {
+        libraryVersion = "4.5.0"
+    }
     androidXSQLiteVersion = "2.1.0"
     androidNdkVersion = "23.0.7599858"
     mavenLocalRepositoryPrefix = "file://"
