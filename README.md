@@ -1,6 +1,8 @@
 # SQLCipher for Android
 
-SQLCipher for Android provides a library replacement for `android.database.sqlite` on the Android platform for use on [SQLCipher](https://github.com/sqlcipher/sqlcipher) databases. This library is based on the upstream Android Bindings project and aims to be a long-term replacement for the original [SQLCipher for Android](https://github.com/sqlcipher/android-database-sqlcipher) library.
+SQLCipher for Android provides a library replacement for `android.database.sqlite` on the Android platform for use on [SQLCipher](https://github.com/sqlcipher/sqlcipher) databases. This library is based on the upstream [Android Bindings](https://www.sqlite.org/android/doc/trunk/www/index.wiki) project and aims to be a long-term replacement for the original [SQLCipher for Android](https://github.com/sqlcipher/android-database-sqlcipher) library.
+
+***N.B.*** This library is currently distributed in source-only format at this time, and requires [other external dependencies](#external-dependencies) to build. Community edition AAR artifacts will be distributed eventually.
 
 ### Compatibility
 
@@ -13,11 +15,11 @@ We welcome contributions, to contribute to SQLCipher for Android, a [contributor
 
 ### Application Integration
 
-When available on Maven Central, add a reference to the library and dependency:
+Add a reference to the local library and dependency:
 
 ```
-implementation "net.zetetic:sqlcipher-android:4.5.1"
-implementation "androidx.sqlite:sqlite:2.1.0"
+implementation files('libs/sqlcipher-android-4.5.1-release.aar')
+implementation 'androidx.sqlite:sqlite:2.1.0'
 ```
 
 ```
@@ -44,9 +46,9 @@ SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
 
 Currently, SQLCipher for Android uses NDK version "23.0.7599858".
 
-## External dependencies:
+## <a name="external-dependencies" />External dependencies:
 
-This repository is not batteries-included. Specificially, you will need to build `libcrypto.a`, the static library from OpenSSL using the NDK for the [supported platforms](#compatibility), and bundle the top-level `include` folder from OpenSSL. Additionally, you will need to build a SQLCipher amalgamation. These files will need to be placed in the following locations:
+This repository is not batteries-included. Specifically, you will need to build `libcrypto.a`, the static library from OpenSSL using the NDK for the [supported platforms](#compatibility), and bundle the top-level `include` folder from OpenSSL. Additionally, you will need to build a SQLCipher amalgamation. These files will need to be placed in the following locations:
 
 ```
 <project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/armeabi-v7a/libcrypto.a
