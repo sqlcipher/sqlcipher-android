@@ -481,7 +481,7 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
   public void shouldAllowCursorWindowToResize(){
     try {
       Cursor cursor;
-      int id = 1, extra = 100, size = 256;
+      int id = 1, extra = 1024, size = 256;
       byte[] tooLargeQueriedData = null;
       SQLiteCursor.setCursorWindowSize(size);
       byte[] tooLargeData = generateRandomBytes(size + extra);

@@ -140,7 +140,7 @@ public abstract class SQLiteOpenHelper implements SupportSQLiteOpenHelper {
     public SQLiteOpenHelper(Context context, String name, CursorFactory factory, int version,
             int minimumSupportedVersion, DatabaseErrorHandler errorHandler) {
         this(context, name, new byte[0], factory, version, minimumSupportedVersion,
-            errorHandler, null);
+            errorHandler, null, false);
     }
 
     /**
@@ -170,9 +170,10 @@ public abstract class SQLiteOpenHelper implements SupportSQLiteOpenHelper {
      */
     public SQLiteOpenHelper(Context context, String name, String password, CursorFactory factory,
                             int version, int minimumSupportedVersion,
-                            DatabaseErrorHandler errorHandler, SQLiteDatabaseHook databaseHook){
+                            DatabaseErrorHandler errorHandler, SQLiteDatabaseHook databaseHook,
+                            boolean enableWriteAheadLogging) {
         this(context, name, getBytes(password), factory, version, minimumSupportedVersion,
-            errorHandler, databaseHook);
+            errorHandler, databaseHook, enableWriteAheadLogging);
     }
 
     /**
@@ -202,7 +203,8 @@ public abstract class SQLiteOpenHelper implements SupportSQLiteOpenHelper {
      */
     public SQLiteOpenHelper(Context context, String name, byte[] password, CursorFactory factory,
                             int version, int minimumSupportedVersion,
-                            DatabaseErrorHandler errorHandler, SQLiteDatabaseHook databaseHook) {
+                            DatabaseErrorHandler errorHandler, SQLiteDatabaseHook databaseHook,
+                            boolean enableWriteAheadLogging) {
         if (version < 1) throw new IllegalArgumentException("Version must be >= 1, was " + version);
 
         mContext = context;
@@ -212,6 +214,7 @@ public abstract class SQLiteOpenHelper implements SupportSQLiteOpenHelper {
         mNewVersion = version;
         mErrorHandler = errorHandler;
         mDatabaseHook = databaseHook;
+        mEnableWriteAheadLogging = enableWriteAheadLogging;
         mMinimumSupportedVersion = Math.max(0, minimumSupportedVersion);
     }
 

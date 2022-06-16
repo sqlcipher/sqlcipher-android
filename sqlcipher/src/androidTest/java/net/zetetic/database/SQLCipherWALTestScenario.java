@@ -26,7 +26,7 @@ class MyHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "mydb.db";
 
     public MyHelper(Context ctx){
-        super(ctx, ctx.getDatabasePath(DATABASE_NAME).getAbsolutePath(), "secret", null, 1, 1, null, null);
+        super(ctx, ctx.getDatabasePath(DATABASE_NAME).getAbsolutePath(), "secret", null, 1, 1, null, null, false);
     }
     public void onConfigure(SQLiteDatabase db){
         db.enableWriteAheadLogging();
