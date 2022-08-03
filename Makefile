@@ -11,7 +11,9 @@ build-debug:
 	$(GRADLE) assembleDebug
 
 build-release:
-	$(GRADLE) assembleRelease
+	$(GRADLE) \
+	-PsqlcipherAndroidVersion="$(SQLCIPHER_ANDROID_VERSION)" \
+	assembleRelease
 
 publish-snapshot-to-local-maven:
 	@ $(collect-signing-info) \
@@ -22,18 +24,20 @@ publish-snapshot-to-local-maven:
 	-Psigning.password="$$gpgPassword" \
 	publishReleasePublicationToMavenLocal
 
-publish-snapshot-to-local-nexus:
+publish-remote-release:
 	@ $(collect-signing-info) \
 	$(collect-nexus-info) \
 	$(GRADLE) \
-	-PpublishSnapshot=true \
-	-Psigning.keyId="$$gpgKeyId" \
-	-Psigning.secretKeyRingFile="$$gpgKeyRingFile" \
-	-Psigning.password="$$gpgPassword" \
+	-PpublishSnapshot=false \
+	-PpublishLocal=false \
+	-PdebugBuild=false \
+	-PsigningKeyId="$$gpgKeyId" \
+	-PsigningKeyRingFile="$$gpgKeyRingFile" \
+	-PsigningKeyPassword="$$gpgPassword" \
 	-PnexusUsername="$$nexusUsername" \
 	-PnexusPassword="$$nexusPassword" \
-	-PnexusStagingProfileId="$$nexusStagingProfileId" \
-	publishAllPublicationsToLocalNexusRepository
+	-PsqlcipherAndroidVersion="$(SQLCIPHER_ANDROID_VERSION)" \
+	sqlcipher:publish
 
 collect-signing-info := \
 	read -p "Enter GPG signing key id:" gpgKeyId; \
@@ -42,6 +46,5 @@ collect-signing-info := \
 	read -p "Enter GPG password:" gpgPassword; stty echo;
 
 collect-nexus-info := \
-	read -p "Enter Nexus username:" nexusUsername; stty -echo; \
-	read -p "Enter Nexus password:" nexusPassword; stty echo;  \
-	read -p "Enter Nexus staging profile id:" nexusStagingProfileId;
+	read -p "Enter Nexus username:" nexusUsername; \
+	stty -echo; read -p "Enter Nexus password:" nexusPassword; stty echo;

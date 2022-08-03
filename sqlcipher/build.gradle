@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: "maven-publish"
+apply plugin: "signing"
 
 android {
     compileSdkVersion 30
@@ -74,10 +76,44 @@ allprojects {
     }
 }
 
+def isReleaseBuild() {
+    return mavenVersionName.contains("SNAPSHOT") == false
+}
+
+def getReleaseRepositoryUrl() {
+    return hasProperty('mavenReleaseRepositoryUrl') ? mavenReleaseRepositoryUrl
+            : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+}
+
+def getSnapshotRepositoryUrl() {
+    if(hasProperty('mavenLocalRepositoryPrefix')) {
+        return "${mavenLocalRepositoryPrefix}${buildDir}/${mavenSnapshotRepositoryUrl}"
+    } else {
+        return hasProperty('mavenSnapshotRepositoryUrl') ? mavenSnapshotRepositoryUrl
+                : "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+def getRepositoryUsername() {
+    return hasProperty('nexusUsername') ? nexusUsername : ""
+}
+
+def getRepositoryPassword() {
+    return hasProperty('nexusPassword') ? nexusPassword : ""
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.allTasks.any { it instanceof Sign }) {
+        allprojects { ext."signing.keyId" = "${signingKeyId}" }
+        allprojects { ext."signing.secretKeyRingFile" = "${signingKeyRingFile}" }
+        allprojects { ext."signing.password" = "${signingKeyPassword}" }
+    }
+}
+
 afterEvaluate {
     publishing {
         publications {
-            release(MavenPublication) {
+            mavenJava(MavenPublication) {
                 groupId = "net.zetetic"
                 artifactId = "sqlcipher-android"
                 version = "${rootProject.ext.mavenVersionName}"
@@ -109,18 +145,33 @@ afterEvaluate {
                 }
             }
         }
+
+        repositories {
+            maven {
+                def repoUrl = isReleaseBuild()
+                        ? getReleaseRepositoryUrl()
+                        : getSnapshotRepositoryUrl()
+                url = repoUrl
+                credentials {
+                    username = getRepositoryUsername()
+                    password = getRepositoryPassword()
+                }
+            }
+        }
+
     }
 
     signing {
-        sign publishing.publications
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("publish") }
+        sign publishing.publications.mavenJava
+    }
+
+    artifacts {
+        archives androidSourcesJar
     }
 }
 
 task androidSourcesJar(type: Jar) {
     archiveClassifier.set('sources')
     from android.sourceSets.main.java.srcDirs
-}
-
-artifacts {
-    archives androidSourcesJar
 }

@@ -56,26 +56,6 @@ project.ext {
     nexusStagingProfileId = project.hasProperty('nexusStagingProfileId') ? "${nexusStagingProfileId}" : ""
 }
 
-nexusPublishing {
-    repositories {
-        sonatype {
-            nexusUrl = uri("https://oss.sonatype.org/")
-            snapshotRepositoryUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-            username = "${rootProject.ext.nexusUsername}"
-            password = "${rootProject.ext.nexusPassword}"
-            stagingProfileId = "${rootProject.ext.nexusStagingProfileId}"
-        }
-        localNexus {
-            useStaging = false
-            nexusUrl = uri("http://localhost:8081/")
-            snapshotRepositoryUrl = uri("http://localhost:8081/repository/maven-snapshots/")
-            username = "${rootProject.ext.nexusUsername}"
-            password = "${rootProject.ext.nexusPassword}"
-            stagingProfileId = ""
-        }
-    }
-}
-
 task generateReadMe {
     def readme = new File("README.md")
     def engine = new SimpleTemplateEngine()
