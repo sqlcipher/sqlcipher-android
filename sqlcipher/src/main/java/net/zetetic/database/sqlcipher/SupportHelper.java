@@ -22,6 +22,21 @@ public class SupportHelper implements SupportSQLiteOpenHelper {
       public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         configuration.callback.onUpgrade(db, oldVersion, newVersion);
       }
+
+      @Override
+      public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        configuration.callback.onDowngrade(db, oldVersion, newVersion);
+      }
+
+      @Override
+      public void onOpen(SQLiteDatabase db) {
+        configuration.callback.onOpen(db);
+      }
+
+      @Override
+      public void onConfigure(SQLiteDatabase db) {
+        configuration.callback.onConfigure(db);
+      }
     };
   }
 
