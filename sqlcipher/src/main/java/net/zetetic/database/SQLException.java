@@ -23,7 +23,7 @@ package net.zetetic.database;
 /**
  * An exception that indicates there was an error with SQL parsing or execution.
  */
-public class SQLException extends RuntimeException {
+public class SQLException extends android.database.sqlite.SQLiteException {
     public SQLException() {
     }
 
