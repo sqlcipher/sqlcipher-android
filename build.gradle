@@ -27,7 +27,7 @@ project.ext {
     if(project.hasProperty('sqlcipherAndroidVersion') && "${sqlcipherAndroidVersion}") {
         libraryVersion = "${sqlcipherAndroidVersion}"
     } else {
-        libraryVersion = "4.5.1"
+        libraryVersion = "4.5.3"
     }
     androidXSQLiteVersion = "2.1.0"
     androidNdkVersion = "23.0.7599858"
