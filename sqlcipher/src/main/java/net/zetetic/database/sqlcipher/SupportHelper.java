@@ -8,10 +8,15 @@ public class SupportHelper implements SupportSQLiteOpenHelper {
 
   private SQLiteOpenHelper openHelper;
 
-  public SupportHelper(final Configuration configuration, byte[] password, SQLiteDatabaseHook hook,
+  public Supporthelper(final Configuration configuration, byte[] password, SQLiteDatabaseHook hook,
                        boolean enableWriteAheadLogging) {
+    this(configuration, password, hook, enableWriteAheadLogging, configuration.callback.version)
+  }
+
+  public SupportHelper(final Configuration configuration, byte[] password, SQLiteDatabaseHook hook,
+                       boolean enableWriteAheadLogging, int minimumSupportedVersion) {
     openHelper = new SQLiteOpenHelper(configuration.context, configuration.name, password,
-        null, configuration.callback.version, 0, null, hook, enableWriteAheadLogging) {
+        null, configuration.callback.version, minimumSupportedVersion, null, hook, enableWriteAheadLogging) {
       @Override
       public void onCreate(SQLiteDatabase db) {
         configuration.callback.onCreate(db);
