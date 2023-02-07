@@ -11,14 +11,14 @@ public class SupportOpenHelperFactory implements SupportSQLiteOpenHelper.Factory
   private final SQLiteDatabaseHook hook;
   private final boolean enableWriteAheadLogging;
 
-  private final int minimumSupportedVersion = UNCHANGED;
+  private final int minimumSupportedVersion;
 
   public SupportOpenHelperFactory(byte[] password){
     this(password, null, false);
   }
 
   public SupportOpenHelperFactory(byte[] password, SQLiteDatabaseHook hook, boolean enableWriteAheadLogging) {
-    this(password, hook, enableWriteAheadLogging, UNCHANGED)
+    this(password, hook, enableWriteAheadLogging, UNCHANGED);
   }
 
   public SupportOpenHelperFactory(byte[] password, SQLiteDatabaseHook hook,
