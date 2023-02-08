@@ -54,7 +54,8 @@ public class SupportHelperTest {
 
         FakeCallback callbackWrapper = new FakeCallback(2);
 
-        SupportHelper helper = new SupportHelper(createConfiguration(callbackWrapper), null, null, true);
+        // minSupportedVersion = 1
+        SupportHelper helper = new SupportHelper(createConfiguration(callbackWrapper), null, null, true, 1);
 
         helper.getWritableDatabase();
         helper.close();
