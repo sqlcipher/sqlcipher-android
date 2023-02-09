@@ -1,29 +1,33 @@
 package net.zetetic.database.sqlcipher_cts;
 
+import static org.junit.Assert.assertEquals;
+
 import android.content.Context;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.sqlite.db.SupportSQLiteOpenHelper;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
+
 import net.zetetic.database.sqlcipher.SupportHelper;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class SupportHelperTest {
 
     private static final String DATABASE_NAME = "DB-Test.db";
     private static final int CREATION_INDEX = 0;
-    private static final int UPGRADE_INDEX = 0;
+    private static final int UPGRADE_INDEX = 1;
 
     @Before
     public void setup() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        System.loadLibrary("sqlcipher");
         for (String databaseName : context.databaseList()) {
             context.deleteDatabase(databaseName);
         }
@@ -40,7 +44,7 @@ public class SupportHelperTest {
         helper.close();
 
         assertEquals(1, callbackWrapper.callbackCount[CREATION_INDEX]);
-        assertEquals(1, callbackWrapper.callbackCount[UPGRADE_INDEX]);
+        assertEquals(0, callbackWrapper.callbackCount[UPGRADE_INDEX]);
     }
 
     @Test
@@ -51,6 +55,9 @@ public class SupportHelperTest {
 
         initialHelper.getWritableDatabase();
         initialHelper.close();
+
+        assertEquals(1, initialCallback.callbackCount[CREATION_INDEX]);
+        assertEquals(0, initialCallback.callbackCount[UPGRADE_INDEX]);
 
         FakeCallback callbackWrapper = new FakeCallback(2);
 
