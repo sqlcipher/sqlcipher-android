@@ -56,9 +56,9 @@ dependencies {
     implementation "androidx.sqlite:sqlite:${rootProject.ext.androidXSQLiteVersion}"
 
     // Needed for the Support API in tests
-    androidTestImplementation 'androidx.room:room-common:2.3.0'
-    androidTestImplementation 'androidx.room:room-runtime:2.3.0'
-    androidTestAnnotationProcessor 'androidx.room:room-compiler:2.3.0'
+    androidTestImplementation "androidx.room:room-common:${rootProject.ext.roomVersion}"
+    androidTestImplementation "androidx.room:room-runtime:${rootProject.ext.roomVersion}"
+    androidTestAnnotationProcessor "androidx.room:room-compiler:${rootProject.ext.roomVersion}"
 
     // Needed for supporting tests
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
