@@ -30,7 +30,7 @@ project.ext {
     } else {
         libraryVersion = "4.5.3"
     }
-    androidXSQLiteVersion = "2.1.0"
+    androidXSQLiteVersion = "2.2.0"
     androidNdkVersion = "23.0.7599858"
     mavenLocalRepositoryPrefix = "file://"
     if(project.hasProperty('publishLocal') && publishLocal.toBoolean()){
