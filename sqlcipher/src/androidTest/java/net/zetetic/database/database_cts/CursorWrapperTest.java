@@ -24,10 +24,11 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.DataSetObserver;
 import android.database.StaleDataException;
-import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.test.AndroidTestCase;
+
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import java.io.File;
 import java.util.Arrays;
@@ -439,14 +440,16 @@ public class CursorWrapperTest extends AndroidTestCase {
     }
 
     public void testSetExtras() {
-        Cursor cursor = getCursor();
-        CursorWrapper cursorWrapper = new CursorWrapper(cursor);
-        try {
-            Bundle b = new Bundle();
-            cursorWrapper.setExtras(b);
-            assertSame(b, cursor.getExtras());
-        } finally {
-            cursorWrapper.close();
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M){
+            Cursor cursor = getCursor();
+            CursorWrapper cursorWrapper = new CursorWrapper(cursor);
+            try {
+                Bundle b = new Bundle();
+                cursorWrapper.setExtras(b);
+                assertSame(b, cursor.getExtras());
+            } finally {
+                cursorWrapper.close();
+            }
         }
     }
 
