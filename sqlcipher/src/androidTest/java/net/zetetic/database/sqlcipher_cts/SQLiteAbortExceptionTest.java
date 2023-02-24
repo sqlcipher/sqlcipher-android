@@ -16,7 +16,7 @@
 
 package net.zetetic.database.sqlcipher_cts;
 
-import net.zetetic.database.sqlcipher.SQLiteAbortException;
+import android.database.sqlite.SQLiteAbortException;
 import android.test.AndroidTestCase;
 
 public class SQLiteAbortExceptionTest extends AndroidTestCase {

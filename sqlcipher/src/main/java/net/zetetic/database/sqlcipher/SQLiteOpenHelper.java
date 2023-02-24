@@ -24,6 +24,8 @@ package net.zetetic.database.sqlcipher;
 import android.content.Context;
 import net.zetetic.database.DatabaseErrorHandler;
 import net.zetetic.database.sqlcipher.SQLiteDatabase.CursorFactory;
+
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import androidx.sqlite.db.SupportSQLiteOpenHelper;

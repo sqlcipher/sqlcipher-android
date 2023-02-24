@@ -25,8 +25,11 @@ import android.database.Cursor;
 import net.zetetic.database.DatabaseErrorHandler;
 import net.zetetic.database.DatabaseUtils;
 import net.zetetic.database.DefaultDatabaseErrorHandler;
-import net.zetetic.database.SQLException;
 import net.zetetic.database.sqlcipher.SQLiteDebug.DbStats;
+
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabaseCorruptException;
+import android.database.sqlite.SQLiteException;
 import android.os.CancellationSignal;
 import android.os.Looper;
 import android.os.OperationCanceledException;
@@ -39,12 +42,8 @@ import android.util.Printer;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
-import net.zetetic.database.sqlcipher.CloseGuard;
-
 import java.io.File;
 import java.io.FileFilter;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;

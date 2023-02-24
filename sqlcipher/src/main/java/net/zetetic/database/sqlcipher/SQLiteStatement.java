@@ -20,6 +20,7 @@
 
 package net.zetetic.database.sqlcipher;
 
+import android.database.sqlite.SQLiteDatabaseCorruptException;
 import android.os.ParcelFileDescriptor;
 
 import androidx.sqlite.db.SupportSQLiteStatement;

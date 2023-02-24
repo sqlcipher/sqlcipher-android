@@ -24,7 +24,8 @@ import java.io.File;
 import java.util.List;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
-import net.zetetic.database.sqlcipher.SQLiteException;
+
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import android.util.Pair;
 

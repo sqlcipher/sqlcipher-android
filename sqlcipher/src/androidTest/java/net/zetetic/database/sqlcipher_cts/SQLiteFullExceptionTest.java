@@ -16,7 +16,7 @@
 
 package net.zetetic.database.sqlcipher_cts;
 
-import net.zetetic.database.sqlcipher.SQLiteFullException;
+import android.database.sqlite.SQLiteFullException;
 import android.test.AndroidTestCase;
 
 public class SQLiteFullExceptionTest extends AndroidTestCase {

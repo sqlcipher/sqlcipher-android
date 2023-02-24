@@ -17,13 +17,13 @@
 package net.zetetic.database.sqlcipher_cts;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
+import android.database.sqlite.SQLiteDoneException;
 import android.test.AndroidTestCase;
 import android.test.PerformanceTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 
-import net.zetetic.database.sqlcipher.SQLiteConstraintException;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
-import net.zetetic.database.sqlcipher.SQLiteDoneException;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
 
 import java.io.File;

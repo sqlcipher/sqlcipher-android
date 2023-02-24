@@ -19,14 +19,14 @@ Add a local reference to the local library and dependency:
 
 ```
 implementation files('libs/sqlcipher-android-4.5.2-release.aar')
-implementation 'androidx.sqlite:sqlite:2.1.0'
+implementation 'androidx.sqlite:sqlite:2.2.0'
 ```
 
 or source a Community edition build from Maven Central:
 
 ```
 implementation 'net.zetetic:sqlcipher-android:4.5.2@aar'
-implementation 'androidx.sqlite:sqlite:2.1.0'
+implementation 'androidx.sqlite:sqlite:2.2.0'
 ```
 
 ```

@@ -20,6 +20,8 @@ package net.zetetic.database.database_cts;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDoneException;
+import android.database.sqlite.SQLiteException;
 import android.os.ParcelFileDescriptor;
 import android.test.AndroidTestCase;
 import android.test.MoreAsserts;
@@ -27,8 +29,6 @@ import android.test.MoreAsserts;
 import net.zetetic.database.DatabaseUtils;
 import net.zetetic.database.DatabaseUtils.InsertHelper;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
-import net.zetetic.database.sqlcipher.SQLiteDoneException;
-import net.zetetic.database.sqlcipher.SQLiteException;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
 
 import java.io.ByteArrayOutputStream;

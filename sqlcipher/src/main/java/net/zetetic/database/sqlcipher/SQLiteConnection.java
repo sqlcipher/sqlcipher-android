@@ -22,6 +22,9 @@ package net.zetetic.database.sqlcipher;
 
 import android.database.Cursor;
 import android.database.CursorWindow;
+import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException;
+import android.database.sqlite.SQLiteDatabaseLockedException;
+import android.database.sqlite.SQLiteException;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.os.ParcelFileDescriptor;

@@ -18,11 +18,11 @@ package net.zetetic.database.sqlcipher_cts;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import net.zetetic.database.DatabaseUtils;
-import net.zetetic.database.SQLException;
 import net.zetetic.database.sqlcipher.SQLiteCursor;
 import net.zetetic.database.sqlcipher.SQLiteCursorDriver;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;

@@ -18,12 +18,12 @@ package net.zetetic.database.sqlcipher_cts;
 
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDoneException;
+import android.database.sqlite.SQLiteException;
 import android.test.AndroidTestCase;
 import android.test.MoreAsserts;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
-import net.zetetic.database.sqlcipher.SQLiteDoneException;
-import net.zetetic.database.sqlcipher.SQLiteException;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
 
 import java.io.File;

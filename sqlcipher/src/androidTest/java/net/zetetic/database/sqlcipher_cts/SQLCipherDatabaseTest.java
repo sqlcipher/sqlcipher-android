@@ -8,15 +8,14 @@ import static org.junit.Assert.fail;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabaseCorruptException;
+import android.database.sqlite.SQLiteException;
 
 import net.zetetic.database.sqlcipher.SQLiteCursor;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteDatabaseConfiguration;
-import net.zetetic.database.sqlcipher.SQLiteDatabaseCorruptException;
-import net.zetetic.database.sqlcipher.SQLiteException;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
 
-import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import java.io.File;

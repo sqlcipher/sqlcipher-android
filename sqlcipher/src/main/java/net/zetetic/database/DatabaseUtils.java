@@ -19,17 +19,19 @@ package net.zetetic.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
-import net.zetetic.database.sqlcipher.SQLiteAbortException;
-import net.zetetic.database.sqlcipher.SQLiteConstraintException;
+
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
-import net.zetetic.database.sqlcipher.SQLiteDatabaseCorruptException;
-import net.zetetic.database.sqlcipher.SQLiteDiskIOException;
-import net.zetetic.database.sqlcipher.SQLiteException;
-import net.zetetic.database.sqlcipher.SQLiteFullException;
 import net.zetetic.database.sqlcipher.SQLiteProgram;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
 
 import android.database.CursorWindow;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteAbortException;
+import android.database.sqlite.SQLiteConstraintException;
+import android.database.sqlite.SQLiteDatabaseCorruptException;
+import android.database.sqlite.SQLiteDiskIOException;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteFullException;
 import android.os.OperationCanceledException;
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
