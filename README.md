@@ -51,7 +51,7 @@ SQLiteDatabaseHook hook = new SQLiteDatabaseHook() {
 
 ## Android NDK
 
-Currently, SQLCipher for Android uses NDK version "23.0.7599858".
+Currently, SQLCipher for Android uses NDK version "25.2.9519653".
 
 ## <a name="external-dependencies" />External dependencies:
 
