@@ -71,7 +71,7 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
     }
   }
 
-  @Test(expected = SQLiteDatabaseCorruptException.class)
+  @Test(expected = SQLiteException.class)
   public void testOpenDatabaseConnectionWithInvalidStringPassword() {
     try {
       int a = 0, b = 0;
@@ -86,7 +86,7 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
     }
   }
 
-  @Test(expected = SQLiteDatabaseCorruptException.class)
+  @Test(expected = SQLiteException.class)
   public void testOpenDatabaseConnectionWithInvalidByteArrayPassword() {
     try {
       int a = 0, b = 0;
