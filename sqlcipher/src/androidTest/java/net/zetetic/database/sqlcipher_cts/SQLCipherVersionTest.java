@@ -17,6 +17,6 @@ public class SQLCipherVersionTest extends AndroidSQLCipherTestCase {
       cipherVersion = cursor.getString(0);
       cursor.close();
     }
-    assertThat(cipherVersion, containsString("4.5.3"));
+    assertThat(cipherVersion, containsString("4.5.4"));
   }
 }
