@@ -80,7 +80,7 @@ void throw_sqlite3_exception(JNIEnv* env, int errcode,
             exceptionClass = "android/database/sqlite/SQLiteConstraintException";
             break;
         case SQLITE_ABORT:
-            exceptionClass = "net/zetetic/database/sqlcipher/SQLiteAbortException";
+            exceptionClass = "android/database/sqlite/SQLiteAbortException";
             break;
         case SQLITE_DONE:
             exceptionClass = "android/database/sqlite/SQLiteDoneException";
