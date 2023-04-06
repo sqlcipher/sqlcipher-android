@@ -32,7 +32,7 @@ project.ext {
     }
     androidXSQLiteVersion = "2.2.0"
     roomVersion = "2.5.0"
-    androidNdkVersion = "23.0.7599858"
+    androidNdkVersion = "25.2.9519653"
     mavenLocalRepositoryPrefix = "file://"
     if(project.hasProperty('publishLocal') && publishLocal.toBoolean()){
         mavenSnapshotRepositoryUrl = "outputs/snapshot"
