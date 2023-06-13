@@ -1634,7 +1634,7 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
         try {
             return insertWithOnConflict(table, nullColumnHack, values, CONFLICT_NONE);
         } catch (SQLException e) {
-            Log.e(TAG, "Error inserting " + values, e);
+            Log.e(TAG, "Error inserting", e);
             return -1;
         }
     }
@@ -1682,7 +1682,7 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
             return insertWithOnConflict(table, nullColumnHack, initialValues,
                     CONFLICT_REPLACE);
         } catch (SQLException e) {
-            Log.e(TAG, "Error inserting " + initialValues, e);
+            Log.e(TAG, "Error inserting", e);
             return -1;
         }
     }
