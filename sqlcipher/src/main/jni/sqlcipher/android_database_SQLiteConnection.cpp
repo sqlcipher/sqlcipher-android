@@ -497,6 +497,22 @@ static void nativeResetStatementAndClearBindings(JNIEnv* env, jclass clazz, jlon
     }
 }
 
+static int executeNonQueryRaw(JNIEnv* env, SQLiteConnection* connection, sqlite3_stmt* statement) {
+    int err;
+    do {
+      err = sqlite3_step(statement);
+    } while(err == SQLITE_ROW);
+    return err;
+}
+
+static void nativeExecuteRaw(JNIEnv* env, jclass clazz, jlong connectionPtr,
+                              jlong statementPtr) {
+    SQLiteConnection* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
+    sqlite3_stmt* statement = reinterpret_cast<sqlite3_stmt*>(statementPtr);
+
+    executeNonQueryRaw(env, connection, statement);
+}
+
 static int executeNonQuery(JNIEnv* env, SQLiteConnection* connection, sqlite3_stmt* statement) {
     int err = sqlite3_step(statement);
     if (err == SQLITE_ROW) {
@@ -905,6 +921,8 @@ static JNINativeMethod sMethods[] =
             (void*)nativeBindBlob },
     { "nativeResetStatementAndClearBindings", "(JJ)V",
             (void*)nativeResetStatementAndClearBindings },
+    { "nativeExecuteRaw", "(JJ)V",
+            (void*)nativeExecuteRaw },
     { "nativeExecute", "(JJ)V",
             (void*)nativeExecute },
     { "nativeExecuteForLong", "(JJ)J",

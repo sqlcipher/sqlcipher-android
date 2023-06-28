@@ -778,7 +778,7 @@ public final class SQLiteSession {
      * or invalid number of bind arguments.
      * @throws OperationCanceledException if the operation was canceled.
      */
-    public int executeForChangedRowCountRaw(String sql, Object[] bindArgs, int connectionFlags,
+    public void executeRaw(String sql, Object[] bindArgs, int connectionFlags,
                                          CancellationSignal cancellationSignal) {
         if (sql == null) {
             throw new IllegalArgumentException("sql must not be null.");
@@ -786,7 +786,7 @@ public final class SQLiteSession {
 
         acquireConnection(sql, connectionFlags, cancellationSignal); // might throw
         try {
-            return mConnection.executeForChangedRowCount(sql, bindArgs,
+            mConnection.executeRaw(sql, bindArgs,
                 cancellationSignal); // might throw
         } finally {
             releaseConnection(); // might throw

@@ -21,13 +21,12 @@ public class ImportUnencryptedDatabaseTest extends AndroidSQLCipherTestCase {
     try {
       database.close();
       unencryptedDatabasePath = extractAssetToDatabaseDirectory("unencrypted.db");
-      database = SQLiteDatabase.openDatabase(unencryptedDatabasePath.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
+      database = SQLiteDatabase.openDatabase(unencryptedDatabasePath.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.CREATE_IF_NECESSARY);
       database.execSQL("ATTACH DATABASE ? as encrypted KEY ?;",
           new Object[]{encryptedDatabasePath.getAbsolutePath(), "foo"});
-      database.execSQL("SELECT sqlcipher_export('encrypted');");
+      database.rawExecSQL("SELECT sqlcipher_export('encrypted');");
       database.execSQL("DETACH DATABASE encrypted;");
       database.close();
-
       database = SQLiteDatabase.openDatabase(encryptedDatabasePath.getAbsolutePath(), "foo",
           null, SQLiteDatabase.OPEN_READWRITE, null);
       Cursor cursor = database.rawQuery("select * from t1", new String[]{});
@@ -37,15 +36,13 @@ public class ImportUnencryptedDatabaseTest extends AndroidSQLCipherTestCase {
         cursor.close();
       }
       database.close();
+    } catch (Exception ex){
+      throw ex;
+    } finally {
       assertThat(a, is("one for the money"));
       assertThat(b, is("two for the show"));
-
-    } catch (Exception ex){
-
-    } finally {
       delete(unencryptedDatabasePath);
       delete(encryptedDatabasePath);
     }
   }
-
 }

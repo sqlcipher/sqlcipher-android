@@ -1957,16 +1957,15 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
      * @param bindArgs The arguments to bind.
      * @return The number of rows that were changed.
      */
-    public int rawExecSQL(String sql, Object...bindArgs) throws SQLException {
+    public void rawExecSQL(String sql, Object...bindArgs) throws SQLException {
         acquireReference();
         try {
             SQLiteStatement statement = new SQLiteStatement(this, sql, bindArgs);
             try {
-                return statement.executeUpdateDeleteRaw();
+                statement.executeRaw();
             } finally {
                 statement.close();
             }
-
         } finally {
             releaseReference();
         }

@@ -152,6 +152,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
     private static native String nativeExecuteForString(long connectionPtr, long statementPtr);
     private static native int nativeExecuteForBlobFileDescriptor(
             long connectionPtr, long statementPtr);
+    private static native void nativeExecuteRaw(long connectionPtr, long statementPtr);
     private static native int nativeExecuteForChangedRowCount(long connectionPtr, long statementPtr);
     private static native long nativeExecuteForLastInsertedRowId(
             long connectionPtr, long statementPtr);
@@ -734,6 +735,53 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             throw ex;
         } finally {
             mRecentOperations.endOperation(cookie);
+        }
+    }
+
+    /**
+     * Executes a statement that returns a count of the number of rows
+     * that were changed.  Use for UPDATE or DELETE SQL statements.
+     *
+     * @param sql The SQL statement to execute.
+     * @param bindArgs The arguments to bind, or null if none.
+     * @param cancellationSignal A signal to cancel the operation in progress, or null if none.
+     * @return The number of rows that were changed.
+     *
+     * @throws SQLiteException if an error occurs, such as a syntax error
+     * or invalid number of bind arguments.
+     * @throws OperationCanceledException if the operation was canceled.
+     */
+    public void executeRaw(String sql, Object[] bindArgs,
+                                         CancellationSignal cancellationSignal) {
+        if (sql == null) {
+            throw new IllegalArgumentException("sql must not be null.");
+        }
+
+        final int cookie = mRecentOperations.beginOperation("executeRaw",
+                sql, bindArgs);
+        try {
+            final PreparedStatement statement = acquirePreparedStatement(sql);
+            try {
+                throwIfStatementForbidden(statement);
+                bindArguments(statement, bindArgs);
+                applyBlockGuardPolicy(statement);
+                attachCancellationSignal(cancellationSignal);
+                try {
+                    nativeExecuteRaw(
+                            mConnectionPtr, statement.mStatementPtr);
+                } finally {
+                    detachCancellationSignal(cancellationSignal);
+                }
+            } finally {
+                releasePreparedStatement(statement);
+            }
+        } catch (RuntimeException ex) {
+            mRecentOperations.failOperation(cookie, ex);
+            throw ex;
+        } finally {
+            if (mRecentOperations.endOperationDeferLog(cookie)) {
+                mRecentOperations.logOperation(cookie, "");
+            }
         }
     }
 

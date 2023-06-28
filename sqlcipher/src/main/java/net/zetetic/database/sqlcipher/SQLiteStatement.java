@@ -45,6 +45,25 @@ public final class SQLiteStatement extends SQLiteProgram implements SupportSQLit
      * @throws android.database.SQLException If the SQL string is invalid for
      *         some reason
      */
+    public void executeRaw() {
+        acquireReference();
+        try {
+            getSession().executeRaw(getSql(), getBindArgs(), getConnectionFlags(), null);
+        } catch (SQLiteDatabaseCorruptException ex) {
+            onCorruption();
+            throw ex;
+        } finally {
+            releaseReference();
+        }
+    }
+
+    /**
+     * Execute this SQL statement, if it is not a SELECT / INSERT / DELETE / UPDATE, for example
+     * CREATE / DROP table, view, trigger, index etc.
+     *
+     * @throws android.database.SQLException If the SQL string is invalid for
+     *         some reason
+     */
     public void execute() {
         acquireReference();
         try {

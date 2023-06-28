@@ -401,8 +401,8 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
     assertThat(count, is(1L));
   }
 
-  @Test(expected = SQLiteException.class)
-  public void shouldThrowExceptionWithSelectStatementUsingRawExecSQL(){
+  @Test
+  public void shouldNotThrowExceptionWithSelectStatementUsingRawExecSQL(){
     database.rawExecSQL("SELECT count(*) FROM sqlite_schema;");
   }
 
