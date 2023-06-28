@@ -48,7 +48,7 @@ public class SupportHelperTest {
     }
 
     @Test
-    public void shouldRunUpgradeFromVersion1ToVersion2() {
+    public void shouldRunUpgradeFromVersion1ToVersion2WhenMinSupportedVersionIsProvided() {
         FakeCallback initialCallback = new FakeCallback(1);
 
         SupportHelper initialHelper = new SupportHelper(createConfiguration(initialCallback), null, null, true);
@@ -63,6 +63,29 @@ public class SupportHelperTest {
 
         // minSupportedVersion = 1
         SupportHelper helper = new SupportHelper(createConfiguration(callbackWrapper), null, null, true, 1);
+
+        helper.getWritableDatabase();
+        helper.close();
+
+        assertEquals(0, callbackWrapper.callbackCount[CREATION_INDEX]);
+        assertEquals(1, callbackWrapper.callbackCount[UPGRADE_INDEX]);
+    }
+
+    @Test
+    public void shouldRunUpgradeFromVersion1ToVersion2() {
+        FakeCallback initialCallback = new FakeCallback(1);
+
+        SupportHelper initialHelper = new SupportHelper(createConfiguration(initialCallback), null, null, true);
+
+        initialHelper.getWritableDatabase();
+        initialHelper.close();
+
+        assertEquals(1, initialCallback.callbackCount[CREATION_INDEX]);
+        assertEquals(0, initialCallback.callbackCount[UPGRADE_INDEX]);
+
+        FakeCallback callbackWrapper = new FakeCallback(2);
+
+        SupportHelper helper = new SupportHelper(createConfiguration(callbackWrapper), null, null, true);
 
         helper.getWritableDatabase();
         helper.close();
