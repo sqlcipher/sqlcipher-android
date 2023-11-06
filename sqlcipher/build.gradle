@@ -12,6 +12,7 @@ android {
         versionName "${rootProject.ext.libraryVersion}"
         project.archivesBaseName = "sqlcipher-android-${versionName}"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        consumerProguardFile 'consumer-rules.pro'
     }
 
     buildTypes {
