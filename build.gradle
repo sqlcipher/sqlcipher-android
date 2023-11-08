@@ -30,6 +30,7 @@ project.ext {
     } else {
         libraryVersion = "4.5.3"
     }
+    minSdkVersion = 21
     androidXSQLiteVersion = "2.2.0"
     roomVersion = "2.5.0"
     androidNdkVersion = "25.2.9519653"
@@ -65,7 +66,8 @@ task generateReadMe {
     def binding = [
                     libraryVersion: project.ext.libraryVersion,
                     androidXSQLiteVersion: project.ext.androidXSQLiteVersion,
-                    androidNdkVersion: project.ext.androidNdkVersion
+                    androidNdkVersion: project.ext.androidNdkVersion,
+                    minSdkVersion: project.ext.minSdkVersion,
                   ]
     def template = engine.createTemplate(reader).make(binding)
     readme.write(template.toString())

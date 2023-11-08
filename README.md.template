@@ -6,7 +6,7 @@ SQLCipher for Android provides a library replacement for `android.database.sqlit
 
 ### Compatibility
 
-SQLCipher for Android supports Android API 16 and up on `armeabi-v7a`, `x86`, `x86_64`, and `arm64_v8a` architectures.
+SQLCipher for Android supports Android API <%=minSdkVersion%> and up on `armeabi-v7a`, `x86`, `x86_64`, and `arm64_v8a` architectures.
 
 ### Contributions
 
