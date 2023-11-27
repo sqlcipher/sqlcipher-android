@@ -299,6 +299,7 @@ public final class SQLiteConnectionPool implements Closeable {
             if(passwordChanged){
                 mAvailablePrimaryConnection.changePassword(configuration.password);
                 mConfiguration.updateParametersFrom(configuration);
+                closeAvailableNonPrimaryConnectionsAndLogExceptionsLocked();
                 reconfigureAllConnectionsLocked();
             }
 

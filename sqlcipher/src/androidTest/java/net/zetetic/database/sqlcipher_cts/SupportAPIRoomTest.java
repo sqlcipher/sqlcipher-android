@@ -24,28 +24,34 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SupportOpenHelperFactory;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 public class SupportAPIRoomTest {
 
   private AppDatabase db;
   private UserDao userDao;
+  private File databaseFile;
 
   @Before
   public void before(){
     Context context = ApplicationProvider.getApplicationContext();
     System.loadLibrary("sqlcipher");
+    databaseFile = context.getDatabasePath("users.db");
     SupportOpenHelperFactory factory = new SupportOpenHelperFactory("user".getBytes(StandardCharsets.UTF_8));
-    db = Room.databaseBuilder(context, AppDatabase.class, "users.db")
+    db = Room.databaseBuilder(context, AppDatabase.class, databaseFile.getAbsolutePath())
         .openHelperFactory(factory).build();
     db.clearAllTables();
     userDao = db.userDao();
@@ -92,10 +98,22 @@ public class SupportAPIRoomTest {
     assertThat(foundUser.lastName, is(user.lastName));
   }
 
+  @Test
+  public void shouldSupportChangingPasswordWithRoom(){
+    userDao.insert(new User("foo", "bar"));
+    SQLiteDatabase database = (SQLiteDatabase)db.getOpenHelper().getWritableDatabase();
+    database.changePassword(UUID.randomUUID().toString());
+    List<User> users = userDao.getAll();
+    assertThat(users.size(), is(1));
+  }
+
   @After
   public void after(){
     if(db != null){
       db.close();
+      if(databaseFile != null){
+        databaseFile.delete();
+      }
     }
   }
 
