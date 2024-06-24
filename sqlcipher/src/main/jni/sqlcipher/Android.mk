@@ -32,6 +32,7 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH) $(LOCAL_PATH)/nativehelper/ $(LOCAL_PATH)/andr
 
 LOCAL_MODULE:= libsqlcipher
 LOCAL_LDLIBS += -ldl -llog
+LOCAL_LDFLAGS += -Wl,-z,max-page-size=16384
 LOCAL_STATIC_LIBRARIES += static-libcrypto
 
 include $(BUILD_SHARED_LIBRARY)
