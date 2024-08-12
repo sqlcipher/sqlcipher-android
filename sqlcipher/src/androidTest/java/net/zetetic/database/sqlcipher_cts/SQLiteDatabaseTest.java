@@ -1490,4 +1490,16 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         mDatabase.setForeignKeyConstraintsEnabled(true);
         assertEquals(1, DatabaseUtils.longForQuery(mDatabase, "PRAGMA foreign_keys", null));
     }
+
+    public void testShouldSupportBindingNullValue(){
+        String b = "";
+        mDatabase.execSQL("CREATE TABLE t1(a,b);");
+        mDatabase.execSQL("INSERT INTO t1 VALUES(?, ?);", new Object[]{null, "123"});
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM t1 WHERE a is ?;", new Object[]{null});
+        if(cursor != null && cursor.moveToNext()){
+            b = cursor.getString(1);
+            cursor.close();
+        }
+        assertEquals("123", b);
+    }
 }
