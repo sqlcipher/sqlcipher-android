@@ -56,7 +56,7 @@ public final class DefaultDatabaseErrorHandler implements DatabaseErrorHandler {
      * @param dbObj the {@link SQLiteDatabase} object representing the database on which corruption
      * is detected.
      */
-    public void onCorruption(SQLiteDatabase dbObj) {
+    public void onCorruption(SQLiteDatabase dbObj, SQLiteException exception) {
         Log.e(TAG, "Corruption reported by sqlite on database: " + dbObj.getPath());
 
 	// If this is a SEE build, do not delete any database files.

@@ -960,7 +960,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         assertFalse(mDatabase.isOpen());
         assertTrue(dbfile.exists());
         try {
-            errorHandler.onCorruption(mDatabase);
+            errorHandler.onCorruption(mDatabase, new SQLiteException());
             if(SQLiteDatabase.hasCodec()){
                 assertTrue(dbfile.exists());
             } else {
@@ -976,7 +976,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         memoryDb.close();
         assertFalse(memoryDb.isOpen());
         try {
-            errorHandler.onCorruption(memoryDb);
+            errorHandler.onCorruption(memoryDb, new SQLiteException());
         } catch (Exception e) {
             fail("unexpected");
         }
@@ -987,7 +987,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         assertNotNull(dbObj);
         assertTrue(dbObj.isOpen());
         try {
-            errorHandler.onCorruption(dbObj);
+            errorHandler.onCorruption(dbObj, new SQLiteException());
             if(SQLiteDatabase.hasCodec()){
                 assertTrue(dbfile.exists());
             } else{
@@ -1012,7 +1012,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         assertTrue(dbObj.isOpen());
         List<Pair<String, String>> attachedDbs = dbObj.getAttachedDbs();
         try {
-            errorHandler.onCorruption(dbObj);
+            errorHandler.onCorruption(dbObj, new SQLiteException());
             if(SQLiteDatabase.hasCodec()){
                 assertTrue(dbfile.exists());
             } else {
@@ -1047,7 +1047,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         assertTrue(dbObj.isOpen());
         attachedDbs = dbObj.getAttachedDbs();
         try {
-            errorHandler.onCorruption(dbObj);
+            errorHandler.onCorruption(dbObj, new SQLiteException());
             if(SQLiteDatabase.hasCodec()){
                 assertTrue(dbfile.exists());
             } else {
