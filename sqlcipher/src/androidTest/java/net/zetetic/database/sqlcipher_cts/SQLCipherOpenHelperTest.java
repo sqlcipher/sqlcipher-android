@@ -72,7 +72,7 @@ public class SQLCipherOpenHelperTest extends AndroidSQLCipherTestCase {
     private final String TAG = getClass().getSimpleName();
 
     public SqlCipherOpenHelper(Context context) {
-      super(context, "test.db", "test", null, 1, 1, sqLiteDatabase -> Log.e(SQLCipherOpenHelperTest.this.TAG, "onCorruption()"), new SQLiteDatabaseHook() {
+      super(context, "test.db", "test", null, 1, 1, (sqLiteDatabase, ex) -> Log.e(SQLCipherOpenHelperTest.this.TAG, "onCorruption()"), new SQLiteDatabaseHook() {
         @Override
         public void preKey(SQLiteConnection sqLiteConnection) {
           Log.d(SQLCipherOpenHelperTest.this.TAG, "preKey()");

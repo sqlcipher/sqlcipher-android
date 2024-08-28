@@ -21,6 +21,7 @@
 package net.zetetic.database.sqlcipher;
 
 import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteException;
 import android.os.CancellationSignal;
 
 import androidx.sqlite.db.SupportSQLiteProgram;
@@ -113,8 +114,8 @@ public abstract class SQLiteProgram extends SQLiteClosable implements SupportSQL
     }
 
     /** @hide */
-    protected final void onCorruption() {
-        mDatabase.onCorruption();
+    protected final void onCorruption(SQLiteException exception) {
+        mDatabase.onCorruption(exception);
     }
 
     /**
