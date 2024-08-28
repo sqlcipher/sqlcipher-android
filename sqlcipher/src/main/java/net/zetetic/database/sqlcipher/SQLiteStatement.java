@@ -50,7 +50,7 @@ public final class SQLiteStatement extends SQLiteProgram implements SupportSQLit
         try {
             getSession().executeRaw(getSql(), getBindArgs(), getConnectionFlags(), null);
         } catch (SQLiteDatabaseCorruptException ex) {
-            onCorruption();
+            onCorruption(ex);
             throw ex;
         } finally {
             releaseReference();
@@ -69,7 +69,7 @@ public final class SQLiteStatement extends SQLiteProgram implements SupportSQLit
         try {
             getSession().execute(getSql(), getBindArgs(), getConnectionFlags(), null);
         } catch (SQLiteDatabaseCorruptException ex) {
-            onCorruption();
+            onCorruption(ex);
             throw ex;
         } finally {
             releaseReference();
@@ -90,7 +90,7 @@ public final class SQLiteStatement extends SQLiteProgram implements SupportSQLit
             return getSession().executeForChangedRowCount(
                     getSql(), getBindArgs(), getConnectionFlags(), null);
         } catch (SQLiteDatabaseCorruptException ex) {
-            onCorruption();
+            onCorruption(ex);
             throw ex;
         } finally {
             releaseReference();
@@ -112,7 +112,7 @@ public final class SQLiteStatement extends SQLiteProgram implements SupportSQLit
             return getSession().executeForLastInsertedRowId(
                     getSql(), getBindArgs(), getConnectionFlags(), null);
         } catch (SQLiteDatabaseCorruptException ex) {
-            onCorruption();
+            onCorruption(ex);
             throw ex;
         } finally {
             releaseReference();
@@ -133,7 +133,7 @@ public final class SQLiteStatement extends SQLiteProgram implements SupportSQLit
             return getSession().executeForLong(
                     getSql(), getBindArgs(), getConnectionFlags(), null);
         } catch (SQLiteDatabaseCorruptException ex) {
-            onCorruption();
+            onCorruption(ex);
             throw ex;
         } finally {
             releaseReference();
@@ -154,7 +154,7 @@ public final class SQLiteStatement extends SQLiteProgram implements SupportSQLit
             return getSession().executeForString(
                     getSql(), getBindArgs(), getConnectionFlags(), null);
         } catch (SQLiteDatabaseCorruptException ex) {
-            onCorruption();
+            onCorruption(ex);
             throw ex;
         } finally {
             releaseReference();
@@ -175,7 +175,7 @@ public final class SQLiteStatement extends SQLiteProgram implements SupportSQLit
             return getSession().executeForBlobFileDescriptor(
                     getSql(), getBindArgs(), getConnectionFlags(), null);
         } catch (SQLiteDatabaseCorruptException ex) {
-            onCorruption();
+            onCorruption(ex);
             throw ex;
         } finally {
             releaseReference();

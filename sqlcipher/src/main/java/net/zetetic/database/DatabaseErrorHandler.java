@@ -21,6 +21,8 @@
 
 package net.zetetic.database;
 
+import android.database.sqlite.SQLiteException;
+
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 /**
@@ -32,6 +34,7 @@ public interface DatabaseErrorHandler {
      * The method invoked when database corruption is detected.
      * @param dbObj the {@link SQLiteDatabase} object representing the database on which corruption
      * is detected.
+     * @param exception the exception reported by sqlite that indicated the database was corrupted.
      */
-    void onCorruption(SQLiteDatabase dbObj);
+    void onCorruption(SQLiteDatabase dbObj, SQLiteException exception);
 }
