@@ -504,4 +504,21 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
       SQLiteCursor.resetCursorWindowSize();
     }
   }
+
+  @Test
+  public void shouldSupportDeleteWithNullWhereArgs(){
+    long rowsFound = -1L;
+    database.execSQL("create table t1(a,b);");
+    Object[] whereArgs = null;
+    database.execSQL("insert into t1(a,b) values(?,?)", new Object[]{1, 2});
+    database.execSQL("insert into t1(a,b) values(?,?)", new Object[]{3, 4});
+    long rowsDeleted = database.delete("t1", "a in (1, 3)", whereArgs);
+    assertThat(rowsDeleted, is(2L));
+    Cursor cursor = database.rawQuery("select count(*) from t1;", null);
+    if(cursor != null && cursor.moveToNext()){
+      rowsFound = cursor.getLong(0);
+      cursor.close();
+    }
+    assertThat(rowsFound, is(0L));
+  }
 }

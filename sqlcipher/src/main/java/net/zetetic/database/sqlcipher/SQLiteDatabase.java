@@ -1180,8 +1180,9 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
 
     @Override
     public int delete(String table, String whereClause, Object[] whereArgs) {
-        String[] args = new String[whereArgs.length];
-        for(int index = 0; index < whereArgs.length; index++) {
+        int length = whereArgs == null ? 0 : whereArgs.length;
+        String[] args = new String[length];
+        for(int index = 0; index < length; index++) {
             args[index] = whereArgs[index].toString();
         }
         return delete(table, whereClause, args);
@@ -1189,8 +1190,9 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
 
     @Override
     public int update(String table, int conflictAlgorithm, ContentValues values, String whereClause, Object[] whereArgs) {
-        String[] args = new String[whereArgs.length];
-        for(int index = 0; index < whereArgs.length; index++) {
+        int length = whereArgs == null ? 0 : whereArgs.length;
+        String[] args = new String[length];
+        for(int index = 0; index < length; index++) {
            args[index] = whereArgs[index].toString();
         }
         return updateWithOnConflict(table, values, whereClause, args, conflictAlgorithm);
