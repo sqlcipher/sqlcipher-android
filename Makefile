@@ -1,11 +1,15 @@
 .PHONY: clean build-debug build-release \
 	publish-snapshot-to-local-maven \
-	publish-snapshot-to-local-nexus
+	publish-snapshot-to-local-nexus test
 GRADLE = ./gradlew
 
 clean:
 	-rm -rf build
 	$(GRADLE) clean
+
+test:
+	ANDROID_SERIAL=$(shell adb devices | tail -n +2 | awk '!/emulator/{print $$1}') \
+	$(GRADLE) :sqlcipher:connectedDebugAndroidTest
 
 build-debug:
 	$(GRADLE) assembleDebug

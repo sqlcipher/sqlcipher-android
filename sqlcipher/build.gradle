@@ -3,11 +3,11 @@ apply plugin: "maven-publish"
 apply plugin: "signing"
 
 android {
-    compileSdkVersion 33
-
+    compileSdkVersion 34
+    namespace "net.zetetic.database"
     defaultConfig {
         minSdkVersion "${rootProject.ext.minSdkVersion}"
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 1
         versionName "${rootProject.ext.libraryVersion}"
         project.archivesBaseName = "sqlcipher-android-${versionName}"
@@ -55,6 +55,18 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+
+        singleVariant('debug') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+
 }
 
 dependencies {
@@ -80,7 +92,6 @@ allprojects {
     repositories {
         // The order in which you list these repositories matter.
         google()
-        jcenter()
     }
 }
 

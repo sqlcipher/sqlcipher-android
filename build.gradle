@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        def gradleToolsVersion = "7.4.1"
+        def gradleToolsVersion = "8.7.2"
         classpath "com.android.tools.build:gradle:${gradleToolsVersion}"
     }
 }
