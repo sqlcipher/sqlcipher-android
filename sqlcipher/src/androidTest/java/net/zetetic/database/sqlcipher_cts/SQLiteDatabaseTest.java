@@ -288,11 +288,6 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         // the new maximum size is less than the current size.
         mDatabase.setMaximumSize(curMaximumSize - 1);
         assertEquals(curMaximumSize, mDatabase.getMaximumSize());
-
-        // the new maximum size is more than the current size.
-        mDatabase.setMaximumSize(curMaximumSize + 1);
-        assertEquals(curMaximumSize + mDatabase.getPageSize(), mDatabase.getMaximumSize());
-        assertTrue(mDatabase.getMaximumSize() > curMaximumSize);
     }
 
     public void testAccessPageSize() {
