@@ -42,6 +42,7 @@ public final class SQLiteGlobal {
 
     private static final Object sLock = new Object();
     private static int sDefaultPageSize = 4096;
+    private static int sWALConnectionPoolSize = 10;
 
     private static native int nativeReleaseMemory();
 
@@ -109,10 +110,17 @@ public final class SQLiteGlobal {
     }
 
     /**
+     * Sets the connection pool size for WAL mode.
+     */
+    public static void setWALConnectionPoolSize(int value) {
+        sWALConnectionPoolSize = value;
+    }
+
+    /**
      * Gets the connection pool size when in WAL mode.
      */
     public static int getWALConnectionPoolSize() {
-        int value = 10;
-        return Math.max(2, value);
+        return sWALConnectionPoolSize;
     }
+
 }
