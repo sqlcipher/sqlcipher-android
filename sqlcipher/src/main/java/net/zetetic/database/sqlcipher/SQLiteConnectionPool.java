@@ -617,15 +617,27 @@ public final class SQLiteConnectionPool implements Closeable {
 
             // Try to acquire a connection.
             SQLiteConnection connection = null;
+
+            // When in WAL mode, we want to avoid the startup penalty of creating both a primary and
+            // non-primary connection for initial read operations on the database. If the pool of non-primary
+            // connections has not been initialized yet, and the primary connection is available, use the primary.
+            // If the primary connection is required, always use that.
+            if ((mAvailablePrimaryConnection != null && mAvailableNonPrimaryConnections.isEmpty()) || wantPrimaryConnection) {
+                connection = tryAcquirePrimaryConnectionLocked(connectionFlags);
+                if (connection != null) {
+                    return connection;
+                }
+            }
+
+            // If a primary connection is not required by the caller, and either the non-primary connection pool
+            // has already been established or the primary connection is not available, then try to get
+            // non primary connection. This may establish a new non-primary connection a free one is not
+            // already available.
             if (!wantPrimaryConnection) {
-                connection = tryAcquireNonPrimaryConnectionLocked(
-                        sql, connectionFlags); // might throw
-            }
-            if (connection == null) {
-                connection = tryAcquirePrimaryConnectionLocked(connectionFlags); // might throw
-            }
-            if (connection != null) {
-                return connection;
+                connection = tryAcquireNonPrimaryConnectionLocked(sql, connectionFlags);
+                if (connection != null) {
+                    return connection;
+                }
             }
 
             // No connections available.  Enqueue a waiter in priority order.
