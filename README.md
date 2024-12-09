@@ -4,7 +4,7 @@ SQLCipher for Android provides a library replacement for `android.database.sqlit
 
 ### Compatibility
 
-SQLCipher for Android supports Android API 21 and up on `armeabi-v7a`, `x86`, `x86_64`, and `arm64_v8a` architectures.
+SQLCipher for Android supports Android API 21 and up on `armeabi-v7a`, `x86`, `x86_64`, and `arm64-v8a` architectures.
 
 ### Contributions
 
@@ -90,7 +90,7 @@ This repository is not batteries-included. Specifically, you will need to build 
 <project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/armeabi-v7a/libcrypto.a
 <project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/x86/libcrypto.a
 <project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/x86_64/libcrypto.a
-<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/arm64_v8a/libcrypto.a
+<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/arm64-v8a/libcrypto.a
 <project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/include/
 <project-root>/sqlcipher/src/main/jni/sqlcipher/sqlite3.c
 <project-root>/sqlcipher/src/main/jni/sqlcipher/sqlite3.h
