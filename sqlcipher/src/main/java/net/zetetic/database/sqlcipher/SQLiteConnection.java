@@ -21,7 +21,6 @@
 package net.zetetic.database.sqlcipher;
 
 import android.database.Cursor;
-import android.database.CursorWindow;
 import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException;
 import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.database.sqlite.SQLiteException;
@@ -33,6 +32,7 @@ import android.util.Log;
 import android.util.LruCache;
 import android.util.Printer;
 
+import net.zetetic.database.CursorWindow;
 import net.zetetic.database.DatabaseUtils;
 import net.zetetic.database.sqlcipher.SQLiteDebug.DbStats;
 
@@ -157,8 +157,8 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
     private static native long nativeExecuteForLastInsertedRowId(
             long connectionPtr, long statementPtr);
     private static native long nativeExecuteForCursorWindow(
-            long connectionPtr, long statementPtr, CursorWindow win,
-            int startPos, int requiredPos, boolean countAllRows);
+      long connectionPtr, long statementPtr, long winPtr,
+      int startPos, int requiredPos, boolean countAllRows);
     private static native int nativeGetDbLookaside(long connectionPtr);
     private static native void nativeCancel(long connectionPtr);
     private static native void nativeResetCancel(long connectionPtr, boolean cancelable);
@@ -927,7 +927,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
                     attachCancellationSignal(cancellationSignal);
                     try {
                         final long result = nativeExecuteForCursorWindow(
-                                mConnectionPtr, statement.mStatementPtr, window,
+                                mConnectionPtr, statement.mStatementPtr, window.mWindowPtr,
                                 startPos, requiredPos, countAllRows);
                         actualPos = (int)(result >> 32);
                         countedRows = (int)result;

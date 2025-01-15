@@ -20,11 +20,12 @@
 
 package net.zetetic.database.sqlcipher;
 
-import android.database.CursorWindow;
 import android.database.DatabaseUtils;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.os.ParcelFileDescriptor;
+
+import net.zetetic.database.CursorWindow;
 
 /**
  * Provides a single client the ability to use a database.
@@ -852,8 +853,8 @@ public final class SQLiteSession {
      * @throws OperationCanceledException if the operation was canceled.
      */
     public int executeForCursorWindow(String sql, Object[] bindArgs,
-            CursorWindow window, int startPos, int requiredPos, boolean countAllRows,
-            int connectionFlags, CancellationSignal cancellationSignal) {
+                                      CursorWindow window, int startPos, int requiredPos, boolean countAllRows,
+                                      int connectionFlags, CancellationSignal cancellationSignal) {
         if (sql == null) {
             throw new IllegalArgumentException("sql must not be null.");
         }

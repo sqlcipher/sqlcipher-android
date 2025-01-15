@@ -24,9 +24,9 @@
 #include <JNIHelp.h>
 #include <ALog-priv.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
 
 #include <sqlite3.h>
@@ -76,14 +76,14 @@ static JNINativeMethod gMethods[] =
 int register_android_database_SQLiteDebug(JNIEnv *env)
 {
     jclass clazz;
-    FIND_CLASS(clazz, "net/zetetic/database/sqlcipher/SQLiteDebug$PagerStats");
+    FIND_CLASS(clazz, "net/zetetic/database/sqlcipher/SQLiteDebug$PagerStats")
 
     GET_FIELD_ID(gSQLiteDebugPagerStatsClassInfo.memoryUsed, clazz,
-            "memoryUsed", "I");
+            "memoryUsed", "I")
     GET_FIELD_ID(gSQLiteDebugPagerStatsClassInfo.largestMemAlloc, clazz,
-            "largestMemAlloc", "I");
+            "largestMemAlloc", "I")
     GET_FIELD_ID(gSQLiteDebugPagerStatsClassInfo.pageCacheOverflow, clazz,
-            "pageCacheOverflow", "I");
+            "pageCacheOverflow", "I")
 
     return jniRegisterNativeMethods(env, "net/zetetic/database/sqlcipher/SQLiteDebug",
             gMethods, NELEM(gMethods));

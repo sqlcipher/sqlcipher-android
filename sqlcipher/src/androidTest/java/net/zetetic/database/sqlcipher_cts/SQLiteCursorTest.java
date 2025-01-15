@@ -17,13 +17,13 @@
 package net.zetetic.database.sqlcipher_cts;
 
 
-import android.database.AbstractCursor;
 import android.database.Cursor;
-import android.database.CursorWindow;
 import android.database.DataSetObserver;
 import android.database.StaleDataException;
 import android.test.AndroidTestCase;
 
+import net.zetetic.database.AbstractCursor;
+import net.zetetic.database.CursorWindow;
 import net.zetetic.database.sqlcipher.SQLiteCursor;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteDirectCursorDriver;
@@ -94,7 +94,7 @@ public class SQLiteCursorTest extends AndroidTestCase {
 
     public void testRegisterDataSetObserver() {
         SQLiteCursor cursor = getCursor();
-        MockCursorWindow cursorWindow = new MockCursorWindow(false);
+        MockCursorWindow cursorWindow = new MockCursorWindow();
 
         MockObserver observer = new MockObserver();
 
@@ -271,8 +271,8 @@ public class SQLiteCursorTest extends AndroidTestCase {
     private class MockCursorWindow extends CursorWindow {
         private boolean mIsClosed = false;
 
-        public MockCursorWindow(boolean localWindow) {
-            super(localWindow);
+        public MockCursorWindow() {
+            super("");
         }
 
         @Override

@@ -2,14 +2,13 @@ package net.zetetic.database.sqlcipher_cts;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.fail;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabaseCorruptException;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 import net.zetetic.database.sqlcipher.SQLiteCursor;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
@@ -21,6 +20,8 @@ import org.junit.Test;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
 
@@ -477,29 +478,78 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
   }
 
   @Test
-  public void shouldAllowCursorWindowToResize(){
+  public void shouldAllowCursorWindowToResizeWithNonDefaultAllocationSize(){
     try {
       Cursor cursor;
       int id = 1, extra = 1024, size = 256;
-      byte[] tooLargeQueriedData = null;
       SQLiteCursor.setCursorWindowSize(size);
       byte[] tooLargeData = generateRandomBytes(size + extra);
       database.execSQL("create table t1(a,b);");
       database.execSQL("insert into t1(a,b) values(?,?);", new Object[]{id, tooLargeData});
-      try {
-        cursor = database.rawQuery("select b from t1 where a = ?;", new Object[]{id});
-        if(cursor != null && cursor.moveToFirst()) {
-          fail("CursorWindow should be too small to fill query results");
-        }
-      } catch (Exception ex){
-        SQLiteCursor.setCursorWindowSize(size + extra);
-        cursor = database.rawQuery("select b from t1 where a = ?;", new Object[]{id});
-        if(cursor != null && cursor.moveToFirst()) {
-          tooLargeQueriedData = cursor.getBlob(0);
-          cursor.close();
-        }
+      cursor = database.rawQuery("select b from t1 where a = ?;", id);
+      if (cursor != null && cursor.moveToFirst()) {
+        byte[] value = cursor.getBlob(0);
+        assertThat(Arrays.equals(value, tooLargeData), is(true));
+      } else {
+        fail("CursorWindow should resize automatically to fill query results");
       }
-      assertThat(Arrays.equals(tooLargeQueriedData, tooLargeData), is(true));
+    } finally {
+      SQLiteCursor.resetCursorWindowSize();
+    }
+  }
+
+  @Test
+  public void shouldTestSmallResizeOfAllocationForCursor(){
+    try {
+      Cursor cursor;
+      int id = 1, size = 1024 * 3000;
+      SQLiteCursor.resetCursorWindowSize();
+      byte[] tooLargeData = generateRandomBytes(size);
+      database.execSQL("create table t1(a,b);");
+      database.execSQL("insert into t1(a,b) values(?,?);", new Object[]{id, tooLargeData});
+      long start = System.nanoTime();
+      cursor = database.rawQuery("select b from t1 where a = ?;", id);
+      if (cursor != null && cursor.moveToFirst()) {
+        byte[] value = cursor.getBlob(0);
+        assertThat(Arrays.equals(value, tooLargeData), is(true));
+      } else {
+        fail("CursorWindow should resize automatically to fill query results");
+      }
+      long stop = System.nanoTime();
+      Log.i(TAG, String.format("Query completed in %d ms", (stop - start)/1000000));
+    } finally {
+      SQLiteCursor.resetCursorWindowSize();
+    }
+  }
+
+  @Test
+  public void shouldAllowCursorWindowToResizeWithDefaultAllocationSize(){
+    try {
+      Cursor cursor;
+      int dataRows = 10, size = 2048 * 1024;
+      SQLiteCursor.resetCursorWindowSize();
+      HashMap<String, byte[]> data = new HashMap<>();
+      for (int row = 0; row < dataRows; row++) {
+        data.put(UUID.randomUUID().toString(), generateRandomBytes(size));
+      }
+      database.execSQL("create table t1(a,b);");
+      for (String key : data.keySet()) {
+        database.execSQL("insert into t1(a,b) values(?,?);", new Object[]{key, data.get(key)});
+      }
+      long start = System.nanoTime();
+      cursor = database.rawQuery("select * from t1;");
+      if(cursor != null){
+        while(cursor.moveToNext()){
+          String key = cursor.getString(0);
+          byte[] value = cursor.getBlob(1);
+          assertThat(Arrays.equals(data.get(key), value), is(true));
+        }
+        long stop = System.nanoTime();
+        Log.i(TAG, String.format("Query completed in %d ms", (stop - start)/1000000));
+        cursor.close();
+      } else {
+        fail("Unable to retrieve data from database");
+      }
     } finally {
       SQLiteCursor.resetCursorWindowSize();
     }

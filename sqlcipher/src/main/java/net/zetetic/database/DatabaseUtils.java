@@ -24,7 +24,6 @@ import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteProgram;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
 
-import android.database.CursorWindow;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteAbortException;
 import android.database.sqlite.SQLiteConstraintException;

@@ -17,11 +17,13 @@
 package net.zetetic.database.database_cts;
 
 import android.database.CharArrayBuffer;
-import android.database.CursorWindow;
-import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteException;
-import android.os.Parcel;
 import android.test.AndroidTestCase;
+
+import net.zetetic.database.CursorWindow;
+import net.zetetic.database.MatrixCursor;
+
+import org.junit.Before;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +32,11 @@ import java.util.Random;
 public class CursorWindowTest extends AndroidTestCase {
 
     private static final String TEST_STRING = "Test String";
+
+    @Before
+    public void setUp() {
+        System.loadLibrary("sqlcipher");
+    }
 
     public void testWriteCursorToWindow() throws Exception {
         // create cursor
@@ -42,7 +49,7 @@ public class CursorWindowTest extends AndroidTestCase {
         }
 
         // fill window
-        CursorWindow window = new CursorWindow(false);
+        CursorWindow window = new CursorWindow("");
         cursor.fillWindow(0, window);
 
         // read from cursor window
@@ -97,34 +104,13 @@ public class CursorWindowTest extends AndroidTestCase {
     }
 
     public void testConstructors() {
-        int TEST_NUMBER = 5;
-        CursorWindow cursorWindow;
-
         // Test constructor with 'true' input, and getStartPosition should return 0
-        cursorWindow = new CursorWindow(true);
+        CursorWindow cursorWindow = new CursorWindow("");
         assertEquals(0, cursorWindow.getStartPosition());
-
-        // Test constructor with 'false' input
-        cursorWindow = new CursorWindow(false);
-        assertEquals(0, cursorWindow.getStartPosition());
-
-        // Test newFromParcel
-        Parcel parcel = Parcel.obtain();
-        cursorWindow = new CursorWindow(true);
-        cursorWindow.setStartPosition(TEST_NUMBER);
-        cursorWindow.setNumColumns(1);
-        cursorWindow.allocRow();
-        cursorWindow.putString(TEST_STRING, TEST_NUMBER, 0);
-        cursorWindow.writeToParcel(parcel, 0);
-
-        parcel.setDataPosition(0);
-        cursorWindow = CursorWindow.CREATOR.createFromParcel(parcel);
-        assertEquals(TEST_NUMBER, cursorWindow.getStartPosition());
-        assertEquals(TEST_STRING, cursorWindow.getString(TEST_NUMBER, 0));
     }
 
     public void testDataStructureOperations() {
-        CursorWindow cursorWindow = new CursorWindow(true);
+        CursorWindow cursorWindow = new CursorWindow("");
 
         // Test with normal values
         assertTrue(cursorWindow.setNumColumns(0));
@@ -145,7 +131,7 @@ public class CursorWindowTest extends AndroidTestCase {
         cursorWindow.freeLastRow();
         assertEquals(0, cursorWindow.getNumRows());
 
-        cursorWindow = new CursorWindow(true);
+        cursorWindow = new CursorWindow("");
         assertTrue(cursorWindow.setNumColumns(6));
         assertTrue(cursorWindow.allocRow());
         // Column number set to negative number, so now can put values.
@@ -190,7 +176,7 @@ public class CursorWindowTest extends AndroidTestCase {
             originalBlob[i] = (byte) i;
         }
 
-        CursorWindow cursorWindow = new CursorWindow(true);
+        CursorWindow cursorWindow = new CursorWindow("");
         cursorWindow.setNumColumns(5);
         cursorWindow.allocRow();
 
@@ -280,7 +266,7 @@ public class CursorWindowTest extends AndroidTestCase {
     }
 
     public void testCopyStringToBuffer() {
-        int DEFAULT_ARRAY_LENGTH = 64;
+        int DEFAULT_ARRAY_LENGTH = 60;
         String baseString = "0123456789";
         String expectedString = "";
         // Create a 60 characters string.
@@ -288,7 +274,7 @@ public class CursorWindowTest extends AndroidTestCase {
             expectedString += baseString;
         }
         CharArrayBuffer charArrayBuffer = new CharArrayBuffer(null);
-        CursorWindow cursorWindow = new CursorWindow(true);
+        CursorWindow cursorWindow = new CursorWindow("");
         cursorWindow.setNumColumns(2);
         cursorWindow.allocRow();
 
@@ -318,7 +304,7 @@ public class CursorWindowTest extends AndroidTestCase {
         final int TEST_POSITION_1 = 0;
         final int TEST_POSITION_2 = 3;
 
-        CursorWindow cursorWindow = new CursorWindow(true);
+        CursorWindow cursorWindow = new CursorWindow("");
         fillCursorTestContents(cursorWindow, 5);
 
         // Test setStartPosition
@@ -369,16 +355,11 @@ public class CursorWindowTest extends AndroidTestCase {
         assertTrue(cursorWindow.hasReleasedAllReferences());
     }
 
-    public void testDescribeContents() {
-        CursorWindow cursorWindow = new CursorWindow(true);
-        assertEquals(0, cursorWindow.describeContents());
-    }
-
     private class MockCursorWindow extends CursorWindow {
         private boolean mHasReleasedAllReferences = false;
 
         public MockCursorWindow(boolean localWindow) {
-            super(localWindow);
+            super("");
         }
 
         @Override
@@ -426,7 +407,7 @@ public class CursorWindowTest extends AndroidTestCase {
      * The method comes from unit_test CursorWindowTest.
      */
     private CursorWindow getOneByOneWindow() {
-        CursorWindow window = new CursorWindow(false);
+        CursorWindow window = new CursorWindow("");
         assertTrue(window.setNumColumns(1));
         assertTrue(window.allocRow());
         return window;

@@ -20,12 +20,13 @@
 
 package net.zetetic.database.sqlcipher;
 
-import android.database.CursorWindow;
 import android.database.sqlite.SQLiteDatabaseCorruptException;
 import android.database.sqlite.SQLiteException;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.util.Log;
+
+import net.zetetic.database.CursorWindow;
 
 /**
  * Represents a query that reads the resulting rows into a {@link SQLiteQuery}.

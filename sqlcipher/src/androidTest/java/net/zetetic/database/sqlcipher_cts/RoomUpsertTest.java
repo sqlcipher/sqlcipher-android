@@ -72,7 +72,7 @@ public class RoomUpsertTest {
 		abstract User[] findById(long id);
 	}
 
-	@Database(entities = {User.class}, version = 1)
+	@Database(entities = {User.class}, version = 1, exportSchema = false)
 	public static abstract class UserDatabase extends RoomDatabase {
 		abstract UserDao userDao();
 	}

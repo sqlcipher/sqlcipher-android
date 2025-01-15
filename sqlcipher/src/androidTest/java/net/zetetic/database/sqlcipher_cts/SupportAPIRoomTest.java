@@ -1,7 +1,6 @@
 package net.zetetic.database.sqlcipher_cts;
 
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -29,7 +28,6 @@ import net.zetetic.database.sqlcipher.SupportOpenHelperFactory;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,6 +48,9 @@ public class SupportAPIRoomTest {
     Context context = ApplicationProvider.getApplicationContext();
     System.loadLibrary("sqlcipher");
     databaseFile = context.getDatabasePath("users.db");
+    if(databaseFile.exists()){
+      databaseFile.delete();
+    }
     SupportOpenHelperFactory factory = new SupportOpenHelperFactory("user".getBytes(StandardCharsets.UTF_8));
     db = Room.databaseBuilder(context, AppDatabase.class, databaseFile.getAbsolutePath())
         .openHelperFactory(factory).build();
@@ -117,7 +118,7 @@ public class SupportAPIRoomTest {
     }
   }
 
-  @Database(entities = {User.class}, version = 1)
+  @Database(entities = {User.class}, version = 1, exportSchema = false)
   public abstract static class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
   }

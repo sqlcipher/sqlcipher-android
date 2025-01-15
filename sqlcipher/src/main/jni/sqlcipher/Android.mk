@@ -19,12 +19,16 @@ LOCAL_CPPFLAGS += -Wno-conversion-null
 
 $(info SQLCipher LOCAL_CFLAGS:${LOCAL_CFLAGS})
 
-LOCAL_SRC_FILES:=                             \
+LOCAL_SRC_FILES:=                         \
 	android_database_SQLiteCommon.cpp     \
 	android_database_SQLiteConnection.cpp \
+	android_database_CursorWindow.cpp     \
 	android_database_SQLiteGlobal.cpp     \
 	android_database_SQLiteDebug.cpp      \
-	JNIHelp.cpp JniConstants.cpp
+	JNIHelp.cpp                           \
+	JniConstants.cpp                      \
+	JNIString.cpp                         \
+	CursorWindow.cpp
 
 LOCAL_SRC_FILES += sqlite3.c
 

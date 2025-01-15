@@ -20,15 +20,12 @@
 
 package net.zetetic.database.sqlcipher;
 
-import android.annotation.SuppressLint;
-import android.database.AbstractWindowedCursor;
-import android.database.CursorWindow;
+import net.zetetic.database.AbstractWindowedCursor;
+import net.zetetic.database.CursorWindow;
 import net.zetetic.database.DatabaseUtils;
 
-import android.os.Build;
 import android.util.Log;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -137,54 +134,24 @@ public class SQLiteCursor extends AbstractWindowedCursor {
     }
 
     public static void setCursorWindowSize(int size) {
-        PREFERRED_CURSOR_WINDOW_SIZE = size;
+        CursorWindow.PREFERRED_CURSOR_WINDOW_SIZE = size;
         CURSOR_WINDOW_NEEDS_RECREATED = true;
     }
 
     public static void resetCursorWindowSize() {
-        PREFERRED_CURSOR_WINDOW_SIZE = DEFAULT_CURSOR_WINDOW_SIZE;
+        CursorWindow.PREFERRED_CURSOR_WINDOW_SIZE = CursorWindow.DEFAULT_CURSOR_WINDOW_SIZE;
         CURSOR_WINDOW_NEEDS_RECREATED = true;
     }
 
-    /* 
-    ** The AbstractWindowClass contains protected methods clearOrCreateWindow() and
-    ** closeWindow(), which are used by the android.database.sqlite.* version of this
-    ** class. But, since they are marked with "@hide", the following replacement 
-    ** versions are required.
-    */
     private void awc_clearOrCreateWindow(String name) {
-        int cursorWindowAllocationSize = PREFERRED_CURSOR_WINDOW_SIZE;
+        int cursorWindowAllocationSize = CursorWindow.PREFERRED_CURSOR_WINDOW_SIZE;
         if (CURSOR_WINDOW_NEEDS_RECREATED) {
             awc_closeWindow();
             CURSOR_WINDOW_NEEDS_RECREATED = false;
         }
         CursorWindow win = getWindow();
         if ( win==null ) {
-            /* if the application has set a specific window size via setCursorWindowSize
-             * then use it. Otherwise, use the system default size defined internally
-             * by CursorWindow / com.android.internal.R.integer.config_cursorWindowSize
-             */
-            if(cursorWindowAllocationSize > 0) {
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    win = new CursorWindow(name, cursorWindowAllocationSize);
-                } else {
-                    try {
-                        @SuppressLint("DiscouragedPrivateApi")
-                        Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
-                        if (field != null) {
-                            field.setAccessible(true);
-                            field.set(null, cursorWindowAllocationSize);
-                            Log.i(TAG, String.format("Set CursorWindow allocation size to %s", cursorWindowAllocationSize));
-                        }
-                    } catch (Exception ex) {
-                        Log.e(TAG, "Failed to override CursorWindow allocation size", ex);
-                    }
-                    win = new CursorWindow(name);
-                }
-            } else {
-                win = new CursorWindow(name);
-            }
-
+            win = new CursorWindow(name, cursorWindowAllocationSize);
             setWindow(win);
         }else{
             win.clear();

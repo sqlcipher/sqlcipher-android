@@ -24,12 +24,12 @@ namespace android {
 
 /* throw a SQLiteException with a message appropriate for the error in handle */
 void throw_sqlite3_exception(JNIEnv* env, sqlite3* handle) {
-    throw_sqlite3_exception(env, handle, NULL);
+    throw_sqlite3_exception(env, handle, nullptr);
 }
 
 /* throw a SQLiteException with the given message */
 void throw_sqlite3_exception(JNIEnv* env, const char* message) {
-    throw_sqlite3_exception(env, NULL, message);
+    throw_sqlite3_exception(env, nullptr, message);
 }
 
 /* throw a SQLiteException with a message appropriate for the error in handle
@@ -84,7 +84,7 @@ void throw_sqlite3_exception(JNIEnv* env, int errcode,
             break;
         case SQLITE_DONE:
             exceptionClass = "android/database/sqlite/SQLiteDoneException";
-            sqlite3Message = NULL; // SQLite error message is irrelevant in this case
+            sqlite3Message = nullptr; // SQLite error message is irrelevant in this case
             break;
         case SQLITE_FULL:
             exceptionClass = "android/database/sqlite/SQLiteFullException";
