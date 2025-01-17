@@ -6,7 +6,7 @@ sqlciphertest/build
 *.iml
 local.properties
 sqlcipher/.cxx
-sqlcipher/src/main/jni/sqlcipher/*.c
-sqlcipher/src/main/jni/sqlcipher/*.h
+sqlcipher/src/main/jni/sqlcipher/sqlite3.c
+sqlcipher/src/main/jni/sqlcipher/sqlite3.h
 sqlcipher/src/main/jni/sqlcipher/android-libs
 build
