@@ -17,25 +17,40 @@
 package net.zetetic.database.sqlcipher_cts;
 
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteException;
-import android.test.AndroidTestCase;
-import android.test.MoreAsserts;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.io.File;
 
-public class SQLiteProgramTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SQLiteProgramTest {
     private static final String DATABASE_NAME = "database_test.db";
 
     private SQLiteDatabase mDatabase;
+    private Context mContext;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
+        mContext = ApplicationProvider.getApplicationContext();
         System.loadLibrary("sqlcipher");
         File f = mContext.getDatabasePath(DATABASE_NAME);
         f.mkdirs();
@@ -44,14 +59,14 @@ public class SQLiteProgramTest extends AndroidTestCase {
         assertNotNull(mDatabase);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         mDatabase.close();
-        getContext().deleteDatabase(DATABASE_NAME);
+        mContext.deleteDatabase(DATABASE_NAME);
 
-        super.tearDown();
     }
 
+    @Test
     public void testBind() {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, text1 TEXT, text2 TEXT, " +
                 "num1 INTEGER, num2 INTEGER, image BLOB);");
@@ -122,6 +137,7 @@ public class SQLiteProgramTest extends AndroidTestCase {
         statement.close();
     }
 
+    @Test
     public void testBindNull() {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, text1 TEXT, text2 TEXT, " +
                 "num1 INTEGER, num2 INTEGER, image BLOB);");
@@ -152,6 +168,7 @@ public class SQLiteProgramTest extends AndroidTestCase {
         cursor.close();
     }
 
+    @Test
     public void testBindBlob() {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, text1 TEXT, text2 TEXT, " +
                 "num1 INTEGER, num2 INTEGER, image BLOB);");
@@ -180,7 +197,7 @@ public class SQLiteProgramTest extends AndroidTestCase {
         assertEquals("string2", cursor.getString(COLUMN_TEXT2_INDEX));
         assertEquals(100, cursor.getInt(COLUMN_NUM1_INDEX));
         byte[] value = cursor.getBlob(COLUMN_IMAGE_INDEX);
-        MoreAsserts.assertEquals(blob, value);
+			  assertArrayEquals(blob, value);
         cursor.close();
     }
 }

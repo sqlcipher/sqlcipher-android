@@ -20,7 +20,9 @@ package net.zetetic.database.sqlcipher_cts;
 import android.database.Cursor;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
-import android.test.AndroidTestCase;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import net.zetetic.database.sqlcipher.SQLiteCursor;
 import net.zetetic.database.sqlcipher.SQLiteCursorDriver;
@@ -28,39 +30,51 @@ import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteQuery;
 import net.zetetic.database.sqlcipher.SQLiteQueryBuilder;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-public class SQLiteQueryBuilderTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SQLiteQueryBuilderTest {
     private SQLiteDatabase mDatabase;
     private final String TEST_TABLE_NAME = "test";
     private final String EMPLOYEE_TABLE_NAME = "employee";
     private static final String DATABASE_FILE = "database_test.db";
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         System.loadLibrary("sqlcipher");
-        File f = mContext.getDatabasePath(DATABASE_FILE);
+        File f = ApplicationProvider.getApplicationContext().getDatabasePath(DATABASE_FILE);
         f.mkdirs();
         if (f.exists()) { f.delete(); }
         mDatabase = SQLiteDatabase.openOrCreateDatabase(f,null);
         assertNotNull(mDatabase);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         mDatabase.close();
-        getContext().deleteDatabase(DATABASE_FILE);
-        super.tearDown();
+        ApplicationProvider.getApplicationContext().deleteDatabase(DATABASE_FILE);
     }
 
+    @Test
     public void testConstructor() {
         new SQLiteQueryBuilder();
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
     public void testSetDistinct() {
         String expected;
         SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
@@ -95,38 +109,8 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         assertEquals(expected, sql);
     }
 
-    public void testSetProjectionMap() {
-        String expected;
-        Map<String, String> projectMap = new HashMap<String, String>();
-        projectMap.put("EmployeeName", "name");
-        projectMap.put("EmployeeAge", "age");
-        projectMap.put("EmployeeAddress", "address");
-        SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-        sqliteQueryBuilder.setTables(TEST_TABLE_NAME);
-        sqliteQueryBuilder.setDistinct(false);
-        sqliteQueryBuilder.setProjectionMap(projectMap);
-        String sql = sqliteQueryBuilder.buildQuery(new String[] { "EmployeeName", "EmployeeAge" },
-                null, null, null, null, null, null);
-        expected = "SELECT name, age FROM " + TEST_TABLE_NAME;
-        assertEquals(expected, sql);
-
-        sql = sqliteQueryBuilder.buildQuery(null, // projectionIn is null
-                null, null, null, null, null, null);
-        assertTrue(sql.matches("SELECT (age|name|address), (age|name|address), (age|name|address) "
-                + "FROM " + TEST_TABLE_NAME));
-        assertTrue(sql.contains("age"));
-        assertTrue(sql.contains("name"));
-        assertTrue(sql.contains("address"));
-
-        sqliteQueryBuilder.setProjectionMap(null);
-        sql = sqliteQueryBuilder.buildQuery(new String[] { "name", "address" },
-                null, null, null, null, null, null);
-        assertTrue(sql.matches("SELECT (name|address), (name|address) "
-                + "FROM " + TEST_TABLE_NAME));
-        assertTrue(sql.contains("name"));
-        assertTrue(sql.contains("address"));
-    }
-
+    @Test
+    @SuppressWarnings("deprecation")
     public void testSetCursorFactory() {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, " +
                 "name TEXT, age INTEGER, address TEXT);");
@@ -154,6 +138,41 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         assertTrue(cursor instanceof MockCursor);
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testSetProjectionMap() {
+        String expected;
+        Map<String, String> projectMap = new HashMap<String, String>();
+        projectMap.put("EmployeeName", "name");
+        projectMap.put("EmployeeAge", "age");
+        projectMap.put("EmployeeAddress", "address");
+        SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
+        sqliteQueryBuilder.setTables(TEST_TABLE_NAME);
+        sqliteQueryBuilder.setDistinct(false);
+        sqliteQueryBuilder.setProjectionMap(projectMap);
+        String sql = sqliteQueryBuilder.buildQuery(new String[] { "EmployeeName", "EmployeeAge" },
+          null, null, null, null, null, null);
+        expected = "SELECT name, age FROM " + TEST_TABLE_NAME;
+        assertEquals(expected, sql);
+
+        sql = sqliteQueryBuilder.buildQuery(null, // projectionIn is null
+          null, null, null, null, null, null);
+        assertTrue(sql.matches("SELECT (age|name|address), (age|name|address), (age|name|address) "
+          + "FROM " + TEST_TABLE_NAME));
+        assertTrue(sql.contains("age"));
+        assertTrue(sql.contains("name"));
+        assertTrue(sql.contains("address"));
+
+        sqliteQueryBuilder.setProjectionMap(null);
+        sql = sqliteQueryBuilder.buildQuery(new String[] { "name", "address" },
+          null, null, null, null, null, null);
+        assertTrue(sql.matches("SELECT (name|address), (name|address) "
+          + "FROM " + TEST_TABLE_NAME));
+        assertTrue(sql.contains("name"));
+        assertTrue(sql.contains("address"));
+    }
+
+    @SuppressWarnings("deprecation")
     private static class MockCursor extends SQLiteCursor {
         public MockCursor(SQLiteDatabase db, SQLiteCursorDriver driver,
                 String editTable, SQLiteQuery query) {
@@ -161,6 +180,7 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testBuildQueryString() {
         String expected;
         final String[] DEFAULT_TEST_PROJECTION = new String [] { "name", "age", "sum(salary)" };
@@ -179,6 +199,8 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         assertEquals(expected, sql);
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
     public void testBuildQuery() {
         final String[] DEFAULT_TEST_PROJECTION = new String[] { "name", "sum(salary)" };
         final String DEFAULT_TEST_WHERE = "age > 25";
@@ -195,6 +217,7 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         assertEquals(expected, sql);
     }
 
+    @Test
     public void testAppendColumns() {
         StringBuilder sb = new StringBuilder();
         String[] columns = new String[] { "name", "age" };
@@ -204,6 +227,7 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         assertEquals("name, age ", sb.toString());
     }
 
+    @Test
     public void testQuery() {
         createEmployeeTable();
 
@@ -243,6 +267,8 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         assertEquals(4000, cursor.getInt(COLUMN_SALARY_INDEX));
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
     public void testUnionQuery() {
         String expected;
         String[] innerProjection = new String[] {"name", "age", "location"};
@@ -278,6 +304,7 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         assertEquals(expected, unionQuery);
     }
 
+    @Test
     public void testCancelableQuery_WhenNotCanceled_ReturnsResultSet() {
         createEmployeeTable();
 
@@ -291,6 +318,7 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         assertEquals(3, cursor.getCount());
     }
 
+    @Test
     public void testCancelableQuery_WhenCanceledBeforeQuery_ThrowsImmediately() {
         createEmployeeTable();
 
@@ -309,6 +337,7 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testCancelableQuery_WhenCanceledAfterQuery_ThrowsWhenExecuted() {
         createEmployeeTable();
 
@@ -329,6 +358,7 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testCancelableQuery_WhenCanceledDueToContention_StopsWaitingAndThrows() {
         createEmployeeTable();
 
@@ -404,6 +434,7 @@ public class SQLiteQueryBuilderTest extends AndroidTestCase {
         fail("Could not prove that the query actually blocked before cancel() was called.");
     }
 
+    @Test
     public void testCancelableQuery_WhenCanceledDuringLongRunningQuery_CancelsQueryAndThrows() {
         // Populate a table with a bunch of integers.
         mDatabase.execSQL("CREATE TABLE x (v INTEGER);");

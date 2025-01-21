@@ -16,10 +16,20 @@
 
 package net.zetetic.database.sqlcipher_cts;
 
-import net.zetetic.database.sqlcipher.SQLiteClosable;
-import android.test.AndroidTestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-public class SQLiteClosableTest extends AndroidTestCase {
+import net.zetetic.database.sqlcipher.SQLiteClosable;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+@SuppressWarnings("deprecation")
+public class SQLiteClosableTest {
     private class MockSQLiteClosable extends SQLiteClosable {
         private boolean mOnAllReferencesReleasedCalled = false;
         private boolean mOnAllReferencesReleasedFromContainerCalled = false;
@@ -42,6 +52,7 @@ public class SQLiteClosableTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testAcquireReference() {
         MockSQLiteClosable closable = new MockSQLiteClosable();
 
@@ -60,6 +71,8 @@ public class SQLiteClosableTest extends AndroidTestCase {
         }
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
     public void testReleaseReferenceFromContainer() {
         MockSQLiteClosable closable = new MockSQLiteClosable();
 

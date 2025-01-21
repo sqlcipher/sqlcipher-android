@@ -1,5 +1,7 @@
 package net.zetetic.database;
 
+import static org.junit.Assert.assertEquals;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -83,6 +85,7 @@ public class SQLCipherWALTestScenario {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testEncryptedWalMode() throws Exception {
         // create database
         final MyHelper helper = new MyHelper(mContext);
@@ -91,7 +94,7 @@ public class SQLCipherWALTestScenario {
         // verify that WAL journal mode is set
         final Cursor pragmaCursor = helper.getWritableDatabase().rawQuery("PRAGMA journal_mode", null);
         pragmaCursor.moveToFirst();
-        Assert.assertEquals("wal", pragmaCursor.getString(pragmaCursor.getColumnIndex("journal_mode")));
+        assertEquals("wal", pragmaCursor.getString(pragmaCursor.getColumnIndex("journal_mode")));
         pragmaCursor.close();
 
         // start long running transaction

@@ -16,19 +16,32 @@
 
 package net.zetetic.database.sqlcipher_cts;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 
 /**
  * Tests to verify FTS3/4 SQLite support.
  */
-public class SQLiteFtsTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SQLiteFtsTest {
 
     private static final String TEST_TABLE = "cts_fts";
 
@@ -39,10 +52,11 @@ public class SQLiteFtsTest extends AndroidTestCase {
     };
 
     private SQLiteDatabase mDatabase;
+    private Context mContext;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
+        mContext = ApplicationProvider.getApplicationContext();
         System.loadLibrary("sqlcipher");
         File f = mContext.getDatabasePath("CTS_FTS");
         f.mkdirs();
@@ -50,17 +64,14 @@ public class SQLiteFtsTest extends AndroidTestCase {
         mDatabase = SQLiteDatabase.openOrCreateDatabase(f,null);
     }
 
-    @Override
+    @After
     public void tearDown() throws Exception {
-        try {
-            final String path = mDatabase.getPath();
-            mDatabase.close();
-            SQLiteDatabase.deleteDatabase(new File(path));
-        } finally {
-            super.tearDown();
-        }
+        final String path = mDatabase.getPath();
+        mDatabase.close();
+        SQLiteDatabase.deleteDatabase(new File(path));
     }
 
+    @Test
     public void testFts3Porter() throws Exception {
         prepareFtsTable(TEST_TABLE, "fts3", "tokenize=porter");
 
@@ -77,6 +88,7 @@ public class SQLiteFtsTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testFts3Simple() throws Exception {
         prepareFtsTable(TEST_TABLE, "fts3", "tokenize=simple");
 
@@ -91,6 +103,7 @@ public class SQLiteFtsTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testFts4Simple() throws Exception {
         prepareFtsTable(TEST_TABLE, "fts4", "tokenize=simple");
 
@@ -111,7 +124,7 @@ public class SQLiteFtsTest extends AndroidTestCase {
                 "CREATE VIRTUAL TABLE " + table + " USING " + ftsType
                 + "(content TEXT, " + options + ");");
 
-        final Resources res = getContext().getResources();
+        final Resources res = mContext.getResources();
         final ContentValues values = new ContentValues();
         for (String content : TEST_CONTENT) {
             values.clear();

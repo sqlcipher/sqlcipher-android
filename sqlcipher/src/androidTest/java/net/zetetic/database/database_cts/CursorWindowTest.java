@@ -16,20 +16,31 @@
 
 package net.zetetic.database.database_cts;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.database.CharArrayBuffer;
 import android.database.sqlite.SQLiteException;
-import android.test.AndroidTestCase;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import net.zetetic.database.CursorWindow;
 import net.zetetic.database.MatrixCursor;
 
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class CursorWindowTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class CursorWindowTest {
 
     private static final String TEST_STRING = "Test String";
 
@@ -38,6 +49,7 @@ public class CursorWindowTest extends AndroidTestCase {
         System.loadLibrary("sqlcipher");
     }
 
+    @Test
     public void testWriteCursorToWindow() throws Exception {
         // create cursor
         String[] colNames = new String[]{"_id", "name", "number", "profit"};
@@ -82,6 +94,7 @@ public class CursorWindowTest extends AndroidTestCase {
         assertEquals(0, window.getNumRows());
     }
 
+    @Test
     public void testNull() {
         CursorWindow window = getOneByOneWindow();
 
@@ -89,10 +102,11 @@ public class CursorWindowTest extends AndroidTestCase {
         assertTrue(window.putNull(0, 0));
         assertNull(window.getString(0, 0));
         assertEquals(0, window.getLong(0, 0));
-        assertEquals(0.0, window.getDouble(0, 0));
+        assertEquals(0.0, window.getDouble(0, 0), 0.001d);
         assertNull(window.getBlob(0, 0));
     }
 
+    @Test
     public void testEmptyString() {
         CursorWindow window = getOneByOneWindow();
 
@@ -100,15 +114,17 @@ public class CursorWindowTest extends AndroidTestCase {
         assertTrue(window.putString("", 0, 0));
         assertEquals("", window.getString(0, 0));
         assertEquals(0, window.getLong(0, 0));
-        assertEquals(0.0, window.getDouble(0, 0));
+        assertEquals(0.0, window.getDouble(0, 0), 0.001d);
     }
 
+    @Test
     public void testConstructors() {
         // Test constructor with 'true' input, and getStartPosition should return 0
         CursorWindow cursorWindow = new CursorWindow("");
         assertEquals(0, cursorWindow.getStartPosition());
     }
 
+    @Test
     public void testDataStructureOperations() {
         CursorWindow cursorWindow = new CursorWindow("");
 
@@ -161,6 +177,7 @@ public class CursorWindowTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testAccessDataValues() {
         final long NUMBER_LONG_INTEGER = (long) 0xaabbccddffL;
         final long NUMBER_INTEGER = (int) NUMBER_LONG_INTEGER;
@@ -200,7 +217,7 @@ public class CursorWindowTest extends AndroidTestCase {
         assertEquals(0, cursorWindow.getLong(0, 0));
         assertEquals(0, cursorWindow.getInt(0, 0));
         assertEquals(0, cursorWindow.getShort(0, 0));
-        assertEquals(0.0, cursorWindow.getDouble(0, 0));
+        assertEquals(0.0, cursorWindow.getDouble(0, 0), 0.001d);
         assertEquals(0.0f, cursorWindow.getFloat(0, 0), 0.00000001f);
         assertFalse(cursorWindow.isNull(0, 0));
         assertFalse(cursorWindow.isBlob(0, 0));
@@ -212,7 +229,7 @@ public class CursorWindowTest extends AndroidTestCase {
         assertEquals(0, cursorWindow.getLong(0, 1));
         assertEquals(0, cursorWindow.getInt(0, 1));
         assertEquals(0, cursorWindow.getShort(0, 1));
-        assertEquals(0.0, cursorWindow.getDouble(0, 1));
+        assertEquals(0.0, cursorWindow.getDouble(0, 1), 0.001d);
         assertEquals(0.0f, cursorWindow.getFloat(0, 1), 0.00000001f);
         assertNull(cursorWindow.getBlob(0, 1));
         assertTrue(cursorWindow.isNull(0, 1));
@@ -265,6 +282,7 @@ public class CursorWindowTest extends AndroidTestCase {
         assertTrue(cursorWindow.isBlob(0, 4));
     }
 
+    @Test
     public void testCopyStringToBuffer() {
         int DEFAULT_ARRAY_LENGTH = 60;
         String baseString = "0123456789";
@@ -300,6 +318,7 @@ public class CursorWindowTest extends AndroidTestCase {
         assertEquals(expectedString.length(), charArrayBuffer.data.length);
     }
 
+    @Test
     public void testAccessStartPosition() {
         final int TEST_POSITION_1 = 0;
         final int TEST_POSITION_2 = 3;
@@ -329,6 +348,7 @@ public class CursorWindowTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testClearAndOnAllReferencesReleased() {
         MockCursorWindow cursorWindow = new MockCursorWindow(true);
 

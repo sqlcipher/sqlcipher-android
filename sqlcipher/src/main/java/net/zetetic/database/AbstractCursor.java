@@ -96,6 +96,7 @@ public abstract class AbstractCursor implements Cursor {
    }
 
    @Override
+   @SuppressWarnings("deprecation")
    public void deactivate() {
       onDeactivateOrClose();
    }
@@ -110,6 +111,7 @@ public abstract class AbstractCursor implements Cursor {
    }
 
    @Override
+   @SuppressWarnings("deprecation")
    public boolean requery() {
       if (mSelfObserver != null && !mSelfObserverRegistered) {
          mContentResolver.registerContentObserver(mNotifyUri, true, mSelfObserver);

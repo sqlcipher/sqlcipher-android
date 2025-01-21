@@ -17,7 +17,14 @@
 package net.zetetic.database.sqlcipher_cts;
 
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import net.zetetic.database.DatabaseUtils;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
@@ -26,15 +33,22 @@ import net.zetetic.database.sqlcipher.SQLiteStatement;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDoneException;
 import android.os.ParcelFileDescriptor;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.Suppress;
-import android.test.AndroidTestCase;
-import android.test.MoreAsserts;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.File;
 
-public class SQLiteStatementTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SQLiteStatementTest {
     private static final String STRING1 = "this is a test";
     private static final String STRING2 = "another test";
 
@@ -51,12 +65,13 @@ public class SQLiteStatementTest extends AndroidTestCase {
 
     private static final int CURRENT_DATABASE_VERSION = 42;
     private SQLiteDatabase mDatabase;
+    private Context mContext;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
+        mContext = ApplicationProvider.getApplicationContext();
         System.loadLibrary("sqlcipher");
-        getContext().deleteDatabase(DATABASE_NAME);
+        mContext.deleteDatabase(DATABASE_NAME);
         File f = mContext.getDatabasePath(DATABASE_NAME);
         f.mkdirs();
         if (f.exists()) { f.delete(); }
@@ -65,11 +80,10 @@ public class SQLiteStatementTest extends AndroidTestCase {
         mDatabase.setVersion(CURRENT_DATABASE_VERSION);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         mDatabase.close();
-        getContext().deleteDatabase(DATABASE_NAME);
-        super.tearDown();
+        mContext.deleteDatabase(DATABASE_NAME);
     }
 
     private void populateDefaultTable() {
@@ -86,6 +100,7 @@ public class SQLiteStatementTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testExecute() {
         mDatabase.disableWriteAheadLogging();
         populateDefaultTable();
@@ -129,6 +144,7 @@ public class SQLiteStatementTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testExecuteInsert() {
         populateDefaultTable();
 
@@ -168,6 +184,7 @@ public class SQLiteStatementTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testSimpleQueryForLong() {
         mDatabase.execSQL("CREATE TABLE test (num INTEGER NOT NULL, str TEXT NOT NULL);");
         mDatabase.execSQL("INSERT INTO test VALUES (1234, 'hello');");
@@ -192,6 +209,7 @@ public class SQLiteStatementTest extends AndroidTestCase {
         statement.close();
     }
 
+    @Test
     public void testSimpleQueryForString() {
         mDatabase.execSQL("CREATE TABLE test (num INTEGER NOT NULL, str TEXT NOT NULL);");
         mDatabase.execSQL("INSERT INTO test VALUES (1234, 'hello');");
@@ -217,16 +235,19 @@ public class SQLiteStatementTest extends AndroidTestCase {
     }
 
     @Suppress
+    @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessNormal() throws IOException {
         doTestSimpleQueryForBlobFileDescriptorSuccess(0);
     }
 
     @Suppress
+    @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessEmpty() throws IOException {
         doTestSimpleQueryForBlobFileDescriptorSuccess(1);
     }
 
     @Suppress
+    @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessNull() {
         populateBlobTable();
 
@@ -236,22 +257,25 @@ public class SQLiteStatementTest extends AndroidTestCase {
     }
 
     @Suppress
+    @Test
     public void testSimpleQueryForBlobFileDescriptorSuccess00() throws IOException {
         doTestSimpleQueryForBlobFileDescriptorSuccess(3);
     }
 
     @Suppress
+    @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessFF() throws IOException {
         doTestSimpleQueryForBlobFileDescriptorSuccess(4);
     }
 
     @Suppress
+    @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessEmbeddedNul() throws IOException {
         doTestSimpleQueryForBlobFileDescriptorSuccess(5);
     }
 
     @Suppress
-    private void doTestSimpleQueryForBlobFileDescriptorSuccess(int i) throws IOException {
+    public void doTestSimpleQueryForBlobFileDescriptorSuccess(int i) throws IOException {
         populateBlobTable();
 
         String sql = "SELECT data FROM blob_test WHERE _id = " + i;
@@ -261,6 +285,7 @@ public class SQLiteStatementTest extends AndroidTestCase {
     }
 
     @Suppress
+    @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessParam() throws IOException {
         populateBlobTable();
 
@@ -271,6 +296,7 @@ public class SQLiteStatementTest extends AndroidTestCase {
         assertFileDescriptorContent(BLOBS[0], fd);
     }
 
+    @Test
     public void testGetBlobFailureNoParam() throws Exception {
         populateBlobTable();
 
@@ -291,6 +317,7 @@ public class SQLiteStatementTest extends AndroidTestCase {
         assertNotNull("Should have thrown SQLiteDoneException", expectedException);
     }
 
+    @Test
     public void testGetBlobFailureParam() throws Exception {
         populateBlobTable();
 
@@ -346,7 +373,7 @@ public class SQLiteStatementTest extends AndroidTestCase {
             int count = is.read(observed);
             assertEquals(expected.length, count);
             assertEquals(-1, is.read());
-            MoreAsserts.assertEquals(expected, observed);
+					  assertArrayEquals(expected, observed);
         } finally {
             is.close();
         }

@@ -17,6 +17,16 @@
 
 package net.zetetic.database.sqlcipher_android;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.CharArrayBuffer;
@@ -24,18 +34,25 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteException;
 import android.os.Parcel;
-import android.test.AndroidTestCase;
-import android.test.PerformanceTestCase;
-import android.test.suitebuilder.annotation.LargeTest;
-import android.test.suitebuilder.annotation.MediumTest;
-import android.test.suitebuilder.annotation.SmallTest;
-import android.test.suitebuilder.annotation.Suppress;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.filters.LargeTest;
+import androidx.test.filters.Suppress;
+
 import android.util.Log;
 import android.util.Pair;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
 import net.zetetic.database.DefaultDatabaseErrorHandler;
 import junit.framework.Assert;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,8 +60,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-@SuppressWarnings({"deprecated", "ResultOfMethodCallIgnored"})
-public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceTestCase {
+@RunWith(AndroidJUnit4.class)
+public class DatabaseGeneralTest {
     private static final String TAG = "DatabaseGeneralTest";
 
     private static final String sString1 = "this is a test";
@@ -56,34 +73,27 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
     private SQLiteDatabase mDatabase;
     private File mDatabaseFile;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         System.loadLibrary("sqlcipher");
-        File dbDir = getContext().getDir(this.getClass().getName(), Context.MODE_PRIVATE);
+        File dbDir = ApplicationProvider.getApplicationContext().getDir(this.getClass().getName(), Context.MODE_PRIVATE);
         mDatabaseFile = new File(dbDir, "database_test.db");
         if (mDatabaseFile.exists()) {
             mDatabaseFile.delete();
         }
         mDatabase = SQLiteDatabase.openOrCreateDatabase(mDatabaseFile.getPath(), null);
-        assertNotNull(mDatabase);
+        assertThat(mDatabase, is(notNullValue()));
         mDatabase.setVersion(CURRENT_DATABASE_VERSION);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         mDatabase.close();
         mDatabaseFile.delete();
-        super.tearDown();
     }
 
     public boolean isPerformanceOnly() {
         return false;
-    }
-
-    // These test can only be run once.
-    public int startPerformance(Intermediates intermediates) {
-        return 1;
     }
 
     private void populateDefaultTable() {
@@ -94,7 +104,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         mDatabase.execSQL("INSERT INTO test (data) VALUES ('" + sString3 + "');");
     }
 
-    @MediumTest
+    @Test
     public void testCustomFunctionNoReturn() {
         mDatabase.addCustomFunction("emptyFunction", 1, new SQLiteDatabase.CustomFunction() {
             @Override
@@ -108,14 +118,14 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         assertSame(null, cursor.getString(0));
     }
 
-    @MediumTest
+    @Test
     public void testVersion() throws Exception {
         assertEquals(CURRENT_DATABASE_VERSION, mDatabase.getVersion());
         mDatabase.setVersion(11);
         assertEquals(11, mDatabase.getVersion());
     }
 
-    @MediumTest
+    @Test
     public void testUpdate() throws Exception {
         populateDefaultTable();
 
@@ -131,7 +141,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
     }
 
     @Suppress // PHONE_NUMBERS_EQUAL not supported
-    @MediumTest
+    @Test
     public void testPhoneNumbersEqual() throws Exception {
         mDatabase.execSQL("CREATE TABLE phones (num TEXT);");
         mDatabase.execSQL("INSERT INTO phones (num) VALUES ('911');");
@@ -281,7 +291,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
      * @throws Exception
      */
     @Suppress // PHONE_NUMBERS_EQUAL not supported
-    @SmallTest
+    @Test
     public void testPhoneNumbersEqualInternationl() throws Exception {
         assertPhoneNumberEqual("1", "1");
         assertPhoneNumberEqual("123123", "123123");
@@ -337,7 +347,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         assertPhoneNumberNotEqual("080-1234-5678", "+819012345678", true);
     }
 
-    @MediumTest
+    @Test
     public void testCopyString() throws Exception {
         mDatabase.execSQL("CREATE TABLE guess (numi INTEGER, numf FLOAT, str TEXT);");
         mDatabase.execSQL(
@@ -378,8 +388,8 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         
         c.moveToNext();
         c.copyStringToBuffer(numfIdx, buf);
-        assertEquals(-1.0, Double.valueOf(
-            new String(buf.data, 0, buf.sizeCopied)));
+        var value = java.lang.Double.valueOf(new String(buf.data, 0, buf.sizeCopied)).doubleValue();
+        assertEquals(-1.0d, value, 0.001);
         
         c.copyStringToBuffer(strIdx, buf);
         compareTo = c.getString(strIdx);
@@ -389,7 +399,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         c.close();
     }
     
-    @MediumTest
+    @Test
     public void testSchemaChange1() throws Exception {
         SQLiteDatabase db1 = mDatabase;
         Cursor cursor;
@@ -405,7 +415,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         cursor.close();
     }
 
-    @MediumTest
+    @Test
     public void testSchemaChange2() throws Exception {
         mDatabase.execSQL("CREATE TABLE db1 (_id INTEGER PRIMARY KEY, data TEXT);");
         Cursor cursor = mDatabase.query("db1", null, null, null, null, null, null);
@@ -414,7 +424,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         cursor.close();
     }
 
-    @MediumTest
+    @Test
     public void testSchemaChange3() throws Exception {
         mDatabase.execSQL("CREATE TABLE db1 (_id INTEGER PRIMARY KEY, data TEXT);");
         mDatabase.execSQL("INSERT INTO db1 (data) VALUES ('test');");
@@ -431,7 +441,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         }
     }
 
-    @MediumTest
+    @Test
     public void testSelectionArgs() throws Exception {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, data TEXT);");
         ContentValues values = new ContentValues(1);
@@ -449,7 +459,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
     }
 
     @Suppress // unicode collator not supported yet
-    @MediumTest
+    @Test
     public void testTokenize() throws Exception {
         Cursor c;
         mDatabase.execSQL("CREATE TABLE tokens (" +
@@ -621,7 +631,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
                 "SELECT source from tokens_no_index where token GLOB '" + key + "*'", null));
     }
     
-    @MediumTest
+    @Test
     public void testTransactions() throws Exception {
         mDatabase.execSQL("CREATE TABLE test (num INTEGER);");
         mDatabase.execSQL("INSERT INTO test (num) VALUES (0)");
@@ -724,7 +734,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         Assert.assertTrue(ok);
     }
 
-    @MediumTest
+    @Test
     public void testContentValues() throws Exception {
         ContentValues values = new ContentValues();
         values.put("string", "value");
@@ -748,7 +758,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
     public static final int TABLE_INFO_PRAGMA_COLUMNNAME_INDEX = 1;
     public static final int TABLE_INFO_PRAGMA_DEFAULT_INDEX = 4;
 
-    @MediumTest
+    @Test
     public void testTableInfoPragma() throws Exception {
         mDatabase.execSQL("CREATE TABLE pragma_test (" +
                 "i INTEGER DEFAULT 1234, " +
@@ -797,7 +807,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         }
     }
 
-    @MediumTest
+    @Test
     public void testSemicolonsInStatements() throws Exception {
         mDatabase.execSQL("CREATE TABLE pragma_test (" +
                 "i INTEGER DEFAULT 1234, " +
@@ -817,7 +827,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         }
     }
 
-    @MediumTest
+    @Test
     public void testUnionsWithBindArgs() {
         /* make sure unions with bindargs work http://b/issue?id=1061291 */
         mDatabase.execSQL("CREATE TABLE A (i int);");
@@ -850,7 +860,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
      * It finishes without failure when it is not available.  
      */
     @Suppress
-    @MediumTest
+    @Test
     public void testCollateLocalizedForJapanese() throws Exception {
         final String testName = "DatabaseGeneralTest#testCollateLocalizedForJapanese()";
         final Locale[] localeArray = Locale.getAvailableLocales();
@@ -933,7 +943,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
         }
     }
 
-    @SmallTest
+    @Test
     public void testSetMaxCacheSize() {
         mDatabase.execSQL("CREATE TABLE test (i int, j int);");
         mDatabase.execSQL("insert into test values(1,1);");
@@ -950,6 +960,7 @@ public class DatabaseGeneralTest extends AndroidTestCase implements PerformanceT
     }
 
     @LargeTest
+    @Test
     public void testDefaultDatabaseErrorHandler() {
         DefaultDatabaseErrorHandler errorHandler = new DefaultDatabaseErrorHandler();
 

@@ -17,49 +17,69 @@
 package net.zetetic.database.database_cts;
 
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import net.zetetic.database.DatabaseUtils.InsertHelper;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
-import android.test.AndroidTestCase;
-import android.test.MoreAsserts;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.util.Arrays;
 
-public class DatabaseUtils_InsertHelperTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+@SuppressWarnings("deprecation")
+public class DatabaseUtilsInsertHelperTest {
     private static final String TEST_TABLE_NAME = "test";
     private static final String DATABASE_NAME = "database_test.db";
 
     private SQLiteDatabase mDatabase;
     private InsertHelper mInsertHelper;
+    private Context mContext;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
+        mContext = ApplicationProvider.getApplicationContext();
         System.loadLibrary("sqlcipher");
-        getContext().deleteDatabase(DATABASE_NAME);
+        mContext.deleteDatabase(DATABASE_NAME);
         File f = mContext.getDatabasePath(DATABASE_NAME);
         mDatabase = SQLiteDatabase.openOrCreateDatabase(f, null);
         assertNotNull(mDatabase);
         mInsertHelper = new InsertHelper(mDatabase, TEST_TABLE_NAME);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         mInsertHelper.close();
         mDatabase.close();
-        getContext().deleteDatabase(DATABASE_NAME);
-        super.tearDown();
+        mContext.deleteDatabase(DATABASE_NAME);
     }
 
+    @Test
     public void testConstructor() {
         new InsertHelper(mDatabase, TEST_TABLE_NAME);
     }
 
+    @Test
     public void testClose() {
         mInsertHelper.close();
     }
 
+    @Test
     public void testGetColumnIndex() {
         mDatabase.execSQL("CREATE TABLE " + TEST_TABLE_NAME + " (_id INTEGER PRIMARY KEY, " +
                 "name TEXT, age INTEGER, address TEXT);");
@@ -75,6 +95,7 @@ public class DatabaseUtils_InsertHelperTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testInsert() {
         mDatabase.execSQL("CREATE TABLE " + TEST_TABLE_NAME + "(_id INTEGER PRIMARY KEY," +
                 " boolean_value INTEGER, int_value INTEGER, long_value INTEGER," +
@@ -132,11 +153,11 @@ public class DatabaseUtils_InsertHelperTest extends AndroidTestCase {
         assertEquals(1, cursor.getInt(booleanValueIndex));
         assertEquals(10, cursor.getInt(intValueIndex));
         assertEquals(1000L, cursor.getLong(longValueIndex));
-        assertEquals(123.456, cursor.getDouble(doubleValueIndex));
-        assertEquals(1.0f, cursor.getFloat(floatValueIndex));
+        assertEquals(123.456d, cursor.getDouble(doubleValueIndex), 0.001d);
+        assertEquals(1.0f, cursor.getFloat(floatValueIndex), 0.001d);
         assertEquals("test insert", cursor.getString(stringValueIndex));
         byte[] value = cursor.getBlob(blobValueIndex);
-        MoreAsserts.assertEquals(blob, value);
+        assertTrue(Arrays.equals(blob, value));
         assertNull(cursor.getString(nullValueIndex));
         cursor.close();
 
@@ -164,11 +185,11 @@ public class DatabaseUtils_InsertHelperTest extends AndroidTestCase {
         assertEquals(0, cursor.getInt(booleanValueIndex));
         assertEquals(123, cursor.getInt(intValueIndex));
         assertEquals(987654L, cursor.getLong(longValueIndex));
-        assertEquals(654.321, cursor.getDouble(doubleValueIndex));
-        assertEquals(21.1f, cursor.getFloat(floatValueIndex));
+        assertEquals(654.321d, cursor.getDouble(doubleValueIndex), 0.001d);
+        assertEquals(21.1f, cursor.getFloat(floatValueIndex), 0.001d);
         assertEquals("insert another row", cursor.getString(stringValueIndex));
         value = cursor.getBlob(blobValueIndex);
-        MoreAsserts.assertEquals(blob, value);
+        assertTrue(Arrays.equals(blob, value));
         assertNull(cursor.getString(nullValueIndex));
         cursor.close();
 
@@ -177,6 +198,7 @@ public class DatabaseUtils_InsertHelperTest extends AndroidTestCase {
         assertEquals(-1, mInsertHelper.insert(values));
     }
 
+    @Test
     public void testReplace() {
         mDatabase.execSQL("CREATE TABLE " + TEST_TABLE_NAME + "(_id INTEGER PRIMARY KEY," +
                 " boolean_value INTEGER, int_value INTEGER, long_value INTEGER," +
@@ -228,11 +250,11 @@ public class DatabaseUtils_InsertHelperTest extends AndroidTestCase {
         assertEquals(1, cursor.getInt(booleanValueIndex));
         assertEquals(10, cursor.getInt(intValueIndex));
         assertEquals(1000L, cursor.getLong(longValueIndex));
-        assertEquals(123.456, cursor.getDouble(doubleValueIndex));
-        assertEquals(1.0f, cursor.getFloat(floatValueIndex));
+        assertEquals(123.456, cursor.getDouble(doubleValueIndex), .001d);
+        assertEquals(1.0f, cursor.getFloat(floatValueIndex), 0.001d);
         assertEquals("test insert", cursor.getString(stringValueIndex));
         byte[] value = cursor.getBlob(blobValueIndex);
-        MoreAsserts.assertEquals(blob, value);
+        assertTrue(Arrays.equals(blob, value));
         assertNull(cursor.getString(nullValueIndex));
         cursor.close();
 
@@ -274,11 +296,11 @@ public class DatabaseUtils_InsertHelperTest extends AndroidTestCase {
         assertEquals(0, cursor.getInt(booleanValueIndex));
         assertEquals(123, cursor.getInt(intValueIndex));
         assertEquals(987654L, cursor.getLong(longValueIndex));
-        assertEquals(654.321, cursor.getDouble(doubleValueIndex));
-        assertEquals(21.1f, cursor.getFloat(floatValueIndex));
+        assertEquals(654.321d, cursor.getDouble(doubleValueIndex), 0.001d);
+        assertEquals(21.1f, cursor.getFloat(floatValueIndex), 0.001d);
         assertEquals("replace the row", cursor.getString(stringValueIndex));
         value = cursor.getBlob(blobValueIndex);
-        MoreAsserts.assertEquals(blob, value);
+			  assertArrayEquals(blob, value);
         assertNull(cursor.getString(nullValueIndex));
         cursor.close();
 

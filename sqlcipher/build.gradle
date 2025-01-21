@@ -12,6 +12,10 @@ android {
         versionName "${rootProject.ext.libraryVersion}"
         project.archivesBaseName = "sqlcipher-android-${versionName}"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        // The following argument makes the Android Test Orchestrator run its
+        // "pm clear" command after each test invocation. This command ensures
+        // that the app's state is completely cleared between tests.
+        testInstrumentationRunnerArguments clearPackageData: 'true'
         consumerProguardFile 'consumer-rules.pro'
     }
 

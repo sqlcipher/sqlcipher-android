@@ -17,16 +17,29 @@
 package net.zetetic.database.database_cts;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorJoiner;
 import android.database.CursorJoiner.Result;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
-import android.test.AndroidTestCase;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 
-public class CursorJoinerTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class CursorJoinerTest {
 
     private static final int TEST_ITEM_COUNT = 10;
     private static final int DEFAULT_TABLE1_VALUE_BEGINS = 1;
@@ -44,20 +57,20 @@ public class CursorJoinerTest extends AndroidTestCase {
     private SQLiteDatabase mDatabase;
     private File mDatabaseFile;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         System.loadLibrary("sqlcipher");
         setupDatabase();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         mDatabase.close();
         mDatabaseFile.delete();
-        super.tearDown();
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
     public void testCursorJoinerAndIterator() {
         Cursor cursor1 = getCursor(TABLE_NAME_1, null, null);
         Cursor cursor2 = getCursor(TABLE_NAME_2, null, null);
@@ -132,6 +145,7 @@ public class CursorJoinerTest extends AndroidTestCase {
         closeCursor(cursor1);
     }
 
+    @Test
     public void testNext() {
         String[] columnNames = new String[] { "number" };
         Cursor cursor1 = getCursor(TABLE_NAME_1, null, columnNames);
@@ -205,7 +219,7 @@ public class CursorJoinerTest extends AndroidTestCase {
     }
 
     private void setupDatabase() {
-        File dbDir = getContext().getDir("tests", Context.MODE_PRIVATE);
+        File dbDir = ApplicationProvider.getApplicationContext().getDir("tests", Context.MODE_PRIVATE);
         mDatabaseFile = new File(dbDir, "database_test.db");
         if (mDatabaseFile.exists()) {
             mDatabaseFile.delete();

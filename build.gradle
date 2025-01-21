@@ -22,6 +22,11 @@ allprojects {
         mavenCentral()
         google()
     }
+    tasks.withType(JavaCompile).tap {
+        configureEach {
+            options.compilerArgs << "-Xlint:deprecation"
+        }
+    }
 }
 
 project.ext {

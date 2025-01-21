@@ -16,11 +16,19 @@
 
 package net.zetetic.database.sqlcipher_cts;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.LargeTest;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import net.zetetic.database.DatabaseUtils;
 import net.zetetic.database.sqlcipher.SQLiteCursor;
@@ -31,11 +39,17 @@ import net.zetetic.database.sqlcipher.SQLiteQuery;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
 import net.zetetic.database.sqlcipher.SQLiteTransactionListener;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Semaphore;
 
-public class SQLiteDatabaseTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SQLiteDatabaseTest {
     private SQLiteDatabase mDatabase;
     private File mDatabaseFile;
     private String mDatabaseFilePath;
@@ -58,14 +72,13 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
             "address"   // 3
     };
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
 
         System.loadLibrary("sqlcipher");
-        getContext().deleteDatabase(DATABASE_FILE_NAME);
-        mDatabaseFilePath = getContext().getDatabasePath(DATABASE_FILE_NAME).getPath();
-        mDatabaseFile = getContext().getDatabasePath(DATABASE_FILE_NAME);
+        ApplicationProvider.getApplicationContext().deleteDatabase(DATABASE_FILE_NAME);
+        mDatabaseFilePath = ApplicationProvider.getApplicationContext().getDatabasePath(DATABASE_FILE_NAME).getPath();
+        mDatabaseFile = ApplicationProvider.getApplicationContext().getDatabasePath(DATABASE_FILE_NAME);
         mDatabaseDir = mDatabaseFile.getParent();
         mDatabaseFile.getParentFile().mkdirs(); // directory may not exist
         mDatabase = SQLiteDatabase.openOrCreateDatabase(mDatabaseFile, null);
@@ -76,13 +89,13 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         mTransactionListenerOnRollbackCalled = false;
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         mDatabase.close();
         mDatabaseFile.delete();
-        super.tearDown();
     }
 
+    @Test
     public void testOpenDatabase() {
         CursorFactory factory = new CursorFactory() {
             public Cursor newCursor(SQLiteDatabase db, SQLiteCursorDriver masterQuery,
@@ -115,6 +128,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         db.close();
     }
 
+    @Test
     public void testDeleteDatabase() throws IOException {
         File dbFile = new File(mDatabaseDir, "database_test12345678.db");
         File journalFile = new File(dbFile.getPath() + "-journal");
@@ -149,13 +163,16 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         assertFalse(deletedAgain);
     }
 
-    private class MockSQLiteCursor extends SQLiteCursor {
+    @SuppressWarnings("deprecation")
+    private static class MockSQLiteCursor extends SQLiteCursor {
         public MockSQLiteCursor(SQLiteDatabase db, SQLiteCursorDriver driver,
                 String editTable, SQLiteQuery query) {
             super(db, driver, editTable, query);
         }
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
     public void testTransaction() {
         mDatabase.execSQL("CREATE TABLE test (num INTEGER);");
         mDatabase.execSQL("INSERT INTO test (num) VALUES (0)");
@@ -282,6 +299,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testAccessMaximumSize() {
         long curMaximumSize = mDatabase.getMaximumSize();
 
@@ -290,6 +308,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         assertEquals(curMaximumSize, mDatabase.getMaximumSize());
     }
 
+    @Test
     public void testAccessPageSize() {
         File databaseFile = new File(mDatabaseDir, "database.db");
         if (databaseFile.exists()) {
@@ -313,6 +332,8 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         }
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
     public void testCompileStatement() {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, "
                 + "name TEXT, age INTEGER, address TEXT);");
@@ -354,6 +375,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         cursor.close();
     }
 
+    @Test
     public void testDelete() {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, "
                 + "name TEXT, age INTEGER, address TEXT);");
@@ -408,6 +430,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         cursor.close();
     }
 
+    @Test
     public void testExecSQL() {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, "
                 + "name TEXT, age INTEGER, address TEXT);");
@@ -498,6 +521,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         cursor.close();;
     }
 
+    @Test
     public void testFindEditTable() {
         String tables = "table1 table2 table3";
         assertEquals("table1", SQLiteDatabase.findEditTable(tables));
@@ -515,10 +539,12 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testGetPath() {
         assertEquals(mDatabaseFilePath, mDatabase.getPath());
     }
 
+    @Test
     public void testAccessVersion() {
         mDatabase.setVersion(1);
         assertEquals(1, mDatabase.getVersion());
@@ -527,6 +553,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         assertEquals(3, mDatabase.getVersion());
     }
 
+    @Test
     public void testInsert() {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, "
                 + "name TEXT, age INTEGER, address TEXT);");
@@ -611,6 +638,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testIsOpen() {
         assertTrue(mDatabase.isOpen());
 
@@ -618,6 +646,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         assertFalse(mDatabase.isOpen());
     }
 
+    @Test
     public void testIsReadOnly() {
         assertFalse(mDatabase.isReadOnly());
 
@@ -633,10 +662,13 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testReleaseMemory() {
         SQLiteDatabase.releaseMemory();
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
     public void testSetLockingEnabled() {
         mDatabase.execSQL("CREATE TABLE test (num INTEGER);");
         mDatabase.execSQL("INSERT INTO test (num) VALUES (0)");
@@ -650,6 +682,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         mDatabase.endTransaction();
     }
 
+    @Test
     @SuppressWarnings("deprecation")
     public void testYieldIfContendedWhenNotContended() {
         assertFalse(mDatabase.yieldIfContended());
@@ -678,6 +711,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         mDatabase.endTransaction();
     }
 
+    @Test
     @SuppressWarnings("deprecation")
     public void testYieldIfContendedWhenContended() throws Exception {
         mDatabase.execSQL("CREATE TABLE test (num INTEGER);");
@@ -730,6 +764,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         t.join();
     }
 
+    @Test
     public void testQuery() {
         mDatabase.execSQL("CREATE TABLE employee (_id INTEGER PRIMARY KEY, " +
                 "name TEXT, month INTEGER, salary INTEGER);");
@@ -839,6 +874,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         cursor.close();
     }
 
+    @Test
     public void testReplace() {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, "
                 + "name TEXT, age INTEGER, address TEXT);");
@@ -904,6 +940,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testUpdate() {
         mDatabase.execSQL("CREATE TABLE test (_id INTEGER PRIMARY KEY, data TEXT);");
 
@@ -924,6 +961,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         cursor.close();
     }
 
+    @Test
     public void testNeedUpgrade() {
         mDatabase.setVersion(0);
         assertTrue(mDatabase.needUpgrade(1));
@@ -931,6 +969,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         assertFalse(mDatabase.needUpgrade(1));
     }
 
+    @Test
     public void testSetLocale() {
 //        final String[] STRINGS = {
 //                "c\u00f4t\u00e9",
@@ -974,12 +1013,14 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
 //        });
     }
 
+    @Test
     public void testOnAllReferencesReleased() {
         assertTrue(mDatabase.isOpen());
         mDatabase.releaseReference();
         assertFalse(mDatabase.isOpen());
     }
 
+    @Test
     public void testTransactionWithSQLiteTransactionListener() {
         mDatabase.execSQL("CREATE TABLE test (num INTEGER);");
         mDatabase.execSQL("INSERT INTO test (num) VALUES (0)");
@@ -1011,6 +1052,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         assertEquals(mTransactionListenerOnRollbackCalled, false);
     }
 
+    @Test
     public void testRollbackTransactionWithSQLiteTransactionListener() {
         mDatabase.execSQL("CREATE TABLE test (num INTEGER);");
         mDatabase.execSQL("INSERT INTO test (num) VALUES (0)");
@@ -1055,6 +1097,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testGroupConcat() {
         mDatabase.execSQL("CREATE TABLE test (i INT, j TEXT);");
 
@@ -1088,6 +1131,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         // should get no exceptions
     }
 
+    @Test
     public void testSchemaChanges() {
         mDatabase.execSQL("CREATE TABLE test (i INT, j INT);");
 
@@ -1155,6 +1199,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         deleteStatement.close();
     }
 
+    @Test
     public void testSchemaChangesNewTable() {
         mDatabase.execSQL("CREATE TABLE test (i INT, j INT);");
 
@@ -1219,6 +1264,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         deleteStatement2.close();
     }
 
+    @Test
     public void testSchemaChangesDropTable() {
         mDatabase.execSQL("CREATE TABLE test (i INT, j INT);");
 
@@ -1264,7 +1310,8 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
      *</p>
      * @throws InterruptedException
      */
-    @LargeTest
+    @Test
+    @SuppressWarnings("deprecation")
     public void testReaderGetsOldVersionOfDataWhenWriterIsInXact() throws InterruptedException {
         // redo setup to create WAL enabled database
         mDatabase.close();
@@ -1338,6 +1385,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testExceptionsFromEnableWriteAheadLogging() {
         // attach a database
         // redo setup to create WAL enabled database
@@ -1359,6 +1407,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         db.close();
     }
 
+    @Test
     public void testEnableThenDisableWriteAheadLogging() {
         // Enable WAL.
         assertFalse(mDatabase.isWriteAheadLoggingEnabled());
@@ -1378,6 +1427,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         assertFalse(mDatabase.isWriteAheadLoggingEnabled());
     }
 
+    @Test
     public void testEnableThenDisableWriteAheadLoggingUsingOpenFlag() {
         new File(mDatabase.getPath()).delete();
         mDatabase = SQLiteDatabase.openDatabase(mDatabaseFile.getPath(), null,
@@ -1398,11 +1448,12 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         assertFalse(mDatabase.isWriteAheadLoggingEnabled());
     }
 
+    @Test
     public void testEnableWriteAheadLoggingFromContextUsingModeFlag() {
         // Without the MODE_ENABLE_WRITE_AHEAD_LOGGING flag, database opens without WAL.
-        getContext().deleteDatabase(DATABASE_FILE_NAME);
+        ApplicationProvider.getApplicationContext().deleteDatabase(DATABASE_FILE_NAME);
 
-        File f = getContext().getDatabasePath(DATABASE_FILE_NAME);
+        File f = ApplicationProvider.getApplicationContext().getDatabasePath(DATABASE_FILE_NAME);
         mDatabase = SQLiteDatabase.openOrCreateDatabase(f,null);
         assertFalse(mDatabase.isWriteAheadLoggingEnabled());
         mDatabase.close();
@@ -1415,6 +1466,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         // mDatabase.close();
     }
 
+    @Test
     public void testEnableWriteAheadLoggingShouldThrowIfTransactionInProgress() {
         assertFalse(mDatabase.isWriteAheadLoggingEnabled());
         String oldJournalMode = DatabaseUtils.stringForQuery(
@@ -1436,6 +1488,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
                 .equalsIgnoreCase(oldJournalMode));
     }
 
+    @Test
     public void testDisableWriteAheadLoggingShouldThrowIfTransactionInProgress() {
         // Enable WAL.
         assertFalse(mDatabase.isWriteAheadLoggingEnabled());
@@ -1458,6 +1511,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
                 .equalsIgnoreCase("WAL"));
     }
 
+    @Test
     public void testEnableAndDisableForeignKeys() {
         // Initially off.
         assertEquals(0, DatabaseUtils.longForQuery(mDatabase, "PRAGMA foreign_keys", null));
@@ -1486,6 +1540,7 @@ public class SQLiteDatabaseTest extends AndroidTestCase {
         assertEquals(1, DatabaseUtils.longForQuery(mDatabase, "PRAGMA foreign_keys", null));
     }
 
+    @Test
     public void testShouldSupportBindingNullValue(){
         String b = "";
         mDatabase.execSQL("CREATE TABLE t1(a,b);");

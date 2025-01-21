@@ -16,9 +16,18 @@
 
 package net.zetetic.database.sqlcipher_cts;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.content.Context;
 import android.database.Cursor;
-import android.test.AndroidTestCase;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import net.zetetic.database.sqlcipher.SQLiteCursor;
 import net.zetetic.database.sqlcipher.SQLiteCursorDriver;
@@ -27,15 +36,21 @@ import net.zetetic.database.sqlcipher.SQLiteDatabase.CursorFactory;
 import net.zetetic.database.sqlcipher.SQLiteOpenHelper;
 import net.zetetic.database.sqlcipher.SQLiteQuery;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 /**
  * Test {@link SQLiteOpenHelper}.
  */
-public class SQLiteOpenHelperTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class SQLiteOpenHelperTest {
     private static final String TEST_DATABASE_NAME = "database_test.db";
     static String DATABASE_PATH;
     private static final int TEST_VERSION = 1;
     private static final int TEST_ILLEGAL_VERSION = 0;
     private MockOpenHelper mOpenHelper;
+    private Context mContext;
     private SQLiteDatabase.CursorFactory mFactory = new SQLiteDatabase.CursorFactory() {
         public Cursor newCursor(SQLiteDatabase db, SQLiteCursorDriver masterQuery,
                 String editTable, SQLiteQuery query) {
@@ -43,14 +58,15 @@ public class SQLiteOpenHelperTest extends AndroidTestCase {
         }
     };
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         System.loadLibrary("sqlcipher");
+        mContext = ApplicationProvider.getApplicationContext();
         DATABASE_PATH = mContext.getDatabasePath(TEST_DATABASE_NAME).toString();
         mOpenHelper = getOpenHelper();
     }
 
+    @Test
     public void testConstructor() {
         new MockOpenHelper(mContext, DATABASE_PATH, mFactory, TEST_VERSION);
 
@@ -65,6 +81,7 @@ public class SQLiteOpenHelperTest extends AndroidTestCase {
         new MockOpenHelper(mContext, DATABASE_PATH, null, TEST_VERSION);
     }
 
+    @Test
     public void testGetDatabase() {
         SQLiteDatabase database = null;
         assertFalse(mOpenHelper.hasCalledOnOpen());
@@ -131,6 +148,7 @@ public class SQLiteOpenHelperTest extends AndroidTestCase {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private class MockCursor extends SQLiteCursor {
         public MockCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable,
                 SQLiteQuery query) {

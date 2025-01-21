@@ -17,6 +17,13 @@
 package net.zetetic.database.database_cts;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.content.Context;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
@@ -26,14 +33,22 @@ import android.database.DataSetObserver;
 import android.database.StaleDataException;
 import android.os.Bundle;
 import android.os.Handler;
-import android.test.AndroidTestCase;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.util.Arrays;
 
-public class CursorWrapperTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class CursorWrapperTest {
 
     private static final String FIRST_NUMBER = "123";
     private static final String SECOND_NUMBER = "5555";
@@ -52,20 +67,20 @@ public class CursorWrapperTest extends AndroidTestCase {
 
     private static final int CURRENT_DATABASE_VERSION = 42;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         System.loadLibrary("sqlcipher");
         setupDatabase();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         closeDatabase();
-        super.tearDown();
     }
 
-    public void testConstrucotorAndClose() {
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testConstructorAndClose() {
         CursorWrapper cursorWrapper = new CursorWrapper(getCursor());
 
         assertTrue(cursorWrapper.requery());
@@ -85,6 +100,8 @@ public class CursorWrapperTest extends AndroidTestCase {
         return cursor;
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
     public void testGetCount() {
         CursorWrapper cursorWrapper = new CursorWrapper(getCursor());
         int defaultCount = cursorWrapper.getCount();
@@ -119,6 +136,8 @@ public class CursorWrapperTest extends AndroidTestCase {
         rebuildDatabase();
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
     public void testDeactivate() throws IllegalStateException {
         CursorWrapper cursorWrapper = new CursorWrapper(getCursor());
         MockObserver observer = new MockObserver();
@@ -175,6 +194,7 @@ public class CursorWrapperTest extends AndroidTestCase {
         }
     }
 
+    @Test
     public void testGettingColumnInfos() {
         CursorWrapper cursorWrapper = new CursorWrapper(getCursor());
 
@@ -205,6 +225,7 @@ public class CursorWrapperTest extends AndroidTestCase {
         cursorWrapper.close();
     }
 
+    @Test
     public void testPositioning() {
         CursorWrapper cursorWrapper = new CursorWrapper(getCursor());
 
@@ -282,6 +303,7 @@ public class CursorWrapperTest extends AndroidTestCase {
         cursorWrapper.close();
     }
 
+    @Test
     public void testGettingValues() {
         final byte NUMBER_BLOB_UNIT = 99;
         final String STRING_TEXT = "Test String";
@@ -358,12 +380,14 @@ public class CursorWrapperTest extends AndroidTestCase {
         mDatabase.execSQL("DROP TABLE test2");
     }
 
+    @Test
     public void testGetExtras() {
         CursorWrapper cursor = new CursorWrapper(getCursor());
         Bundle bundle = cursor.getExtras();
         assertSame(Bundle.EMPTY, bundle);
     }
 
+    @Test
     public void testCopyStringToBuffer() {
         CharArrayBuffer charArrayBuffer = new CharArrayBuffer(1000);
         Cursor cursor = getCursor();
@@ -390,6 +414,7 @@ public class CursorWrapperTest extends AndroidTestCase {
         cursorWrapper.close();
     }
 
+    @Test
     public void testRespond() {
         Bundle b = new Bundle();
         CursorWrapper cursorWrapper = new CursorWrapper(getCursor());
@@ -398,12 +423,15 @@ public class CursorWrapperTest extends AndroidTestCase {
         cursorWrapper.close();
     }
 
+    @Test
     public void testGetWantsAllOnMoveCalls() {
         CursorWrapper cursorWrapper = new CursorWrapper(getCursor());
         assertFalse(cursorWrapper.getWantsAllOnMoveCalls());
         cursorWrapper.close();
     }
 
+
+    @Test
     public void testContentObserverOperations() throws IllegalStateException {
         CursorWrapper cursorWrapper = new CursorWrapper(getCursor());
         MockContentObserver observer = new MockContentObserver(null);
@@ -439,6 +467,7 @@ public class CursorWrapperTest extends AndroidTestCase {
         cursorWrapper.close();
     }
 
+    @Test
     public void testSetExtras() {
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M){
             Cursor cursor = getCursor();
@@ -473,7 +502,7 @@ public class CursorWrapperTest extends AndroidTestCase {
     }
 
     private void setupDatabase() {
-        File dbDir = getContext().getDir("tests", Context.MODE_PRIVATE);
+        File dbDir = ApplicationProvider.getApplicationContext().getDir("tests", Context.MODE_PRIVATE);
         /* don't use the same database name as the one in super class
          * this class's setUp() method deletes a database file just opened by super.setUp().
          * that can cause corruption in database in the following situation:
