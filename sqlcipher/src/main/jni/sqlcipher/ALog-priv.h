@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
-** Modified to support SQLite extensions by the SQLite developers: 
+** Modified to support SQLite extensions by the SQLite developers:
 ** sqlite-dev@sqlite.org.
 */
 
@@ -52,11 +52,19 @@
 #endif
 
 #ifndef ALOGD
+#if LOG_NDEBUG
+#define ALOGD(...) ((void)0)
+#else
 #define ALOGD(...) ((void)ALOG(LOG_DEBUG, LOG_TAG, __VA_ARGS__))
+#endif
 #endif
 
 #ifndef ALOGI
+#if LOG_NDEBUG
+#define ALOGI(...) ((void)0)
+#else
 #define ALOGI(...) ((void)ALOG(LOG_INFO, LOG_TAG, __VA_ARGS__))
+#endif
 #endif
 
 #ifndef ALOGW
