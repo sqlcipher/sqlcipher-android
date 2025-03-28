@@ -18,9 +18,14 @@ import net.zetetic.database.sqlcipher.SQLiteStatement;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
@@ -571,4 +576,118 @@ public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
     }
     assertThat(rowsFound, is(0L));
   }
+
+
+  // This test recreated a scenario where the CursorWindow::allocRow
+  // would alloc a RowSlot*, then the alloc call to allocate the
+  // fieldDirOffset (based on fieldDirSize) would cause mData
+  // to move (when there was just enough space in mData for a RowSlot*,
+  // but not enough for the corresponding FieldSlot*), invalidating the
+  // previous rowSlot address. This has been addressed by reassigning the
+  // rowSlot pointer after alloc, prior to binding the fieldDirOffset
+  // and should not fail now.
+  /** @noinspection StatementWithEmptyBody*/
+  @Test
+  public void shouldNotCauseRowSlotAllocationCrash(){
+    SQLiteCursor.resetCursorWindowSize();
+    database.execSQL("create table t1(a INTEGER, b INTEGER, c TEXT, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, "+
+      "aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll, mm, nn, oo, pp, qq, rr, ss, tt, uu, vv);");
+    database.beginTransaction();
+    Random random = new Random();
+    for(int i = 0; i < 20; i++) {
+      int size = 1024*3 + 450;
+      database.execSQL("insert into t1(a, b, c) values(?, ?, randomblob(?));", new Object[]{i, size, size});
+    }
+    database.setTransactionSuccessful();
+    var value = false;
+    var cursor = database.rawQuery("select * from t1;");
+    if(cursor != null){
+      while(cursor.moveToNext()){}
+      value = true;
+    }
+    assertThat(value, is(true));
+  }
+
+  @Test
+  public void shouldBuildLargeDatabaseWithCustomCursorSizeAndNavigateValuesWithDigest() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    int rowCount = 1000;
+    int windowAllocationSize = 1024 * 1024 / 20;
+    buildDatabase(database, rowCount, 30, (columns, row, column) -> {
+			try {
+				var digest = MessageDigest.getInstance("SHA-1");
+				var columnName = columns[column];
+				var value = String.format("%s%d", columnName, row);
+				return digest.digest(value.getBytes(StandardCharsets.UTF_8));
+			} catch (Exception e) {
+				Log.e(TAG, e.toString());
+				return null;
+			}
+		});
+
+		var randomRows = generateRandomNumbers(rowCount, rowCount);
+    SQLiteCursor.setCursorWindowSize(windowAllocationSize);
+    var cursor = database.rawQuery("SELECT * FROM t1;", null);
+		var digest = MessageDigest.getInstance("SHA-1");
+    int row = 0;
+    Log.i(TAG, "Walking cursor forward");
+    while(cursor.moveToNext()){
+      var compare = compareDigestForAllColumns(cursor, digest, row);
+      assertThat(compare, is(true));
+      row++;
+    }
+    Log.i(TAG, "Walking cursor backward");
+    while(cursor.moveToPrevious()){
+      row--;
+      var compare = compareDigestForAllColumns(cursor, digest, row);
+      assertThat(compare, is(true));
+    }
+    Log.i(TAG, "Walking cursor randomly");
+    for(int randomRow : randomRows){
+      cursor.moveToPosition(randomRow);
+      var compare = compareDigestForAllColumns(cursor, digest, randomRow);
+      assertThat(compare, is(true));
+    }
+  }
+
+  @Test
+  public void shouldCheckAllTypesFromCursor(){
+    database.execSQL("drop table if exists t1;");
+    database.execSQL("create table t1(a text, b integer, c text, d real, e blob)");
+    byte[] data = new byte[10];
+    new SecureRandom().nextBytes(data);
+    database.execSQL("insert into t1(a, b, c, d, e) values(?, ?, ?, ?, ?)", new Object[]{"test1", 100, null, 3.25, data});
+    Cursor results = database.rawQuery("select * from t1", new String[]{});
+    results.moveToFirst();
+    int type_a = results.getType(0);
+    int type_b = results.getType(1);
+    int type_c = results.getType(2);
+    int type_d = results.getType(3);
+    int type_e = results.getType(4);
+    results.close();
+    assertThat(type_a, is(Cursor.FIELD_TYPE_STRING));
+    assertThat(type_b, is(Cursor.FIELD_TYPE_INTEGER));
+    assertThat(type_c, is(Cursor.FIELD_TYPE_NULL));
+    assertThat(type_d, is(Cursor.FIELD_TYPE_FLOAT));
+    assertThat(type_e, is(Cursor.FIELD_TYPE_BLOB));
+  }
+
+  private boolean compareDigestForAllColumns(
+    Cursor cursor,
+    MessageDigest digest,
+    int row) throws UnsupportedEncodingException {
+    var columnCount = cursor.getColumnCount();
+    for(var column = 0; column < columnCount; column++){
+      Log.i(TAG, String.format("Comparing SHA-1 digest for row:%d", row));
+      var columnName = cursor.getColumnName(column);
+      var actual = cursor.getBlob(column);
+      var value = String.format("%s%d", columnName, row);
+      var expected = digest.digest(value.getBytes(StandardCharsets.UTF_8));
+      if(!Arrays.equals(actual, expected)){
+        Log.e(TAG, String.format("SHA-1 digest mismatch for row:%d column:%d", row, column));
+        return false;
+      }
+    }
+    return true;
+  }
+
 }

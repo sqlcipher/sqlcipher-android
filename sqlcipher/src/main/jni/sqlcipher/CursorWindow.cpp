@@ -40,7 +40,7 @@ namespace android {
 
     status_t CursorWindow::create(const char* name, size_t size, CursorWindow** outWindow) {
         status_t result;
-        size_t requestedSize = size + CURSOR_SIZE_EXTRA;
+        size_t requestedSize = size;
         void* data = malloc(requestedSize);
         if (!data) {
             return NO_MEMORY;
@@ -105,8 +105,10 @@ namespace android {
                   "from allocRowSlot %d", mHeader->numRows);
             return NO_MEMORY;
         }
+
         auto* fieldDir = static_cast<FieldSlot*>(offsetToPtr(fieldDirOffset));
         memset(fieldDir, 0, fieldDirSize);
+        rowSlot = getRowSlot(mHeader->numRows - 1);
         rowSlot->offset = fieldDirOffset;
         return OK;
     }
@@ -122,10 +124,10 @@ namespace android {
     }
 
     status_t CursorWindow::maybeInflate() {
-        size_t initialSize = 16 * 1024 + CURSOR_SIZE_EXTRA;
+        size_t initialSize = 16 * 1024;
         size_t newSize = mSize <= initialSize
-                         ? 2048 * 1024 + CURSOR_SIZE_EXTRA
-                         : mSize * 2 + CURSOR_SIZE_EXTRA;
+                         ? 2048 * 1024
+                         : mSize * 2;
         uint32_t freeOffset = mHeader->freeOffset;
         ALOGW("Request to resize CursorWindow allocation: current window size %zu bytes, "
               "free space %zu bytes, new window size %zu bytes",
@@ -180,15 +182,19 @@ namespace android {
 
     CursorWindow::RowSlot* CursorWindow::allocRowSlot() {
         uint32_t chunkPos = mHeader->numRows;
+        uint32_t chunkOffset = mHeader->firstChunkOffset;
         auto* chunk = static_cast<RowSlotChunk*>(
                 offsetToPtr(mHeader->firstChunkOffset));
         while (chunkPos > ROW_SLOT_CHUNK_NUM_ROWS) {
+            chunkOffset = chunk->nextChunkOffset;
             chunk = static_cast<RowSlotChunk*>(offsetToPtr(chunk->nextChunkOffset));
             chunkPos -= ROW_SLOT_CHUNK_NUM_ROWS;
         }
         if (chunkPos == ROW_SLOT_CHUNK_NUM_ROWS) {
             if (!chunk->nextChunkOffset) {
-                chunk->nextChunkOffset = alloc(sizeof(RowSlotChunk), true /*aligned*/);
+                uint32_t nextChunkOffset = alloc(sizeof(RowSlotChunk), true /*aligned*/);
+                chunk = static_cast<RowSlotChunk*>(offsetToPtr(chunkOffset));
+                chunk->nextChunkOffset = nextChunkOffset;
                 if (!chunk->nextChunkOffset) {
                     return nullptr;
                 }

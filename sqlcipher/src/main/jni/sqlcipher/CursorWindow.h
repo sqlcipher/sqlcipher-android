@@ -123,7 +123,6 @@ namespace android {
 
     private:
         static const size_t ROW_SLOT_CHUNK_NUM_ROWS = 100;
-        static const size_t CURSOR_SIZE_EXTRA = 512;
 
         struct Header {
             // Offset of the lowest unused byte in the window.
