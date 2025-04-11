@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteException;
  *
  * <a href="https://www.sqlite.org/rescode.html#notadb">SQLITE_NOTADB</a>
  */
-class SQLiteNotADatabaseException extends SQLiteException {
+public class SQLiteNotADatabaseException extends SQLiteException {
    public SQLiteNotADatabaseException() {
       super();
    }
