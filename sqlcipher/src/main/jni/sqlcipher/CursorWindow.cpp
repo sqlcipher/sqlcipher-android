@@ -129,14 +129,14 @@ namespace android {
                          ? 2048 * 1024
                          : mSize * 2;
         uint32_t freeOffset = mHeader->freeOffset;
-        ALOGW("Request to resize CursorWindow allocation: current window size %zu bytes, "
+        ALOGI("Request to resize CursorWindow allocation: current window size %zu bytes, "
               "free space %zu bytes, new window size %zu bytes",
               mSize, freeSpace(), newSize);
         if((mData = realloc(mData, newSize))){
             mHeader = static_cast<Header*>(mData);
             mHeader->freeOffset = freeOffset;
             mSize = newSize;
-            ALOGW("Resized CursorWindow allocation: current window size %zu bytes",
+            ALOGI("Resized CursorWindow allocation: current window size %zu bytes",
                   newSize);
             return OK;
         } else {
@@ -160,7 +160,7 @@ namespace android {
             if(result == OK){
                 return alloc(size, aligned);
             }
-            ALOGW("Window is full: requested allocation %zu bytes, "
+            ALOGI("Window is full: requested allocation %zu bytes, "
                   "free space %zu bytes, window size %zu bytes",
                   size, freeSpace(), mSize);
             return 0;

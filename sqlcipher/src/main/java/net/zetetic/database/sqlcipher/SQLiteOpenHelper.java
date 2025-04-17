@@ -23,10 +23,10 @@ package net.zetetic.database.sqlcipher;
 
 import android.content.Context;
 import net.zetetic.database.DatabaseErrorHandler;
+import net.zetetic.database.Logger;
 import net.zetetic.database.sqlcipher.SQLiteDatabase.CursorFactory;
 
 import android.database.sqlite.SQLiteException;
-import android.util.Log;
 
 import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
@@ -363,7 +363,7 @@ public abstract class SQLiteOpenHelper implements SupportSQLiteOpenHelper {
                     if (writable) {
                         throw ex;
                     }
-                    Log.e(TAG, "Couldn't open " + mName
+                    Logger.e(TAG, "Couldn't open " + mName
                             + " for writing (will try read-only):", ex);
                     final String path = mContext.getDatabasePath(mName).getPath();
                     db = SQLiteDatabase.openDatabase(path, mPassword, mFactory,
@@ -414,7 +414,7 @@ public abstract class SQLiteOpenHelper implements SupportSQLiteOpenHelper {
             onOpen(db);
 
             if (db.isReadOnly()) {
-                Log.w(TAG, "Opened " + mName + " in read-only mode");
+                Logger.w(TAG, "Opened " + mName + " in read-only mode");
             }
 
             mDatabase = db;

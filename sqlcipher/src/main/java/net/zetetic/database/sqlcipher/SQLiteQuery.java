@@ -24,9 +24,9 @@ import android.database.sqlite.SQLiteDatabaseCorruptException;
 import android.database.sqlite.SQLiteException;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
-import android.util.Log;
 
 import net.zetetic.database.CursorWindow;
+import net.zetetic.database.Logger;
 
 /**
  * Represents a query that reads the resulting rows into a {@link SQLiteQuery}.
@@ -74,7 +74,7 @@ public final class SQLiteQuery extends SQLiteProgram {
                 onCorruption(ex);
                 throw ex;
             } catch (SQLiteException ex) {
-                Log.e(TAG, "exception: " + ex.getMessage() + "; query: " + getSql());
+                Logger.e(TAG, "exception: " + ex.getMessage() + "; query: " + getSql());
                 throw ex;
             } finally {
                 window.releaseReference();

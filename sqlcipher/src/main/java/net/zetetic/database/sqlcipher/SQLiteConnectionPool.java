@@ -20,13 +20,12 @@
 
 package net.zetetic.database.sqlcipher;
 
-import net.zetetic.database.sqlcipher.CloseGuard;
 
+import net.zetetic.database.Logger;
 import net.zetetic.database.sqlcipher.SQLiteDebug.DbStats;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.os.SystemClock;
-import android.util.Log;
 import android.util.Printer;
 
 import java.io.Closeable;
@@ -231,7 +230,7 @@ public final class SQLiteConnectionPool implements Closeable {
 
                 final int pendingCount = mAcquiredConnections.size();
                 if (pendingCount != 0) {
-                    Log.i(TAG, "The connection pool for " + mConfiguration.label
+                    Logger.i(TAG, "The connection pool for " + mConfiguration.label
                             + " has been closed but there are still "
                             + pendingCount + " connections in use.  They will be closed "
                             + "as they are released back to the pool.");
@@ -407,7 +406,7 @@ public final class SQLiteConnectionPool implements Closeable {
             try {
                 connection.reconfigure(mConfiguration); // might throw
             } catch (RuntimeException ex) {
-                Log.e(TAG, "Failed to reconfigure released connection, closing it: "
+                Logger.e(TAG, "Failed to reconfigure released connection, closing it: "
                         + connection, ex);
                 status = AcquiredConnectionStatus.DISCARD;
             }
@@ -497,7 +496,7 @@ public final class SQLiteConnectionPool implements Closeable {
         // several seconds while waiting for a leaked connection to be detected and recreated,
         // then perhaps its authors will have added incentive to fix the problem!
 
-        Log.w(TAG, "A SQLiteConnection object for database '"
+        Logger.w(TAG, "A SQLiteConnection object for database '"
                 + mConfiguration.label + "' was leaked!  Please fix your application "
                 + "to end transactions in progress properly and to close the database "
                 + "when it is no longer needed.");
@@ -539,7 +538,7 @@ public final class SQLiteConnectionPool implements Closeable {
         try {
             connection.close(); // might throw
         } catch (RuntimeException ex) {
-            Log.e(TAG, "Failed to close connection, its fate is now in the hands "
+            Logger.e(TAG, "Failed to close connection, its fate is now in the hands "
                     + "of the merciful GC: " + connection, ex);
         }
     }
@@ -555,7 +554,7 @@ public final class SQLiteConnectionPool implements Closeable {
             try {
                 mAvailablePrimaryConnection.reconfigure(mConfiguration); // might throw
             } catch (RuntimeException ex) {
-                Log.e(TAG, "Failed to reconfigure available primary connection, closing it: "
+                Logger.e(TAG, "Failed to reconfigure available primary connection, closing it: "
                         + mAvailablePrimaryConnection, ex);
                 closeConnectionAndLogExceptionsLocked(mAvailablePrimaryConnection);
                 mAvailablePrimaryConnection = null;
@@ -568,7 +567,7 @@ public final class SQLiteConnectionPool implements Closeable {
             try {
                 connection.reconfigure(mConfiguration); // might throw
             } catch (RuntimeException ex) {
-                Log.e(TAG, "Failed to reconfigure available non-primary connection, closing it: "
+                Logger.e(TAG, "Failed to reconfigure available non-primary connection, closing it: "
                         + connection, ex);
                 closeConnectionAndLogExceptionsLocked(connection);
                 mAvailableNonPrimaryConnections.remove(i--);
@@ -797,7 +796,7 @@ public final class SQLiteConnectionPool implements Closeable {
             }
         }
 
-        Log.w(TAG, msg.toString());
+        Logger.w(TAG, msg.toString());
     }
 
     // Can't throw.
@@ -934,7 +933,7 @@ public final class SQLiteConnectionPool implements Closeable {
 
             mAcquiredConnections.put(connection, AcquiredConnectionStatus.NORMAL);
         } catch (RuntimeException ex) {
-            Log.e(TAG, "Failed to prepare acquired connection for session, closing it: "
+            Logger.e(TAG, "Failed to prepare acquired connection for session, closing it: "
                     + connection +", connectionFlags=" + connectionFlags);
             closeConnectionAndLogExceptionsLocked(connection);
             throw ex; // rethrow!

@@ -28,7 +28,6 @@ import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
@@ -257,7 +256,7 @@ public abstract class AbstractCursor implements Cursor {
       final int periodIndex = columnName.lastIndexOf('.');
       if (periodIndex != -1) {
          Exception e = new Exception();
-         Log.e(TAG, "requesting column name with table name -- " + columnName, e);
+         Logger.e(TAG, "requesting column name with table name -- " + columnName, e);
          columnName = columnName.substring(periodIndex + 1);
       }
 

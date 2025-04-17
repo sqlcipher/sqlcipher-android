@@ -35,6 +35,8 @@ namespace android {
 // a long time.
 static const int SOFT_HEAP_LIMIT = 8 * 1024 * 1024;
 
+#undef LOG_TAG
+#define LOG_TAG SQLITE_LOG_TAG
 
 // Called each time a message is logged.
 static void sqliteLogCallback(void* data, int err, const char* msg) {
@@ -43,12 +45,12 @@ static void sqliteLogCallback(void* data, int err, const char* msg) {
     if (errType == 0 || errType == SQLITE_CONSTRAINT || errType == SQLITE_SCHEMA
             || errType == SQLITE_NOTICE || err == SQLITE_WARNING_AUTOINDEX) {
         if (verboseLog) {
-            ALOG(LOG_VERBOSE, SQLITE_LOG_TAG, "(%d) %s\n", err, msg);
+            ALOGV("(%d) %s\n", err, msg);
         }
     } else if (errType == SQLITE_WARNING) {
-        ALOG(LOG_WARN, SQLITE_LOG_TAG, "(%d) %s\n", err, msg);
+        ALOGW("(%d) %s\n", err, msg);
     } else {
-        ALOG(LOG_ERROR, SQLITE_LOG_TAG, "(%d) %s\n", err, msg);
+        ALOGE("(%d) %s\n", err, msg);
     }
 }
 

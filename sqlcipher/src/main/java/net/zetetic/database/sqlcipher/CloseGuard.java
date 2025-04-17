@@ -19,7 +19,8 @@
 */
 
 package net.zetetic.database.sqlcipher;
-import android.util.Log;
+
+import net.zetetic.database.Logger;
 
 /**
  * CloseGuard is a mechanism for flagging implicit finalizer cleanup of
@@ -229,7 +230,7 @@ public final class CloseGuard {
      */
     private static final class DefaultReporter implements Reporter {
         @Override public void report (String message, Throwable allocationSite) {
-            Log.w(message, allocationSite);
+            android.util.Log.w(message, allocationSite);
         }
     }
 }

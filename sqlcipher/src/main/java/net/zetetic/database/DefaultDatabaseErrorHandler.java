@@ -26,7 +26,6 @@ import java.util.List;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import android.database.sqlite.SQLiteException;
-import android.util.Log;
 import android.util.Pair;
 
 /**
@@ -57,7 +56,7 @@ public final class DefaultDatabaseErrorHandler implements DatabaseErrorHandler {
      * is detected.
      */
     public void onCorruption(SQLiteDatabase dbObj, SQLiteException exception) {
-        Log.e(TAG, "Corruption reported by sqlite on database: " + dbObj.getPath());
+        Logger.e(TAG, "Corruption reported by sqlite on database: " + dbObj.getPath());
 
 	// If this is a SEE build, do not delete any database files.
         // It may be that the user has specified an incorrect password.
@@ -107,12 +106,12 @@ public final class DefaultDatabaseErrorHandler implements DatabaseErrorHandler {
         if (fileName.equalsIgnoreCase(":memory:") || fileName.trim().length() == 0) {
             return;
         }
-        Log.e(TAG, "deleting the database file: " + fileName);
+        Logger.e(TAG, "deleting the database file: " + fileName);
         try {
             SQLiteDatabase.deleteDatabase(new File(fileName));
         } catch (Exception e) {
             /* print warning and ignore exception */
-            Log.w(TAG, "delete failed: " + e.getMessage());
+            Logger.w(TAG, "delete failed: " + e.getMessage());
         }
     }
 }

@@ -35,7 +35,6 @@ import android.os.OperationCanceledException;
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
-import android.util.Log;
 
 import android.database.Cursor;
 
@@ -114,14 +113,14 @@ public class DatabaseUtils {
             logException = false;
         } else {
             reply.writeException(e);
-            Log.e(TAG, "Writing exception to parcel", e);
+            Logger.e(TAG, "Writing exception to parcel", e);
             return;
         }
         reply.writeInt(code);
         reply.writeString(e.getMessage());
 
         if (logException) {
-            Log.e(TAG, "Writing exception to parcel", e);
+            Logger.e(TAG, "Writing exception to parcel", e);
         }
     }
 
@@ -1080,7 +1079,7 @@ public class DatabaseUtils {
             sb.append(sbv);
 
             mInsertSQL = sb.toString();
-            if (DEBUG) Log.v(TAG, "insert statement is " + mInsertSQL);
+            if (DEBUG) Logger.v(TAG, "insert statement is " + mInsertSQL);
         }
 
         private SQLiteStatement getStatement(boolean allowReplace) throws SQLException {
@@ -1124,13 +1123,13 @@ public class DatabaseUtils {
             try {
                 SQLiteStatement stmt = getStatement(allowReplace);
                 stmt.clearBindings();
-                if (DEBUG) Log.v(TAG, "--- inserting in table " + mTableName);
+                if (DEBUG) Logger.v(TAG, "--- inserting in table " + mTableName);
                 for (Map.Entry<String, Object> e: values.valueSet()) {
                     final String key = e.getKey();
                     int i = getColumnIndex(key);
                     DatabaseUtils.bindObjectToProgram(stmt, i, e.getValue());
                     if (DEBUG) {
-                        Log.v(TAG, "binding " + e.getValue() + " to column " +
+                        Logger.v(TAG, "binding " + e.getValue() + " to column " +
                               i + " (" + key + ")");
                     }
                 }
@@ -1138,7 +1137,7 @@ public class DatabaseUtils {
                 mDb.setTransactionSuccessful();
                 return result;
             } catch (SQLException e) {
-                Log.e(TAG, "Error inserting " + values + " into table  " + mTableName, e);
+                Logger.e(TAG, "Error inserting " + values + " into table  " + mTableName, e);
                 return -1;
             } finally {
                 mDb.endTransaction();
@@ -1278,10 +1277,10 @@ public class DatabaseUtils {
                         + "execute");
             }
             try {
-                if (DEBUG) Log.v(TAG, "--- doing insert or replace in table " + mTableName);
+                if (DEBUG) Logger.v(TAG, "--- doing insert or replace in table " + mTableName);
                 return mPreparedStatement.executeInsert();
             } catch (SQLException e) {
-                Log.e(TAG, "Error executing InsertHelper with table " + mTableName, e);
+                Logger.e(TAG, "Error executing InsertHelper with table " + mTableName, e);
                 return -1;
             } finally {
                 // you can only call this once per prepare

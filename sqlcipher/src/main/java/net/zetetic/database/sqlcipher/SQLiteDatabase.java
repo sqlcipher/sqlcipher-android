@@ -25,6 +25,7 @@ import android.database.Cursor;
 import net.zetetic.database.DatabaseErrorHandler;
 import net.zetetic.database.DatabaseUtils;
 import net.zetetic.database.DefaultDatabaseErrorHandler;
+import net.zetetic.database.Logger;
 import net.zetetic.database.sqlcipher.SQLiteDebug.DbStats;
 
 import android.database.SQLException;
@@ -35,7 +36,6 @@ import android.os.Looper;
 import android.os.OperationCanceledException;
 import android.text.TextUtils;
 import android.util.EventLog;
-import android.util.Log;
 import android.util.Pair;
 import android.util.Printer;
 
@@ -1016,7 +1016,7 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
                 openInner();
             }
         } catch (SQLiteException ex) {
-            Log.e(TAG, "Failed to open database '" + getLabel() + "'.", ex);
+            Logger.e(TAG, "Failed to open database '" + getLabel() + "'.", ex);
             close();
             throw ex;
         }
@@ -1636,7 +1636,7 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
         try {
             return insertWithOnConflict(table, nullColumnHack, values, CONFLICT_NONE);
         } catch (SQLException e) {
-            Log.e(TAG, "Error inserting", e);
+            Logger.e(TAG, "Error inserting", e);
             return -1;
         }
     }
@@ -1684,7 +1684,7 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
             return insertWithOnConflict(table, nullColumnHack, initialValues,
                     CONFLICT_REPLACE);
         } catch (SQLException e) {
-            Log.e(TAG, "Error inserting", e);
+            Logger.e(TAG, "Error inserting", e);
             return -1;
         }
     }
@@ -2272,15 +2272,15 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
             }
 
             if (mConfigurationLocked.isInMemoryDb()) {
-                Log.i(TAG, "can't enable WAL for memory databases.");
+                Logger.i(TAG, "can't enable WAL for memory databases.");
                 return false;
             }
 
             // make sure this database has NO attached databases because sqlite's write-ahead-logging
             // doesn't work for databases with attached databases
             if (mHasAttachedDbsLocked) {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "this database: " + mConfigurationLocked.label
+                if (Logger.isLoggable(TAG, Logger.DEBUG)) {
+                    Logger.d(TAG, "this database: " + mConfigurationLocked.label
                             + " has attached databases. can't  enable WAL.");
                 }
                 return false;
@@ -2479,7 +2479,7 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
                     String rslt = prog.simpleQueryForString();
                     if (!rslt.equalsIgnoreCase("ok")) {
                         // integrity_checker failed on main or attached databases
-                        Log.e(TAG, "PRAGMA integrity_check on " + p.second + " returned: " + rslt);
+                        Logger.e(TAG, "PRAGMA integrity_check on " + p.second + " returned: " + rslt);
                         return false;
                     }
                 } finally {

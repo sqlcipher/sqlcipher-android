@@ -20,11 +20,11 @@
 
 package net.zetetic.database.sqlcipher;
 
+
 import net.zetetic.database.AbstractWindowedCursor;
 import net.zetetic.database.CursorWindow;
 import net.zetetic.database.DatabaseUtils;
-
-import android.util.Log;
+import net.zetetic.database.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -170,8 +170,8 @@ public class SQLiteCursor extends AbstractWindowedCursor {
                 int startPos = DatabaseUtils.cursorPickFillWindowStartPosition(requiredPos, 0);
                 mCount = mQuery.fillWindow(mWindow, startPos, requiredPos, true);
                 mCursorWindowCapacity = mWindow.getNumRows();
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "received count(*) from native_fill_window: " + mCount);
+                if (Logger.isLoggable(TAG, Logger.DEBUG)) {
+                    Logger.d(TAG, "received count(*) from native_fill_window: " + mCount);
                 }
             } else {
                 int startPos = DatabaseUtils.cursorPickFillWindowStartPosition(requiredPos,
@@ -205,7 +205,7 @@ public class SQLiteCursor extends AbstractWindowedCursor {
         final int periodIndex = columnName.lastIndexOf('.');
         if (periodIndex != -1) {
             Exception e = new Exception();
-            Log.e(TAG, "requesting column name with table name -- " + columnName, e);
+            Logger.e(TAG, "requesting column name with table name -- " + columnName, e);
             columnName = columnName.substring(periodIndex + 1);
         }
 
@@ -261,7 +261,7 @@ public class SQLiteCursor extends AbstractWindowedCursor {
             return super.requery();
         } catch (IllegalStateException e) {
             // for backwards compatibility, just return false
-            Log.w(TAG, "requery() failed " + e.getMessage(), e);
+            Logger.w(TAG, "requery() failed " + e.getMessage(), e);
             return false;
         }
     }

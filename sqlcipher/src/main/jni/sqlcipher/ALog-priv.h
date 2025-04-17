@@ -44,7 +44,7 @@
 #endif
 
 #ifndef ALOGV
-#if LOG_NDEBUG
+#if defined(LOG_NDEBUG) || defined(SQLCIPHER_OMIT_LOG)
 #define ALOGV(...)   ((void)0)
 #else
 #define ALOGV(...) ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
@@ -52,7 +52,7 @@
 #endif
 
 #ifndef ALOGD
-#if LOG_NDEBUG
+#if defined(LOG_NDEBUG) || defined(SQLCIPHER_OMIT_LOG)
 #define ALOGD(...) ((void)0)
 #else
 #define ALOGD(...) ((void)ALOG(LOG_DEBUG, LOG_TAG, __VA_ARGS__))
@@ -60,7 +60,7 @@
 #endif
 
 #ifndef ALOGI
-#if LOG_NDEBUG
+#if defined(LOG_NDEBUG) || defined(SQLCIPHER_OMIT_LOG)
 #define ALOGI(...) ((void)0)
 #else
 #define ALOGI(...) ((void)ALOG(LOG_INFO, LOG_TAG, __VA_ARGS__))
@@ -68,11 +68,19 @@
 #endif
 
 #ifndef ALOGW
+#if defined(SQLCIPHER_OMIT_LOG)
+#define ALOGW(...) ((void)0)
+#else
 #define ALOGW(...) ((void)ALOG(LOG_WARN, LOG_TAG, __VA_ARGS__))
+#endif
 #endif
 
 #ifndef ALOGE
+#if defined(SQLCIPHER_OMIT_LOG)
+#define ALOGE(...) ((void)0)
+#else
 #define ALOGE(...) ((void)ALOG(LOG_ERROR, LOG_TAG, __VA_ARGS__))
+#endif
 #endif
 
 /*

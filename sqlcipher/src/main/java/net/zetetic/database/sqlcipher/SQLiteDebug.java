@@ -22,10 +22,9 @@ package net.zetetic.database.sqlcipher;
 
 import java.util.ArrayList;
 
-import android.os.Build;
-/* import android.os.SystemProperties; */
-import android.util.Log;
 import android.util.Printer;
+
+import net.zetetic.database.Logger;
 
 /**
  * Provides debugging info about all SQLite databases running in the current process.
@@ -41,7 +40,7 @@ public final class SQLiteDebug {
      * Enable using "adb shell setprop log.tag.SQLiteLog VERBOSE".
      */
     public static final boolean DEBUG_SQL_LOG =
-            Log.isLoggable("SQLiteLog", Log.VERBOSE);
+            Logger.isLoggable("SQLiteLog", Logger.VERBOSE);
 
     /**
      * Controls the printing of SQL statements as they are executed.
@@ -49,7 +48,7 @@ public final class SQLiteDebug {
      * Enable using "adb shell setprop log.tag.SQLiteStatements VERBOSE".
      */
     public static final boolean DEBUG_SQL_STATEMENTS =
-            Log.isLoggable("SQLiteStatements", Log.VERBOSE);
+            Logger.isLoggable("SQLiteStatements", Logger.VERBOSE);
 
     /**
      * Controls the printing of wall-clock time taken to execute SQL statements
@@ -58,7 +57,7 @@ public final class SQLiteDebug {
      * Enable using "adb shell setprop log.tag.SQLiteTime VERBOSE".
      */
     public static final boolean DEBUG_SQL_TIME =
-            Log.isLoggable("SQLiteTime", Log.VERBOSE);
+            Logger.isLoggable("SQLiteTime", Logger.VERBOSE);
 
     /**
      * True to enable database performance testing instrumentation.

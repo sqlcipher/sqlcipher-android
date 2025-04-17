@@ -26,7 +26,8 @@ import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
-import android.util.Log;
+
+import net.zetetic.database.Logger;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -397,8 +398,8 @@ public class SQLiteQueryBuilder
                 projectionIn, selection, groupBy, having,
                 sortOrder, limit);
 
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
-            Log.d(TAG, "Performing query: " + sql);
+        if (Logger.isLoggable(TAG, Logger.DEBUG)) {
+            Logger.d(TAG, "Performing query: " + sql);
         }
         return db.rawQueryWithFactory(
                 mFactory, sql, selectionArgs,

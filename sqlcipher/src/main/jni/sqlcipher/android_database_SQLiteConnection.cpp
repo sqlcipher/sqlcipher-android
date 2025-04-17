@@ -39,6 +39,9 @@
 // Set to 1 to use UTF16 storage for localized indexes.
 #define UTF16_STORAGE 0
 
+#undef LOG_TAG
+#define LOG_TAG SQLITE_LOG_TAG
+
 namespace android {
 
 /* Busy timeout in milliseconds.
@@ -96,15 +99,15 @@ struct SQLiteConnection {
 // Called each time a statement begins execution, when tracing is enabled.
 static void sqliteTraceCallback(void *data, const char *sql) {
     auto* connection = static_cast<SQLiteConnection*>(data);
-    ALOG(LOG_VERBOSE, SQLITE_TRACE_TAG, "%s: \"%s\"\n",
-            connection->label.c_str(), sql);
+    ALOGV("%s: \"%s\"\n",
+          connection->label.c_str(), sql);
 }
 
 // Called each time a statement finishes execution, when profiling is enabled.
 static void sqliteProfileCallback(void *data, const char *sql, sqlite3_uint64 tm) {
     auto* connection = static_cast<SQLiteConnection*>(data);
-    ALOG(LOG_VERBOSE, SQLITE_PROFILE_TAG, "%s: \"%s\" took %0.3f ms\n",
-            connection->label.c_str(), sql, tm * 0.000001f);
+    ALOGV("%s: \"%s\" took %0.3f ms\n",
+          connection->label.c_str(), sql, tm * 0.000001f);
 }
 
 // Called after each SQLite VM instruction when cancelation is enabled.

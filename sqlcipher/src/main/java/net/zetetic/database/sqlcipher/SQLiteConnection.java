@@ -28,12 +28,12 @@ import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
-import android.util.Log;
 import android.util.LruCache;
 import android.util.Printer;
 
 import net.zetetic.database.CursorWindow;
 import net.zetetic.database.DatabaseUtils;
+import net.zetetic.database.Logger;
 import net.zetetic.database.sqlcipher.SQLiteDebug.DbStats;
 
 import java.text.SimpleDateFormat;
@@ -216,7 +216,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
 
     void changePassword(byte[] newPassword){
         int result = nativeReKey(mConnectionPtr, newPassword);
-        Log.i(TAG, String.format("Database rekey operation returned:%s", result));
+        Logger.i(TAG, String.format("Database rekey operation returned:%s", result));
         if(result != 0){
             throw new SQLiteException(String.format("Failed to rekey database, result code:%s", result));
         }
@@ -231,7 +231,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
         if(mConfiguration.password != null && mConfiguration.password.length > 0){
           int rc = nativeKey(mConnectionPtr, mConfiguration.password);
-          Log.i(TAG, String.format("Database keying operation returned:%s", rc));
+          Logger.i(TAG, String.format("Database keying operation returned:%s", rc));
         }
         if(mConfiguration.databaseHook != null){
             mConfiguration.databaseHook.postKey(this);
@@ -372,7 +372,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             // If we don't change the journal mode, nothing really bad happens.
             // In the worst case, an application that enables WAL might not actually
             // get it, although it can still use connection pooling.
-            Log.w(TAG, "Could not change the database journal mode of '"
+            Logger.w(TAG, "Could not change the database journal mode of '"
                     + mConfiguration.label + "' from '" + value + "' to '" + newValue
                     + "' because the database is locked.  This usually means that "
                     + "there are other open connections to the database which prevents "
@@ -1003,7 +1003,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
                 // which will in turn call finalizePreparedStatement() to finalize and
                 // recycle the statement.
                 if (DEBUG) {
-                    Log.d(TAG, "Could not reset prepared statement due to an exception.  "
+                    Logger.d(TAG, "Could not reset prepared statement due to an exception.  "
                             + "Removing it from the cache.  SQL: "
                             + trimSqlForDisplay(statement.mSql), ex);
                 }
@@ -1462,7 +1462,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             if (detail != null) {
                 msg.append(", ").append(detail);
             }
-            Log.d(TAG, msg.toString());
+            Logger.d(TAG, msg.toString());
         }
 
         private int newOperationCookieLocked(int index) {

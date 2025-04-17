@@ -76,6 +76,34 @@ db = Room.databaseBuilder(context, AppDatabase.class, databaseFile.getAbsolutePa
         .openHelperFactory(factory).build();
 ```
 
+### Logging
+
+Logging may occur in 3 distinct areas within this library:
+
+1. Within the Java client library
+2. Within the JNI interop layer
+3. Within SQLCipher core
+
+##### Java Client Logging
+
+By default, logging within the Java client library is routed to Logcat. If you wish to disable this logging entirely, you may utilize
+the [`NoopTarget`](sqlcipher/src/main/java/net/zetetic/database/NoopTarget.java) instead:
+
+```java
+Logger.setTarget(new NoopTarget());
+```
+
+You can instead provide a custom logging target by registering a different target that implements the [`LogTarget`](sqlcipher/src/main/java/net/zetetic/database/LogTarget.java) interface.
+
+##### JNI Interop Layer
+
+There are two different compile-specific options available to alter the logging output from the JNI layer. To remove `INFO`, `DEBUG`, and `VERBOSE` log messages from the JNI layer, include `-DNDEBUG` with CFLAGS; this will allow `WARN` and `ERROR` logs to output to logcat. Alternatively, to exclude all log output from JNI, build the library using `-DSQLCIPHER_OMIT_LOG`.
+
+##### SQLCipher core
+
+To manage the logging produced from SQLCipher core, please review the runtime configurations: [`PRAGMA cipher_log`](https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_log),
+[`PRAGMA cipher_log_level`](https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_log_level), and [`PRAGMA cipher_log_source`](https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_log_source).
+
 ### Building 
 
 ## Android NDK
