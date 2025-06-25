@@ -230,6 +230,15 @@ static jlong nativeOpen(JNIEnv* env, jclass clazz, jstring pathStr, jint openFla
         return 0;
     }
 
+    //Enable load_extension function
+    err = sqlite3_enable_load_extension(db, 1);
+    if (err != SQLITE_OK) {
+        throw_sqlite3_exception(env, db, "Could not enable load_extension function");
+        sqlite3_close(db);
+        return 0;
+    }
+
+
     // Create wrapper object.
     auto* connection = new SQLiteConnection(db, openFlags, path, label);
 
