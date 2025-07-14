@@ -157,7 +157,7 @@ static jint nativeKey(JNIEnv* env, jclass clazz, jlong connectionPtr, jbyteArray
     }
     if (rc != SQLITE_OK) {
         ALOGE("sqlite3_key(%p) failed: %d", connection->db, rc);
-        throw_sqlite3_exception(env, connection->db, "Could not key db.");
+        throw_sqlite3_exception_errcode(env, rc, "Could not key db.");
     }
     return rc;
 }
@@ -178,7 +178,7 @@ static jint nativeKey(JNIEnv* env, jclass clazz, jlong connectionPtr, jbyteArray
         }
         if (rc != SQLITE_OK) {
             ALOGE("sqlite3_rekey(%p) failed: %d", connection->db, rc);
-            throw_sqlite3_exception(env, connection->db, "Could not rekey db.");
+            throw_sqlite3_exception_errcode(env, rc, "Could not rekey db.");
         }
         return rc;
     }
