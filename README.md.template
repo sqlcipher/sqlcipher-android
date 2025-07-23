@@ -71,7 +71,7 @@ SQLCipher for Android may also integrate with the Room API via the `SupportOpenH
 System.loadLibrary("sqlcipher");
 String password = "Password1!";
 File databaseFile = context.getDatabasePath("demo.db");
-SupportOpenHelperFactory factory = new SupportOpenHelperFactory("password.getBytes(StandardCharsets.UTF_8));
+SupportOpenHelperFactory factory = new SupportOpenHelperFactory(password.getBytes(StandardCharsets.UTF_8));
 db = Room.databaseBuilder(context, AppDatabase.class, databaseFile.getAbsolutePath())
         .openHelperFactory(factory).build();
 ```
