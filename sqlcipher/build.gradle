@@ -99,18 +99,8 @@ def isReleaseBuild() {
     return mavenVersionName.contains("SNAPSHOT") == false
 }
 
-def getReleaseRepositoryUrl() {
-    return hasProperty('mavenReleaseRepositoryUrl') ? mavenReleaseRepositoryUrl
-            : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-}
-
-def getSnapshotRepositoryUrl() {
-    if(hasProperty('mavenLocalRepositoryPrefix')) {
-        return "${mavenLocalRepositoryPrefix}${buildDir}/${mavenSnapshotRepositoryUrl}"
-    } else {
-        return hasProperty('mavenSnapshotRepositoryUrl') ? mavenSnapshotRepositoryUrl
-                : "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
+static def getReleaseRepositoryUrl() {
+    return "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
 }
 
 def getRepositoryUsername() {
@@ -166,9 +156,7 @@ afterEvaluate {
 
         repositories {
             maven {
-                def repoUrl = isReleaseBuild()
-                        ? getReleaseRepositoryUrl()
-                        : getSnapshotRepositoryUrl()
+                def repoUrl = getReleaseRepositoryUrl()
                 url = repoUrl
                 credentials {
                     username = getRepositoryUsername()
@@ -180,7 +168,7 @@ afterEvaluate {
     }
 
     signing {
-        required { isReleaseBuild() && gradle.taskGraph.hasTask("publish") }
+        required { gradle.taskGraph.hasTask("publish") }
         sign publishing.publications.mavenJava
     }
 }
