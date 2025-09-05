@@ -921,16 +921,60 @@ extern int register_android_database_CursorWindow(JNIEnv *env);
 
 } // namespace android
 
+void setEnvarToCacheDirectory(JNIEnv* env, const char *envar) {
+    jclass activity = NULL, context = NULL, file = NULL;
+    jmethodID getCurrentApp = NULL, getCacheDir = NULL, getAbsolutePath = NULL;
+    jobject app = NULL, cache = NULL;
+    jstring path = NULL;
+    const char *pathUtf8 = NULL, *tmpdir = getenv(envar);
+
+    /* check if SQLCIPHER_TMP is already set externally by the application (i.e. an override), and return immediately if it is */
+    if(tmpdir && strlen(tmpdir) > 0) {
+      return;
+    }
+
+    /* call ActivityThread.currentApplication().getCacheDir().getAbsolutePath() and set it to SQLCIPHER_TMP*/
+    if (
+       (activity = env->FindClass("android/app/ActivityThread"))
+       && (context = env->FindClass("android/content/Context"))
+       && (file = env->FindClass("java/io/File"))
+       && (getCurrentApp = env->GetStaticMethodID(activity, "currentApplication", "()Landroid/app/Application;"))
+       && (getCacheDir = env->GetMethodID(context, "getCacheDir", "()Ljava/io/File;"))
+       && (getAbsolutePath = env->GetMethodID(file, "getAbsolutePath", "()Ljava/lang/String;"))
+       && (app = env->CallStaticObjectMethod(activity, getCurrentApp))
+       && (cache = env->CallObjectMethod(app, getCacheDir))
+       && (path = (jstring) env->CallObjectMethod(cache, getAbsolutePath))
+       && (pathUtf8 = env->GetStringUTFChars(path, NULL))
+    ) {
+      setenv(envar, pathUtf8, 1);
+    } else {
+      ALOGE("%s unable to obtain cache directory from JNIEnv", __func__);
+    }
+
+    /* cleanup */
+    if(pathUtf8) env->ReleaseStringUTFChars(path, pathUtf8);
+    if(path) env->DeleteLocalRef(path);
+    if(cache) env->DeleteLocalRef(cache);
+    if(app) env->DeleteLocalRef(app);
+    if(file) env->DeleteLocalRef(file);
+    if(context) env->DeleteLocalRef(context);
+    if(activity) env->DeleteLocalRef(activity);
+}
+
+
 extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
   JNIEnv *env = 0;
 
   android::gpJavaVM = vm;
   vm->GetEnv((void**)&env, JNI_VERSION_1_4);
 
+  setEnvarToCacheDirectory(env, "SQLCIPHER_TMP");
+
   android::register_android_database_SQLiteConnection(env);
   android::register_android_database_SQLiteDebug(env);
   android::register_android_database_SQLiteGlobal(env);
   android::register_android_database_CursorWindow(env);
+
 
   return JNI_VERSION_1_4;
 }
