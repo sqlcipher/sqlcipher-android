@@ -33,7 +33,7 @@ LOCAL_SRC_FILES:=                         \
 
 LOCAL_SRC_FILES += sqlite3.c
 
-LOCAL_C_INCLUDES += $(LOCAL_PATH) $(LOCAL_PATH)/nativehelper/ $(LOCAL_PATH)/android-libs/include/
+LOCAL_C_INCLUDES += $(LOCAL_PATH) $(LOCAL_PATH)/nativehelper/ $(LOCAL_PATH)/android-libs/include/ $(LOCAL_PATH)/android-libs/include/$(TARGET_ARCH_ABI)
 
 LOCAL_MODULE:= libsqlcipher
 LOCAL_LDLIBS += -ldl -llog
