@@ -211,14 +211,14 @@ static jlong nativeOpen(JNIEnv* env, jclass clazz, jstring pathStr, jint openFla
     err = sqlite3_create_collation(db, "localized", SQLITE_UTF8, 0, coll_localized);
     if (err != SQLITE_OK) {
         throw_sqlite3_exception_errcode(env, err, "Could not register collation");
-        sqlite3_close(db);
+        sqlite3_close_v2(db);
         return 0;
     }
 
     // Check that the database is really read/write when that is what we asked for.
     if ((sqliteFlags & SQLITE_OPEN_READWRITE) && sqlite3_db_readonly(db, NULL)) {
         throw_sqlite3_exception(env, db, "Could not open the database in read/write mode.");
-        sqlite3_close(db);
+        sqlite3_close_v2(db);
         return 0;
     }
 
@@ -226,7 +226,7 @@ static jlong nativeOpen(JNIEnv* env, jclass clazz, jstring pathStr, jint openFla
     err = sqlite3_busy_timeout(db, BUSY_TIMEOUT_MS);
     if (err != SQLITE_OK) {
         throw_sqlite3_exception(env, db, "Could not set busy timeout");
-        sqlite3_close(db);
+        sqlite3_close_v2(db);
         return 0;
     }
 
@@ -253,10 +253,10 @@ static void nativeClose(JNIEnv* env, jclass clazz, jlong connectionPtr) {
 
     if (connection) {
         ALOGV("Closing connection %p", connection->db);
-        int err = sqlite3_close(connection->db);
+        int err = sqlite3_close_v2(connection->db);
         if (err != SQLITE_OK) {
             // This can happen if sub-objects aren't closed first.  Make sure the caller knows.
-            ALOGE("sqlite3_close(%p) failed: %d", connection->db, err);
+            ALOGE("sqlite3_close_v2(%p) failed: %d", connection->db, err);
             throw_sqlite3_exception(env, connection->db, "Count not close db.");
             return;
         }
@@ -967,9 +967,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 
   android::gpJavaVM = vm;
   vm->GetEnv((void**)&env, JNI_VERSION_1_4);
-
   setEnvarToCacheDirectory(env, "SQLCIPHER_TMP");
-
   android::register_android_database_SQLiteConnection(env);
   android::register_android_database_SQLiteDebug(env);
   android::register_android_database_SQLiteGlobal(env);
