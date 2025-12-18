@@ -1,18 +1,14 @@
--keep class net.zetetic.** {
-  native <methods>;
-  private native <methods>;
-  public <init>(...);
-  long mNativeHandle;
+# Keep SQLCipher classes and JNI descriptors
+-keep,includedescriptorclasses class net.zetetic.database.** { *; }
+-keep,includedescriptorclasses interface net.zetetic.database.** { *; }
+
+# Keep native methods
+-keepclasseswithmembernames class net.zetetic.database.** {
+    native <methods>;
 }
 
--keepclassmembers class net.zetetic.database.sqlcipher.SQLiteCustomFunction {
-  public java.lang.String name;
-  public int numArgs;
-  private void dispatchCallback(java.lang.String[]);
-}
+# Prevent warnings for optional Android APIs
+-dontwarn net.zetetic.database.**
 
--keepclassmembers class net.zetetic.database.sqlcipher.SQLiteDebug$PagerStats {
-  public int largestMemAlloc;
-  public int memoryUsed;
-  public int pageCacheOverflow;
-}
+# Support Room with annontation-based reflection support
+-keepattributes *Annotation*
