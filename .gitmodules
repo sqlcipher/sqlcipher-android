@@ -1,0 +1,3 @@
+[submodule "sqlcipher/src/main/jni/libtomcrypt/src"]
+	path = sqlcipher/src/main/jni/libtomcrypt/src
+	url = https://github.com/libtom/libtomcrypt
