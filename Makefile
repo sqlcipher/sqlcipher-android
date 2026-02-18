@@ -19,15 +19,6 @@ build-release:
 	-PsqlcipherAndroidVersion="$(SQLCIPHER_ANDROID_VERSION)" \
 	assembleRelease
 
-publish-snapshot-to-local-maven:
-	@ $(collect-signing-info) \
-	$(GRADLE) \
-	-PpublishSnapshot=true \
-	-Psigning.keyId="$$gpgKeyId" \
-	-Psigning.secretKeyRingFile="$$gpgKeyRingFile" \
-	-Psigning.password="$$gpgPassword" \
-	publishReleasePublicationToMavenLocal
-
 publish-remote-release:
 	@ $(collect-signing-info) \
 	$(collect-nexus-info) \

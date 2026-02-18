@@ -33,7 +33,7 @@ project.ext {
     if(project.hasProperty('sqlcipherAndroidVersion') && "${sqlcipherAndroidVersion}") {
         libraryVersion = "${sqlcipherAndroidVersion}"
     } else {
-        libraryVersion = "undefined"
+        libraryVersion = "4.14.0"
     }
     minSdkVersion = 21
     androidXSQLiteVersion = "2.2.0"
@@ -64,20 +64,20 @@ project.ext {
     nexusStagingProfileId = project.hasProperty('nexusStagingProfileId') ? "${nexusStagingProfileId}" : ""
 }
 
-task generateReadMe {
+def generateReadMe = tasks.register('generateReadMe') {
     def readme = new File("README.md")
     def engine = new SimpleTemplateEngine()
     def reader = new FileReader("README.md.template")
     def binding = [
-                    libraryVersion: project.ext.libraryVersion,
-                    androidXSQLiteVersion: project.ext.androidXSQLiteVersion,
-                    androidNdkVersion: project.ext.androidNdkVersion,
-                    minSdkVersion: project.ext.minSdkVersion,
-                  ]
+            libraryVersion       : project.ext.libraryVersion,
+            androidXSQLiteVersion: project.ext.androidXSQLiteVersion,
+            androidNdkVersion    : project.ext.androidNdkVersion,
+            minSdkVersion        : project.ext.minSdkVersion,
+    ]
     def template = engine.createTemplate(reader).make(binding)
     readme.write(template.toString())
 }
 
 project.afterEvaluate {
-    build.dependsOn generateReadMe
+    build.dependsOn(generateReadMe)
 }

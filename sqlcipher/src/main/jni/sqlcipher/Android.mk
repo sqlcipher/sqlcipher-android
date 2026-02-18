@@ -1,10 +1,12 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
-ifdef $SSQLCIPHER_CFLAGS
+ifdef SQLCIPHER_CFLAGS
+$(info "Using external CFLAGS")
 LOCAL_CFLAGS += ${SQLCIPHER_CFLAGS}
 else
-LOCAL_CFLAGS += -DSQLITE_HAS_CODEC -DSQLCIPHER_CRYPTO_OPENSSL -DSQLITE_TEMP_STORE=2 \
+$(info "Using default internal CFLAGS")
+LOCAL_CFLAGS += -DSQLITE_HAS_CODEC -DSQLCIPHER_CRYPTO_LIBTOMCRYPT -DSQLITE_TEMP_STORE=2 \
 	-DSQLITE_THREADSAFE=1 -DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_FTS3_PARENTHESIS \
 	-DSQLITE_ENABLE_FTS4 -DSQLITE_ENABLE_FTS4_UNICODE61 -DSQLITE_ENABLE_FTS5 \
 	-DSQLITE_ENABLE_MEMORY_MANAGEMENT -DSQLITE_ENABLE_UNLOCK_NOTIFY -DSQLITE_ENABLE_RTREE \
@@ -20,7 +22,7 @@ LOCAL_CPPFLAGS += -Wno-conversion-null
 
 $(info SQLCipher LOCAL_CFLAGS:${LOCAL_CFLAGS})
 
-LOCAL_SRC_FILES:=                         \
+LOCAL_SRC_FILES :=                        \
 	android_database_SQLiteCommon.cpp     \
 	android_database_SQLiteConnection.cpp \
 	android_database_CursorWindow.cpp     \
@@ -29,20 +31,31 @@ LOCAL_SRC_FILES:=                         \
 	JNIHelp.cpp                           \
 	JniConstants.cpp                      \
 	JNIString.cpp                         \
-	CursorWindow.cpp
+	CursorWindow.cpp					  \
+	sqlite3.c
 
-LOCAL_SRC_FILES += sqlite3.c
-
-LOCAL_C_INCLUDES += $(LOCAL_PATH) $(LOCAL_PATH)/nativehelper/ $(LOCAL_PATH)/android-libs/include/ $(LOCAL_PATH)/android-libs/include/$(TARGET_ARCH_ABI)
+LOCAL_C_INCLUDES += $(LOCAL_PATH) 						  \
+	$(LOCAL_PATH)/nativehelper/   						  \
+	$(LOCAL_PATH)/android-libs/include/ 				  \
+	$(LOCAL_PATH)/android-libs/include/$(TARGET_ARCH_ABI) \
 
 LOCAL_MODULE:= libsqlcipher
 LOCAL_LDLIBS += -ldl -llog
 LOCAL_LDFLAGS += -Wl,-z,max-page-size=16384
+ifeq ($(findstring OPENSSL,$(LOCAL_CFLAGS)),OPENSSL)
 LOCAL_STATIC_LIBRARIES += static-libcrypto
-
+else
+LOCAL_STATIC_LIBRARIES += static-libtomcrypt
+endif
 include $(BUILD_SHARED_LIBRARY)
 
+ifeq ($(findstring OPENSSL,$(LOCAL_CFLAGS)),OPENSSL)
 include $(CLEAR_VARS)
 LOCAL_MODULE := static-libcrypto
 LOCAL_SRC_FILES := $(LOCAL_PATH)/android-libs/$(TARGET_ARCH_ABI)/libcrypto.a
 include $(PREBUILT_STATIC_LIBRARY)
+else
+include $(CLEAR_VARS)
+include $(LOCAL_PATH)/../libtomcrypt/Android.mk
+include $(CLEAR_VARS)
+endif
