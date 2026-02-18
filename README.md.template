@@ -106,27 +106,15 @@ To manage the logging produced from SQLCipher core, please review the runtime co
 
 ### Building 
 
-## Android NDK
-
-Currently, SQLCipher for Android uses NDK version "<%=androidNdkVersion%>".
-
-## External dependencies
-
-This repository is not batteries-included. Specifically, you will need to build `libcrypto.a`, the static library from OpenSSL using the NDK for the [supported platforms](#compatibility), and bundle the top-level `include` folder from OpenSSL. Additionally, you will need to build a SQLCipher amalgamation. These files will need to be placed in the following locations:
+This project and it's dependencies can be built directly within Android Studio.  Currently, SQLCipher for Android uses NDK version "<%=androidNdkVersion%>". The repository includes a submodule for SQLCipher core, and LibTomCrypt as external dependencies. When cloning the repository, please execute the following command at the root of the project:
 
 ```
-<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/armeabi-v7a/libcrypto.a
-<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/x86/libcrypto.a
-<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/x86_64/libcrypto.a
-<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/arm64-v8a/libcrypto.a
-<project-root>/sqlcipher/src/main/jni/sqlcipher/android-libs/include/
-<project-root>/sqlcipher/src/main/jni/sqlcipher/sqlite3.c
-<project-root>/sqlcipher/src/main/jni/sqlcipher/sqlite3.h
+git submodule update --init
 ```
 
 To build the AAR package, either build directly within Android Studio, or from the command line:
 
 ```
-./gradlew assembleRelease
+./gradlew -PsqlcipherAndroidVerison="<%=libraryVersion%>" assembleRelease
 ```
 
