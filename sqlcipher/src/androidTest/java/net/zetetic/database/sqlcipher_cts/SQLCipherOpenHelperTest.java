@@ -20,7 +20,18 @@ import java.io.File;
 public class SQLCipherOpenHelperTest extends AndroidSQLCipherTestCase {
 
   @Test
-  public void shouldAccessReadOnlyDatabaseFromOpenHelper(){
+  public void shouldAccessCipherProviderFromReadOnlyDatabaseUsingOpenHelper(){
+    database.close();
+    SqlCipherOpenHelper helper = new SqlCipherOpenHelper(context);
+    SQLiteDatabase db = helper.getReadableDatabase();
+    SQLiteStatement statement = db.compileStatement("PRAGMA cipher_provider;");
+    String version = statement.simpleQueryForString();
+    Log.i(TAG, String.format("SQLCipher provider:%s", version));
+    assertThat(db, is(notNullValue()));
+  }
+
+  @Test
+  public void shouldAccessCipherProviderVersionFromReadOnlyDatabaseUsingOpenHelper(){
     database.close();
     SqlCipherOpenHelper helper = new SqlCipherOpenHelper(context);
     SQLiteDatabase db = helper.getReadableDatabase();
