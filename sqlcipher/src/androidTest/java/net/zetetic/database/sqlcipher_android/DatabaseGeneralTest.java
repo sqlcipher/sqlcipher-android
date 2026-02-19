@@ -27,6 +27,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.CharArrayBuffer;
@@ -37,7 +38,6 @@ import android.os.Parcel;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.filters.LargeTest;
-import androidx.test.filters.Suppress;
 
 import android.util.Log;
 import android.util.Pair;
@@ -51,6 +51,7 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -140,7 +141,7 @@ public class DatabaseGeneralTest {
         assertEquals("this is an updated test", value);
     }
 
-    @Suppress // PHONE_NUMBERS_EQUAL not supported
+    @Ignore // PHONE_NUMBERS_EQUAL not supported
     @Test
     public void testPhoneNumbersEqual() throws Exception {
         mDatabase.execSQL("CREATE TABLE phones (num TEXT);");
@@ -290,7 +291,7 @@ public class DatabaseGeneralTest {
      * 
      * @throws Exception
      */
-    @Suppress // PHONE_NUMBERS_EQUAL not supported
+    @Ignore // PHONE_NUMBERS_EQUAL not supported
     @Test
     public void testPhoneNumbersEqualInternationl() throws Exception {
         assertPhoneNumberEqual("1", "1");
@@ -458,7 +459,7 @@ public class DatabaseGeneralTest {
         c.close();
     }
 
-    @Suppress // unicode collator not supported yet
+    @Ignore // unicode collator not supported yet
     @Test
     public void testTokenize() throws Exception {
         Cursor c;
@@ -859,7 +860,7 @@ public class DatabaseGeneralTest {
      * This test is available only when the platform has a locale with the language "ja".
      * It finishes without failure when it is not available.  
      */
-    @Suppress
+    @Ignore
     @Test
     public void testCollateLocalizedForJapanese() throws Exception {
         final String testName = "DatabaseGeneralTest#testCollateLocalizedForJapanese()";

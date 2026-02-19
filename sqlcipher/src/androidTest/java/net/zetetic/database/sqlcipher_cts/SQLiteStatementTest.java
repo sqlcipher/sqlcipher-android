@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -36,10 +37,10 @@ import android.os.ParcelFileDescriptor;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.Suppress;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -234,19 +235,22 @@ public class SQLiteStatementTest {
         statement.close();
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessNormal() throws IOException {
         doTestSimpleQueryForBlobFileDescriptorSuccess(0);
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessEmpty() throws IOException {
         doTestSimpleQueryForBlobFileDescriptorSuccess(1);
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessNull() {
         populateBlobTable();
@@ -256,25 +260,29 @@ public class SQLiteStatementTest {
         assertNull(stm.simpleQueryForBlobFileDescriptor());
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testSimpleQueryForBlobFileDescriptorSuccess00() throws IOException {
         doTestSimpleQueryForBlobFileDescriptorSuccess(3);
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessFF() throws IOException {
         doTestSimpleQueryForBlobFileDescriptorSuccess(4);
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessEmbeddedNul() throws IOException {
         doTestSimpleQueryForBlobFileDescriptorSuccess(5);
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     public void doTestSimpleQueryForBlobFileDescriptorSuccess(int i) throws IOException {
         populateBlobTable();
 
@@ -284,7 +292,8 @@ public class SQLiteStatementTest {
         assertFileDescriptorContent(BLOBS[i], fd);
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testSimpleQueryForBlobFileDescriptorSuccessParam() throws IOException {
         populateBlobTable();

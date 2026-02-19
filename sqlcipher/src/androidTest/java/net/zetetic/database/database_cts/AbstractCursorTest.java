@@ -23,6 +23,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
@@ -38,10 +39,10 @@ import android.provider.Settings;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.Suppress;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -192,7 +193,8 @@ public class AbstractCursorTest {
         assertTrue(mock.hadCalledOnChange());
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testOnMove() {
         assertFalse(mTestAbstractCursor.getOnMoveRet());
@@ -207,7 +209,8 @@ public class AbstractCursorTest {
         assertEquals(5, mTestAbstractCursor.getNewPos());
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testOnMove_samePosition() {
         mTestAbstractCursor.moveToFirst();
@@ -364,7 +367,8 @@ public class AbstractCursorTest {
         assertTrue(mock.hadCalledOnInvalid());
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testCopyStringToBuffer() {
         CharArrayBuffer ca = new CharArrayBuffer(1000);
@@ -380,7 +384,8 @@ public class AbstractCursorTest {
         assertEquals(sb.toString(), new String(ca.data, 0, ca.sizeCopied));
     }
 
-    @Suppress
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
     @Test
     public void testCheckPosition() {
         // Test with position = -1.
