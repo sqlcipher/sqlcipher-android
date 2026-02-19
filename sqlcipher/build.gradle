@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: "maven-publish"
 apply plugin: "signing"
 
-import org.gradle.internal.logging.text.StyledTextOutputFactory;
-import static org.gradle.internal.logging.text.StyledTextOutput.Style;
+import org.gradle.internal.logging.text.StyledTextOutputFactory
+import static org.gradle.internal.logging.text.StyledTextOutput.Style
 import java.nio.file.Files
 import java.nio.file.Paths
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING
@@ -111,7 +111,7 @@ def generateAmalgamation = tasks.register("generateAmalgamation") {
         filesToMove.each {
             def sourcePath = Paths.get(submoduleDir.absolutePath, it)
             def targetPath = Paths.get(sqlcipherDir.absolutePath, it)
-            def moveResult = Files.move(sourcePath, targetPath, REPLACE_EXISTING);
+            def moveResult = Files.move(sourcePath, targetPath, REPLACE_EXISTING)
             if(moveResult == null){
                 throw new GradleException("Faile to move ${sourcePath} to ${targetPath}")
             }
@@ -170,10 +170,6 @@ allprojects {
         // The order in which you list these repositories matter.
         google()
     }
-}
-
-def isReleaseBuild() {
-    return mavenVersionName.contains("SNAPSHOT") == false
 }
 
 static def getReleaseRepositoryUrl() {
