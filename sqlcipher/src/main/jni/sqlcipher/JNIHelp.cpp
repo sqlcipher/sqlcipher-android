@@ -294,13 +294,11 @@ const char* jniStrError(int errnum, char* buf, size_t buflen) {
     // char *strerror_r(int errnum, char *buf, size_t n);
     return strerror_r(errnum, buf, buflen);
 #else
-    int rc = strerror_r(errnum, buf, buflen);
-    if (rc != 0) {
-        // (POSIX only guarantees a value other than 0. The safest
-        // way to implement this function is to use C++ and overload on the
-        // type of strerror_r to accurately distinguish GNU from POSIX.)
-        snprintf(buf, buflen, "errno %d", errnum);
+    char* msg = strerror_r(errnum, buf, buflen);
+    if (msg != nullptr){
+        return msg;
     }
+    snprintf(buf, buflen, "errno %d", errnum);
     return buf;
 #endif
 }

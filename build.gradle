@@ -35,9 +35,9 @@ project.ext {
     } else {
         libraryVersion = "4.14.0"
     }
-    minSdkVersion = 21
-    androidXSQLiteVersion = "2.2.0"
-    roomVersion = "2.5.0"
+    minSdkVersion = 23
+    androidXSQLiteVersion = "2.6.2"
+    roomVersion = "2.8.4"
     androidNdkVersion = "25.2.9519653"
     mavenLocalRepositoryPrefix = "file://"
     if(project.hasProperty('publishLocal') && publishLocal.toBoolean()){
