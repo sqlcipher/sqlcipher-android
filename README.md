@@ -4,7 +4,7 @@ SQLCipher for Android provides a library replacement for `android.database.sqlit
 
 ### Compatibility
 
-SQLCipher for Android supports Android API 21 and up on `armeabi-v7a`, `x86`, `x86_64`, and `arm64-v8a` architectures.
+SQLCipher for Android supports Android API 23 and up on `armeabi-v7a`, `x86`, `x86_64`, and `arm64-v8a` architectures.
 
 ### Contributions
 
@@ -17,14 +17,14 @@ Add a local reference to the local library and dependency:
 
 ```groovy
 implementation files('libs/sqlcipher-android-4.14.0-release.aar')
-implementation 'androidx.sqlite:sqlite:2.2.0'
+implementation 'androidx.sqlite:sqlite:2.6.2'
 ```
 
 or source a Community edition build from Maven Central:
 
 ```groovy
 implementation 'net.zetetic:sqlcipher-android:4.14.0@aar'
-implementation 'androidx.sqlite:sqlite:2.2.0'
+implementation 'androidx.sqlite:sqlite:2.6.2'
 ```
 
 ```java
