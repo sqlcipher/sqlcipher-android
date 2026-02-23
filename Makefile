@@ -15,9 +15,7 @@ build-debug:
 	$(GRADLE) assembleDebug
 
 build-release:
-	$(GRADLE) \
-	-PsqlcipherAndroidVersion="$(SQLCIPHER_ANDROID_VERSION)" \
-	assembleRelease
+	$(GRADLE) assembleRelease
 
 publish-remote-release:
 	@ $(collect-signing-info) \
@@ -31,7 +29,6 @@ publish-remote-release:
 	-PsigningKeyPassword="$$gpgPassword" \
 	-PnexusUsername="$$nexusUsername" \
 	-PnexusPassword="$$nexusPassword" \
-	-PsqlcipherAndroidVersion="$(SQLCIPHER_ANDROID_VERSION)" \
 	sqlcipher:publish
 
 collect-signing-info := \
