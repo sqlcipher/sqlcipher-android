@@ -101,7 +101,7 @@ def generateAmalgamation = tasks.register("generateAmalgamation") {
     def amalgamationHeader = new File(sqlcipherDir.absolutePath, "sqlite3.h")
     doLast {
         if(!sqlcipherSubmodule.exists()) {
-            log.withStyle(Style.Failure).println('SQLCipher submodule missing, initializing')
+            log.withStyle(Style.Info).println('SQLCipher submodule missing, initializing')
             shellCmd(project.rootDir.absolutePath, "git", "submodule", "update", "--init")
         }
         log.withStyle(Style.Info).println('SQLCipher amalgamation not found, generating.')
