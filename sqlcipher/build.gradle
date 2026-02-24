@@ -95,21 +95,22 @@ def generateAmalgamation = tasks.register("generateAmalgamation") {
     description = "Generate SQLCipher amalgamation source files"
     group = "SQLCipher"
     def sqlcipherDir = new File("${project.rootDir}/sqlcipher/src/main/jni/sqlcipher/")
-    def submoduleDir = new File(sqlcipherDir.absolutePath, "src/")
+    def sqlcipherSourceDir = new File(sqlcipherDir.absolutePath, "src/")
+    def sqlcipherSubmodule = new File(project.rootDir.absolutePath, ".git/modules/sqlcipher/src/main/jni/sqlcipher/src")
     def amalgamationSource = new File(sqlcipherDir.absolutePath, "sqlite3.c")
     def amalgamationHeader = new File(sqlcipherDir.absolutePath, "sqlite3.h")
     doLast {
-        if(!submoduleDir.exists()) {
-            log.withStyle(Style.Failure).println('SQLCipher submodule missing, exiting')
-            throw new GradleException("SQLCipher submodule missing: please run git submodule update --init")
+        if(!sqlcipherSubmodule.exists()) {
+            log.withStyle(Style.Failure).println('SQLCipher submodule missing, initializing')
+            shellCmd(project.rootDir.absolutePath, "git", "submodule", "update", "--init")
         }
         log.withStyle(Style.Info).println('SQLCipher amalgamation not found, generating.')
-        shellCmd(submoduleDir.absolutePath, "./configure", "--with-tempstore=yes", "--disable-tcl")
-        shellCmd(submoduleDir.absolutePath, "make", "clean")
-        shellCmd(submoduleDir.absolutePath, "make", "sqlite3.c")
+        shellCmd(sqlcipherSourceDir.absolutePath, "./configure", "--with-tempstore=yes", "--disable-tcl")
+        shellCmd(sqlcipherSourceDir.absolutePath, "make", "clean")
+        shellCmd(sqlcipherSourceDir.absolutePath, "make", "sqlite3.c")
         def filesToMove = ["sqlite3.c", "sqlite3.h"]
         filesToMove.each {
-            def sourcePath = Paths.get(submoduleDir.absolutePath, it)
+            def sourcePath = Paths.get(sqlcipherSourceDir.absolutePath, it)
             def targetPath = Paths.get(sqlcipherDir.absolutePath, it)
             def moveResult = Files.move(sourcePath, targetPath, REPLACE_EXISTING)
             if(moveResult == null){
