@@ -66,14 +66,14 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH) 						  \
 LOCAL_MODULE:= libsqlcipher
 LOCAL_LDLIBS += -ldl -llog
 LOCAL_LDFLAGS += -Wl,-z,max-page-size=16384
-ifeq ($(findstring OPENSSL,$(LOCAL_CFLAGS)),OPENSSL)
+ifeq ($(findstring OSSL,$(LOCAL_CFLAGS)),OSSL)
 LOCAL_STATIC_LIBRARIES += static-libcrypto
 else
 LOCAL_STATIC_LIBRARIES += static-libtomcrypt
 endif
 include $(BUILD_SHARED_LIBRARY)
 
-ifeq ($(findstring OPENSSL,$(LOCAL_CFLAGS)),OPENSSL)
+ifeq ($(findstring OSSL,$(LOCAL_CFLAGS)),OSSL)
 include $(CLEAR_VARS)
 LOCAL_MODULE := static-libcrypto
 LOCAL_SRC_FILES := $(LOCAL_PATH)/android-libs/$(TARGET_ARCH_ABI)/libcrypto.a
