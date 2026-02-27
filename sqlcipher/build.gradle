@@ -118,9 +118,9 @@ def generateAmalgamation = tasks.register("generateAmalgamation") {
             }
         }
     }
-    outputs.upToDateWhen {
-        return amalgamationSource.exists()
-                && amalgamationHeader.exists()
+    onlyIf {
+        return !(amalgamationSource.exists()
+                && amalgamationHeader.exists())
     }
 }
 
