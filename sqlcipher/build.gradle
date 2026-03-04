@@ -96,12 +96,12 @@ def generateAmalgamation = tasks.register("generateAmalgamation") {
     group = "SQLCipher"
     def sqlcipherDir = new File("${project.rootDir}/sqlcipher/src/main/jni/sqlcipher/")
     def sqlcipherSourceDir = new File(sqlcipherDir.absolutePath, "src/")
-    def sqlcipherSubmodule = new File(project.rootDir.absolutePath, ".git/modules/sqlcipher/src/main/jni/sqlcipher/src")
+    def sqlcipherReadMe = new File(sqlcipherSourceDir.absolutePath, "README.md")
     def amalgamationSource = new File(sqlcipherDir.absolutePath, "sqlite3.c")
     def amalgamationHeader = new File(sqlcipherDir.absolutePath, "sqlite3.h")
     doLast {
-        if(!sqlcipherSubmodule.exists()) {
-            log.withStyle(Style.Info).println('SQLCipher submodule missing, initializing')
+        if(!sqlcipherReadMe.exists()) {
+            log.withStyle(Style.Info).println('SQLCipher README missing, initializing submodule')
             shellCmd(project.rootDir.absolutePath, "git", "submodule", "update", "--init")
         }
         log.withStyle(Style.Info).println('SQLCipher amalgamation not found, generating.')
@@ -137,9 +137,9 @@ def cleanAmalgamation = tasks.register("cleanAmalgamation") {
         println "Clean SQLCipher amalgamation"
         delete(amalgamationSource, amalgamationHeader)
     }
-    outputs.upToDateWhen {
-        return !amalgamationSource.exists()
-                && !amalgamationHeader.exists()
+    onlyIf {
+        return amalgamationSource.exists()
+                || amalgamationHeader.exists()
     }
 }
 
