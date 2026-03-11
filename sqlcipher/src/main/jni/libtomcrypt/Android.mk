@@ -528,7 +528,7 @@ src/src/ciphers/aes/aes_desc.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/src/src/headers
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/src/src/headers
 
-LOCAL_CFLAGS := -DLTC_NO_ASM
+LOCAL_CFLAGS := -O3 -funroll-loops
 LOCAL_LDFLAGS += -Wl,-z,max-page-size=16384
 
 include $(BUILD_STATIC_LIBRARY)
