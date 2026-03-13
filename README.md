@@ -106,7 +106,7 @@ To manage the logging produced from SQLCipher core, please review the runtime co
 
 ### Building 
 
-This project and it's dependencies can be built directly within Android Studio.  Currently, SQLCipher for Android uses NDK version "25.2.9519653". The repository includes a submodule for SQLCipher core, and LibTomCrypt as external dependencies. When cloning the repository, please execute the following command at the root of the project:
+This project and it's dependencies can be built directly within Android Studio.  Currently, SQLCipher for Android uses NDK version "25.2.9519653". The repository includes a submodule for SQLCipher core, and LibTomCrypt as external dependencies. When cloning the repository, please execute the following command at the root of the project (the build phase will check for this on your behalf):
 
 ```
 git submodule update --init
@@ -115,6 +115,12 @@ git submodule update --init
 To build the AAR package, either build directly within Android Studio, or from the command line:
 
 ```
-./gradlew -PsqlcipherAndroidVerison="4.14.0" assembleRelease
+./gradlew assembleRelease
 ```
 
+#### Using OpenSSL
+
+By default, SQLCipher for Android uses LibTomCrypt as the default crypto provider. Alternatively, you may build SQLCipher for Android linked with OpenSSL. Instructions for building OpenSSL to target Android-specific ABI's are outside the scope of this project. Below are the integration steps necessary for the project to utilize the OpenSSL libraries during the build phase.
+
+1. Place your ABI-specific `libcrypto.a` files and `include` directory in `sqlcipher/src/main/jni/sqlcipher/android-libs`
+2. Specify all required SQLCipher Core `CFLAGS` within the environment variable `SQLCIPHER_CFLAGS` including `-DSQLCIPHER_CRYPTO_OPENSSL` and `-DSQLITE_HAS_CODEC`
