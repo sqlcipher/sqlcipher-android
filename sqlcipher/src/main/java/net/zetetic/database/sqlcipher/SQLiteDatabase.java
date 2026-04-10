@@ -401,6 +401,10 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
         return looper != null && looper == Looper.getMainLooper();
     }
 
+    public void beginTransactionReadOnly() {
+        beginTransaction();
+    }
+
     /**
      * Begins a transaction in EXCLUSIVE mode.
      * <p>
