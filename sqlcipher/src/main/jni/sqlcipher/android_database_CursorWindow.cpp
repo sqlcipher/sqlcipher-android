@@ -275,9 +275,9 @@ namespace android {
                                   jbyteArray valueObj, jint row, jint column) {
         auto* window = reinterpret_cast<CursorWindow*>(windowPtr);
         jsize len = env->GetArrayLength(valueObj);
-        void* value = env->GetPrimitiveArrayCritical(valueObj, NULL);
+        jbyte* value = static_cast<jbyte*>(env->GetByteArrayElements(valueObj, NULL));
         status_t status = window->putBlob(row, column, value, len);
-        env->ReleasePrimitiveArrayCritical(valueObj, value, JNI_ABORT);
+        env->ReleaseByteArrayElements(valueObj, value, JNI_ABORT);
         if (status) {
             ALOGD("Failed to put blob. error=%d", status);
             return false;

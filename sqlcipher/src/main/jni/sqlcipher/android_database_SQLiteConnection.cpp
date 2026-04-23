@@ -354,11 +354,11 @@ static jlong nativePrepareStatement(JNIEnv* env, jclass clazz, jlong connectionP
     auto* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
 
     jsize sqlLength = env->GetStringLength(sqlString);
-    const jchar* sql = env->GetStringCritical(sqlString, NULL);
+    const jchar* sql = env->GetStringChars(sqlString, NULL);
     sqlite3_stmt* statement;
     int err = sqlite3_prepare16_v2(connection->db,
             sql, sqlLength * sizeof(jchar), &statement, NULL);
-    env->ReleaseStringCritical(sqlString, sql);
+    env->ReleaseStringChars(sqlString, sql);
 
     if (err != SQLITE_OK) {
         // Error messages like 'near ")": syntax error' are not
@@ -459,10 +459,10 @@ static void nativeBindString(JNIEnv* env, jclass clazz, jlong connectionPtr,
     auto* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
     auto* statement = reinterpret_cast<sqlite3_stmt*>(statementPtr);
     jsize valueLength = env->GetStringLength(valueString);
-    const jchar* value = env->GetStringCritical(valueString, NULL);
+    const jchar* value = env->GetStringChars(valueString, NULL);
     int err = sqlite3_bind_text16(statement, index, value, valueLength * sizeof(jchar),
             SQLITE_TRANSIENT);
-    env->ReleaseStringCritical(valueString, value);
+    env->ReleaseStringChars(valueString, value);
     if (err != SQLITE_OK) {
         throw_sqlite3_exception(env, connection->db, NULL);
     }
@@ -473,9 +473,9 @@ static void nativeBindBlob(JNIEnv* env, jclass clazz, jlong connectionPtr,
     auto* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
     auto* statement = reinterpret_cast<sqlite3_stmt*>(statementPtr);
     jsize valueLength = env->GetArrayLength(valueArray);
-    auto* value = static_cast<jbyte*>(env->GetPrimitiveArrayCritical(valueArray, NULL));
+    jbyte* value = static_cast<jbyte*>(env->GetByteArrayElements(valueArray, NULL));
     int err = sqlite3_bind_blob(statement, index, value, valueLength, SQLITE_TRANSIENT);
-    env->ReleasePrimitiveArrayCritical(valueArray, value, JNI_ABORT);
+    env->ReleaseByteArrayElements(valueArray, value, JNI_ABORT);
     if (err != SQLITE_OK) {
         throw_sqlite3_exception(env, connection->db, NULL);
     }
