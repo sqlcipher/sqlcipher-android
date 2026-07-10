@@ -1,6 +1,7 @@
 package net.zetetic.database.sqlcipher_cts;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.fail;
@@ -9,6 +10,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
+
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import net.zetetic.database.sqlcipher.SQLiteCursor;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
@@ -19,6 +22,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,6 +33,14 @@ import java.util.Random;
 import java.util.UUID;
 
 public class SQLCipherDatabaseTest extends AndroidSQLCipherTestCase {
+
+  @Test
+  public void shouldDeclareBeginTransactionWithListenerReadOnlyOverride() throws NoSuchMethodException {
+    Method method = SQLiteDatabase.class.getDeclaredMethod(
+            "beginTransactionWithListenerReadOnly",
+            android.database.sqlite.SQLiteTransactionListener.class);
+    assertThat(method, is(notNullValue()));
+  }
 
   @Test
   public void testCreateDatabaseConnectionWithStringPassword() {

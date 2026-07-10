@@ -405,6 +405,11 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
         beginTransaction();
     }
 
+    public void beginTransactionWithListenerReadOnly(
+            android.database.sqlite.SQLiteTransactionListener transactionListener){
+        beginTransactionWithListener(transactionListener);
+    }
+
     /**
      * Begins a transaction in EXCLUSIVE mode.
      * <p>
