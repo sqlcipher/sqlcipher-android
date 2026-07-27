@@ -55,10 +55,12 @@ public class SQLiteQueryBuilderTest {
     @Before
     public void setUp() throws Exception {
         System.loadLibrary("sqlcipher");
-        File f = ApplicationProvider.getApplicationContext().getDatabasePath(DATABASE_FILE);
-        f.mkdirs();
-        if (f.exists()) { f.delete(); }
-        mDatabase = SQLiteDatabase.openOrCreateDatabase(f,null);
+        File databasePath = ApplicationProvider.getApplicationContext().getDatabasePath(DATABASE_FILE);
+        databasePath.mkdirs();
+        if (databasePath.exists()) {
+            databasePath.delete();
+        }
+        mDatabase = SQLiteDatabase.openOrCreateDatabase(databasePath,null);
         assertNotNull(mDatabase);
     }
 
