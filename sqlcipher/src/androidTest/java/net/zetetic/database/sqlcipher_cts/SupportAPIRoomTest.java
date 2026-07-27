@@ -7,12 +7,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import android.content.Context;
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
 import androidx.room.Database;
 import androidx.room.Delete;
 import androidx.room.Entity;
 import androidx.room.Insert;
+import androidx.room.InvalidationTracker;
 import androidx.room.OnConflictStrategy;
 import androidx.room.PrimaryKey;
 import androidx.room.Query;
@@ -34,7 +36,10 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(AndroidJUnit4.class)
 public class SupportAPIRoomTest {
@@ -100,8 +105,16 @@ public class SupportAPIRoomTest {
   }
 
   @Test
-  public void shouldSupportChangingPasswordWithRoom(){
+  public void shouldSupportChangingPasswordWithRoom() throws InterruptedException {
+    var latch = new CountDownLatch(1);
+    db.getInvalidationTracker().addObserver(new InvalidationTracker.Observer("User") {
+      @Override
+      public void onInvalidated(@NonNull Set<String> tables) {
+        latch.countDown();
+      }
+    });
     userDao.insert(new User("foo", "bar"));
+    latch.await(5, TimeUnit.SECONDS);
     SQLiteDatabase database = (SQLiteDatabase)db.getOpenHelper().getWritableDatabase();
     database.changePassword(UUID.randomUUID().toString());
     List<User> users = userDao.getAll();
