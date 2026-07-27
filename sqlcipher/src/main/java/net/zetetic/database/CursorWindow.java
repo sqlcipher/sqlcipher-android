@@ -320,10 +320,14 @@ public class CursorWindow extends SQLiteClosable {
 		if (buffer == null) {
 			throw new IllegalArgumentException("CharArrayBuffer should not be null");
 		}
-		// TODO not as optimal as the original code
-		char[] chars = getString(row, column).toCharArray();
-		buffer.data = chars;
-		buffer.sizeCopied = chars.length;
+		var content = getString(row, column);
+		if(content != null){
+			var chars = content.toCharArray();
+			buffer.data = chars;
+			buffer.sizeCopied = chars.length;
+		} else {
+			buffer.sizeCopied = 0;
+		}
 	}
 
 	/**

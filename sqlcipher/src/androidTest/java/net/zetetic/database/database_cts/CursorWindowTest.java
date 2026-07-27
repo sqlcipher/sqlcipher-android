@@ -107,6 +107,23 @@ public class CursorWindowTest {
     }
 
     @Test
+    public void testShouldNotThrowNullPointerExceptionWhenNullValueReturnedFromGetString() {
+        var window = getOneByOneWindow();
+        assertTrue(window.putNull(0, 0));
+        var buffer = new CharArrayBuffer(16);
+        window.copyStringToBuffer(0, 0, buffer);
+    }
+
+    @Test
+    public void testShouldSetSizeCopiedToZeroWhenNullValueReturnedFromGetString() {
+        var window = getOneByOneWindow();
+        assertTrue(window.putNull(0, 0));
+        var buffer = new CharArrayBuffer(16);
+        window.copyStringToBuffer(0, 0, buffer);
+        assertEquals(0, buffer.sizeCopied);
+    }
+
+    @Test
     public void testEmptyString() {
         CursorWindow window = getOneByOneWindow();
 
