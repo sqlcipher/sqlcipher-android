@@ -26,6 +26,9 @@ android {
         testInstrumentationRunnerArguments clearPackageData: 'true'
         consumerProguardFiles 'consumer-rules.pro'
     }
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
 
     buildTypes {
         release {
@@ -164,6 +167,7 @@ dependencies {
     androidTestImplementation 'androidx.test:core:1.7.0'
     androidTestImplementation 'org.hamcrest:hamcrest-library:3.0'
     testImplementation 'junit:junit:4.13.2'
+    androidTestUtil 'androidx.test:orchestrator:1.6.1'
 }
 
 allprojects {
