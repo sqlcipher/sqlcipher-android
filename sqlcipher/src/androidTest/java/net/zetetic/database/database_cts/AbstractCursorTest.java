@@ -23,7 +23,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
@@ -42,7 +41,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -193,8 +191,6 @@ public class AbstractCursorTest {
         assertTrue(mock.hadCalledOnChange());
     }
 
-    @SuppressLint("IgnoreWithoutReason")
-    @Ignore
     @Test
     public void testOnMove() {
         assertFalse(mTestAbstractCursor.getOnMoveRet());
@@ -209,8 +205,6 @@ public class AbstractCursorTest {
         assertEquals(5, mTestAbstractCursor.getNewPos());
     }
 
-    @SuppressLint("IgnoreWithoutReason")
-    @Ignore
     @Test
     public void testOnMove_samePosition() {
         mTestAbstractCursor.moveToFirst();
@@ -367,8 +361,6 @@ public class AbstractCursorTest {
         assertTrue(mock.hadCalledOnInvalid());
     }
 
-    @SuppressLint("IgnoreWithoutReason")
-    @Ignore
     @Test
     public void testCopyStringToBuffer() {
         CharArrayBuffer ca = new CharArrayBuffer(1000);
@@ -384,8 +376,6 @@ public class AbstractCursorTest {
         assertEquals(sb.toString(), new String(ca.data, 0, ca.sizeCopied));
     }
 
-    @SuppressLint("IgnoreWithoutReason")
-    @Ignore
     @Test
     public void testCheckPosition() {
         // Test with position = -1.
@@ -527,6 +517,7 @@ public class AbstractCursorTest {
             mOldPosition = oldPosition;
             mNewPosition = newPosition;
             mRowsMovedSum += Math.abs(newPosition - oldPosition);
+            mOnMoveReturnValue = true;
             return mOnMoveReturnValue;
         }
 
@@ -542,7 +533,14 @@ public class AbstractCursorTest {
 
         @Override
         public String getString(int columnIndex) {
-            Object cell = mRows[mPos].get(columnIndex);
+            if(mPos < 0){
+                return null;
+            }
+            var row = mRows[mPos];
+            if(row == null) {
+                return null;
+            }
+            Object cell = row.get(columnIndex);
             return (cell == null) ? null : cell.toString();
         }
 
@@ -583,7 +581,7 @@ public class AbstractCursorTest {
 
         @Override
         public int getType(int column) {
-            return 0;
+            return FIELD_TYPE_STRING;
         }
 
         public boolean hadCalledOnChange() {
