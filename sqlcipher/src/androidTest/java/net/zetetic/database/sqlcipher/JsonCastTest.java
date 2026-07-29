@@ -1,0 +1,24 @@
+package net.zetetic.database.sqlcipher;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import android.database.Cursor;
+
+import org.junit.Test;
+
+public class JsonCastTest extends AndroidSQLCipherTestCase {
+
+  @Test
+  public void shouldExtractUsernameFromQuery(){
+    String name = "Bob Smith", queryName = "";
+    String query = String.format("select cast(json_extract('{\"user\":\"%s\"}','$.user') as TEXT);", name);
+    Cursor cursor = database.rawQuery(query);
+    if(cursor != null && cursor.moveToFirst()){
+      queryName = cursor.getString(0);
+      cursor.close();
+    }
+    assertThat(queryName, is(name));
+  }
+
+}
