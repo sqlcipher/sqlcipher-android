@@ -63,9 +63,6 @@ android {
 
     ndkVersion "${rootProject.ext.androidNdkVersion}"
 
-    useLibrary 'android.test.base' // for android.test.AndroidTestCase
-    useLibrary 'android.test.runner' // for android.test.MoreAsserts
-
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(17)

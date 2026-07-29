@@ -25,6 +25,10 @@ import android.database.sqlite.SQLiteException;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 
+import androidx.annotation.NonNull;
+import androidx.sqlite.db.SupportSQLiteProgram;
+import androidx.sqlite.db.SupportSQLiteQuery;
+
 import net.zetetic.database.CursorWindow;
 import net.zetetic.database.Logger;
 
@@ -35,7 +39,7 @@ import net.zetetic.database.Logger;
  * This class is not thread-safe.
  * </p>
  */
-public final class SQLiteQuery extends SQLiteProgram {
+public final class SQLiteQuery extends SQLiteProgram implements SupportSQLiteQuery {
     private static final String TAG = "SQLiteQuery";
 
     private final CancellationSignal mCancellationSignal;
@@ -87,5 +91,56 @@ public final class SQLiteQuery extends SQLiteProgram {
     @Override
     public String toString() {
         return "SQLiteQuery: " + getSql();
+    }
+
+    @NonNull
+    @Override
+    public String getSql() {
+        return super.getSql();
+    }
+
+    @Override
+    public void bindTo(@NonNull SupportSQLiteProgram supportSQLiteProgram) {
+        Object[] bindArgs = super.getBindArgs();
+        if (bindArgs == null) {
+            return;
+        }
+        for (var i = 0; i < bindArgs.length; i++) {
+            var index = i + 1;
+            Object arg = bindArgs[i];
+            bindArgumentToProgram(supportSQLiteProgram, index, arg);
+        }
+    }
+
+    @Override
+    public int getArgCount() {
+        var bindArgs = super.getBindArgs();
+        return bindArgs == null
+                ? 0
+                : bindArgs.length;
+    }
+
+    private void bindArgumentToProgram(@NonNull SupportSQLiteProgram program, int index, Object arg) {
+        if (arg == null) {
+            program.bindNull(index);
+        } else if (arg instanceof byte[]) {
+            program.bindBlob(index, (byte[]) arg);
+        } else if (arg instanceof Float || arg instanceof Double) {
+            program.bindDouble(index, ((Number) arg).doubleValue());
+        } else if (arg instanceof Boolean) {
+            var value = ((Boolean) arg)
+                    ? 1L
+                    : 0L;
+            program.bindLong(index, value);
+        } else if (arg instanceof Integer || arg instanceof Long
+                || arg instanceof Short || arg instanceof Byte) {
+            program.bindLong(index, ((Number) arg).longValue());
+        } else if (arg instanceof String) {
+            program.bindString(index, (String) arg);
+        } else {
+            var message = "Cannot bind " + arg + " at index " + index
+                    + " supported types: null, byte[], float, double, int, long, boolean, String";
+            throw new IllegalArgumentException(message);
+        }
     }
 }

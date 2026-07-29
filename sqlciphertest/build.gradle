@@ -18,9 +18,6 @@ android {
     }
 
     ndkVersion "21.3.6528147"
-
-    useLibrary 'android.test.base' // for android.test.AndroidTestCase
-    useLibrary 'android.test.runner' // for android.test.ApplicationTestCase extends AndroidTestCase
 }
 
 dependencies {

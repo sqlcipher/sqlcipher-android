@@ -36,7 +36,7 @@ project.ext {
         libraryVersion = "4.17.0"
     }
     minSdkVersion = 23
-    androidXSQLiteVersion = "2.6.2"
+    androidXSQLiteVersion = "2.7.0"
     roomVersion = "2.8.4"
     androidNdkVersion = "25.2.9519653"
     mavenLocalRepositoryPrefix = "file://"
