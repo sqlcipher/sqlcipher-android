@@ -8,8 +8,6 @@ import net.zetetic.database.DatabaseErrorHandler;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteDatabaseHook;
 
-import java.io.File;
-
 public class SQLCipherDriver implements SQLiteDriver {
 
     private final byte[] passphrase;
@@ -27,7 +25,8 @@ public class SQLCipherDriver implements SQLiteDriver {
 
     @NonNull
     @Override
-    public SQLiteConnection open(@NonNull String filename) {
+    public SQLiteConnection open(
+            @NonNull String filename) {
         var db = SQLiteDatabase.openOrCreateDatabase(filename, passphrase, null, handler, hook);
         return new SQLCipherConnection(db);
     }

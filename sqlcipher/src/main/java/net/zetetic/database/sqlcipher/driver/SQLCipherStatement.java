@@ -17,6 +17,7 @@ public class SQLCipherStatement implements SQLiteStatement {
     private final String sql;
     private final Map<Integer, Object> bindings = new LinkedHashMap<>();
     private Cursor cursor;
+    private boolean stepped;
 
     public SQLCipherStatement(
             SQLiteDatabase database,
@@ -26,70 +27,92 @@ public class SQLCipherStatement implements SQLiteStatement {
     }
 
     @Override
-    public void bindBlob(int index, @NonNull byte[] value) {
+    public void bindBlob(
+            int index,
+            @NonNull byte[] value) {
         bindings.put(index, value);
     }
 
     @Override
-    public void bindDouble(int index, double value) {
+    public void bindDouble(
+            int index,
+            double value) {
         bindings.put(index, value);
     }
 
     @Override
-    public void bindLong(int index, long value) {
+    public void bindLong(
+            int index,
+            long value) {
         bindings.put(index, value);
     }
 
     @Override
-    public void bindText(int index, @NonNull String value) {
+    public void bindText(
+            int index,
+            @NonNull String value) {
         bindings.put(index, value);
     }
 
     @Override
-    public void bindNull(int index) {
+    public void bindNull(
+            int index) {
         bindings.put(index, null);
     }
 
     @NonNull
     @Override
-    public byte[] getBlob(int index) {
+    public byte[] getBlob(
+            int index) {
         return requireCursor().getBlob(index);
     }
 
     @Override
-    public double getDouble(int index) {
+    public double getDouble(
+            int index) {
         return requireCursor().getDouble(index);
     }
 
     @Override
-    public long getLong(int index) {
+    public long getLong(
+            int index) {
         return requireCursor().getLong(index);
     }
 
     @NonNull
     @Override
-    public String getText(int index) {
+    public String getText(
+            int index) {
         return requireCursor().getString(index);
     }
 
     @Override
-    public boolean isNull(int index) {
+    public boolean isNull(
+            int index) {
         return requireCursor().isNull(index);
     }
 
     @Override
     public int getColumnCount() {
-        return requireCursor().getColumnCount();
+        if (cursor == null) {
+            createCursor();
+        }
+        return cursor.getColumnCount();
     }
 
     @NonNull
     @Override
-    public String getColumnName(int index) {
-        return requireCursor().getColumnName(index);
+    public String getColumnName(
+            int index) {
+        if (cursor == null) {
+            createCursor();
+        }
+        return cursor.getColumnName(index);
     }
 
     @Override
-    public int getColumnType(int index) {
+    public int getColumnType(
+            int index) {
         return requireCursor().getType(index);
     }
 
@@ -106,7 +129,8 @@ public class SQLCipherStatement implements SQLiteStatement {
             }
             cursor = database.rawQuery(sql, args);
         }
-        return cursor.moveToNext();
+        stepped = cursor.moveToNext();
+        return stepped;
     }
 
     @Override
@@ -115,6 +139,7 @@ public class SQLCipherStatement implements SQLiteStatement {
             cursor.close();
             cursor = null;
         }
+        stepped = false;
     }
 
     @Override
@@ -123,12 +148,22 @@ public class SQLCipherStatement implements SQLiteStatement {
     }
 
     @Override
-    public void close() {
+    public void close() {}
 
+    private void createCursor() {
+        var maxIndex = 0;
+        for (int key : bindings.keySet()) {
+            maxIndex = Math.max(maxIndex, key);
+        }
+        var args = new Object[maxIndex];
+        for (int i = 1; i <= maxIndex; i++) {
+            args[i - 1] = bindings.get(i);
+        }
+        cursor = database.rawQuery(sql, args);
     }
 
     private Cursor requireCursor() {
-        if (cursor == null) {
+        if (!stepped || cursor == null) {
             throw new IllegalStateException("step() must be called before reading column values");
         }
         return cursor;

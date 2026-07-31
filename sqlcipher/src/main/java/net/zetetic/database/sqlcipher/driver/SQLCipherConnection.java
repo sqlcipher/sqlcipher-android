@@ -21,6 +21,15 @@ public class SQLCipherConnection implements SQLiteConnection {
     }
 
     @Override
+    public boolean inTransaction() {
+        return database.inTransaction();
+    }
+
+    public void changePassword(byte[] newPassword){
+        database.changePassword(newPassword);
+    }
+
+    @Override
     public void close() {
         database.close();
     }
