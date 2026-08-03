@@ -30,4 +30,9 @@ public class SQLCipherDriver implements SQLiteDriver {
         var db = SQLiteDatabase.openOrCreateDatabase(filename, passphrase, null, handler, hook);
         return new SQLCipherConnection(db);
     }
+
+    @Override
+    public boolean hasConnectionPool() {
+        return true;
+    }
 }
