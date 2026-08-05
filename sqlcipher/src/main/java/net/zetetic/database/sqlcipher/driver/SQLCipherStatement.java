@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.sqlite.SQLiteStatement;
+import android.database.SQLException;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
@@ -18,6 +19,7 @@ public class SQLCipherStatement implements SQLiteStatement {
     private final Map<Integer, Object> bindings = new LinkedHashMap<>();
     private Cursor cursor;
     private boolean stepped;
+    private boolean closed;
 
     public SQLCipherStatement(
             SQLiteDatabase database,
@@ -118,6 +120,9 @@ public class SQLCipherStatement implements SQLiteStatement {
 
     @Override
     public boolean step() {
+        if(closed){
+            throw new SQLException("statement is closed");
+        }
         if (cursor == null) {
             var maxIndex = 0;
             for (int key : bindings.keySet()) {
@@ -148,7 +153,9 @@ public class SQLCipherStatement implements SQLiteStatement {
     }
 
     @Override
-    public void close() {}
+    public void close() {
+        closed = true;
+    }
 
     private void createCursor() {
         var maxIndex = 0;

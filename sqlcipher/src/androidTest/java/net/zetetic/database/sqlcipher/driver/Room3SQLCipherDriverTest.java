@@ -13,8 +13,6 @@ import androidx.room3.RoomDatabase;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import net.zetetic.database.sqlcipher.driver.SQLCipherDriver;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

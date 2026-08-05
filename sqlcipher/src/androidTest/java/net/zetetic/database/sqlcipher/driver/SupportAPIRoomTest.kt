@@ -12,9 +12,13 @@ import androidx.room3.PrimaryKey
 import androidx.room3.Query
 import androidx.room3.Room
 import androidx.room3.RoomDatabase
+import androidx.room3.Upsert
+import androidx.room3.withWriteTransaction
+import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.SQLiteDriver
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
@@ -27,6 +31,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import java.nio.charset.StandardCharsets
+import kotlin.coroutines.cancellation.CancellationException
 
 @RunWith(AndroidJUnit4::class)
 class SupportAPIRoomTest {
@@ -34,6 +39,7 @@ class SupportAPIRoomTest {
     private lateinit var db: AppDatabase
     private lateinit var userDao: UserDao
     private lateinit var databaseFile: File
+    private lateinit var connection: SQLiteConnection
 
     @Before
     fun setup(){
@@ -53,6 +59,7 @@ class SupportAPIRoomTest {
             null,
             null
         )
+        connection = driver.open(databaseFile.absolutePath);
         db = Room.databaseBuilder(
             context,
             AppDatabase::class.java,
@@ -62,17 +69,23 @@ class SupportAPIRoomTest {
         userDao = db.userDao()
     }
 
+    @After
+    fun after() {
+        db.close()
+        databaseFile.delete()
+    }
+
     @Test
     fun shouldInsertDataViaDao() {
         val user = User("John", "Doe")
-        user.uid = userDao.insert(user)
-        assertThat(user.uid, not(0L))
+        val uid = userDao.insert(user)
+        assertThat(uid, not(0L))
     }
 
     @Test
     @Throws(InterruptedException::class)
     fun shouldDeleteDataViaDao() = runTest {
-        val user = User("foo", "bar").apply { uid = 1 }
+        val user = User(uid = 1, firstName = "foo", lastName = "bar")
         userDao.insert(user)
         assertThat(userDao.findById(user.uid), notNullValue())
         userDao.delete(user)
@@ -81,13 +94,61 @@ class SupportAPIRoomTest {
 
     @Test
     fun shouldQueryDataByParametersViaDao(){
-      val user = User("foo", "bar").apply { uid = 1 }
+      val user = User(uid = 1, firstName = "foo", lastName = "bar")
       userDao.insert(user)
       val foundUser = userDao.findByName(user.firstName, user.lastName)
       assertThat(foundUser, notNullValue())
       assertThat(foundUser!!.uid, `is`(user.uid))
       assertThat(foundUser.firstName, `is`(user.firstName))
       assertThat(foundUser.lastName, `is`(user.lastName))
+    }
+
+    @Test
+    fun shouldReplaceExistingRowWithReplaceConflictStrategy() = runTest {
+        val original = User(firstName = "John", lastName = "Doe")
+        val id = userDao.insert(original)
+
+        val updated = original.copy(uid = id, firstName = "Jane")
+        userDao.insertOrReplace(updated)
+
+        val all = userDao.all
+        assertEquals(1, all.size)
+        with(all.single()) {
+            assertEquals(id, uid)
+            assertEquals("Jane", firstName)
+            assertEquals("Doe", lastName)
+        }
+    }
+
+    @Test
+    fun shouldAllowUpsertBehavior() {
+        val user = User(firstName = "John", lastName = "Doe")
+        val uid = userDao.upsert(user)
+        userDao.upsert(user.copy(uid = uid, firstName = "Jane"))
+        with(userDao.all.single()) {
+            assertEquals(uid, uid)
+            assertEquals("Jane", firstName)
+            assertEquals("Doe", lastName)
+        }
+    }
+
+    @Test
+    fun shouldRollbackWriteTransactionOnCancellation() = runTest {
+        try {
+            db.withWriteTransaction {
+                userDao.insert(User(firstName = "foo", lastName = "bar"))
+                throw CancellationException("cancelled mid-transaction")
+            }
+        } catch (_: CancellationException) {}
+        assertEquals(0, userDao.all.count())
+    }
+
+    @Test
+    fun shouldSeeOwnWritesInsideWriteTransaction() = runTest {
+        db.withWriteTransaction {
+            userDao.insert(User(firstName = "foo", lastName = "bar"))
+            assertEquals(1, userDao.all.count())
+        }
     }
 
     @Test
@@ -102,25 +163,17 @@ class SupportAPIRoomTest {
       assertThat(userDao.all.count(), `is`(1))
     }
 
-    @After
-    fun after() {
-        db.close()
-        databaseFile.delete()
-    }
-
     @Database(entities = [User::class], version = 1, exportSchema = false)
     abstract class AppDatabase : RoomDatabase() {
         abstract fun userDao(): UserDao
     }
 
     @Entity
-    class User(
-        @field:ColumnInfo(name = "first_name") var firstName: String,
-        @field:ColumnInfo(name = "last_name") var lastName: String
-    ) {
-        @PrimaryKey(autoGenerate = true)
-        var uid: Long = 0
-    }
+    data class User(
+        @ColumnInfo(name = "first_name") val firstName: String,
+        @ColumnInfo(name = "last_name") val lastName: String,
+        @PrimaryKey(autoGenerate = true) val uid: Long = 0
+    )
 
     @Dao
     interface UserDao {
@@ -139,8 +192,14 @@ class SupportAPIRoomTest {
         @Query("SELECT * FROM user WHERE uid = :userId")
         fun findById(userId: Long): User?
 
-        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        @Insert
         fun insert(user: User): Long
+
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        fun insertOrReplace(user: User): Long
+
+        @Upsert
+        fun upsert(user: User): Long
 
         @Delete
         fun delete(user: User)
