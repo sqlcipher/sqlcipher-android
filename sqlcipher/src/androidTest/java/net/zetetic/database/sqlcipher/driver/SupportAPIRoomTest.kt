@@ -13,6 +13,7 @@ import androidx.room3.Query
 import androidx.room3.Room
 import androidx.room3.RoomDatabase
 import androidx.room3.Upsert
+import androidx.room3.support.getSupportWrapper
 import androidx.room3.withWriteTransaction
 import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.SQLiteDriver
@@ -40,11 +41,11 @@ class SupportAPIRoomTest {
     private lateinit var userDao: UserDao
     private lateinit var databaseFile: File
     private lateinit var connection: SQLiteConnection
+    private val defaultPassword = "user".toByteArray(StandardCharsets.UTF_8)
 
     @Before
     fun setup(){
-        val password = "user".toByteArray(StandardCharsets.UTF_8)
-        setup(password, true)
+        setup(defaultPassword, true)
     }
 
     fun setup(password: ByteArray, deleteDatabase: Boolean) {
@@ -161,6 +162,18 @@ class SupportAPIRoomTest {
       connection.close()
       setup(newPassword, false)
       assertThat(userDao.all.count(), `is`(1))
+    }
+
+    @Test
+    fun shouldVerifyWalModeFromExistingDatabase() = runTest {
+        connection.prepare("PRAGMA journal_mode = wal;").use { stmt ->
+            stmt.step();
+            val mode = stmt.getText(0)
+            assertThat(mode, `is`("wal"))
+        }
+        connection.close()
+        setup(defaultPassword, false)
+        assertThat(db.getSupportWrapper().isWriteAheadLoggingEnabled, `is`(true))
     }
 
     @Database(entities = [User::class], version = 1, exportSchema = false)

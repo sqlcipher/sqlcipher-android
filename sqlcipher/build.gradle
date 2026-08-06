@@ -159,6 +159,8 @@ dependencies {
     def room_version = "3.0.1"
     androidTestImplementation "androidx.room3:room3-runtime:$room_version"
     kspAndroidTest "androidx.room3:room3-compiler:$room_version"
+    // Needed for roomDatabase.getSupportWrapper() tests
+    androidTestImplementation "androidx.room3:room3-sqlite-wrapper:$room_version"
 
     // Needed for runTest
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0"
