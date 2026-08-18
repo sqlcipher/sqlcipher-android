@@ -65,7 +65,27 @@ Additionally, applications may choose to subclass the `SQLiteOpenHelper` class w
 
 #### SQLCipher for Android Room Integration
 
-SQLCipher for Android may also integrate with the Room API via the `SupportOpenHelperFactory`, an example is given below:
+SQLCipher for Android supports both Room 2 and Room 3 integration. An example below shows Room 3 integration:
+
+```kotlin
+System.loadLibrary("sqlcipher")
+val String password = "Password1!".toByteArray()
+val databaseFile = context.getDatabasePath("users.db")
+val driver = SQLCipherDriver(
+  password,
+  null,
+  null
+)
+val db = Room.databaseBuilder(
+  context,
+  AppDatabase::class.java,
+  databaseFile.absolutePath)
+  .setDriver(driver)
+  .build()
+val userDao = db.userDao()
+```
+
+SQLCipher for Android may also integrate with the Room 2 API via the `SupportOpenHelperFactory`, an example is given below:
 
 ```java
 System.loadLibrary("sqlcipher");
