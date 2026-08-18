@@ -59,7 +59,7 @@ public class Room3SQLCipherDriverTest {
         var stmt = connection.prepare("PRAGMA cipher_version;");
         stmt.step();
         var version = stmt.getText(0);
-        Assert.assertEquals("4.17.0 community", version);
+        Assert.assertEquals("4.18.0 community", version);
         connection.close();
     }
 
