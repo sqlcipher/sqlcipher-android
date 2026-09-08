@@ -16,14 +16,14 @@ We welcome contributions, to contribute to SQLCipher for Android, a [contributor
 Add a local reference to the local library and dependency:
 
 ```groovy
-implementation files('libs/sqlcipher-android-4.18.0-release.aar')
+implementation files('libs/sqlcipher-android-4.19.0-release.aar')
 implementation 'androidx.sqlite:sqlite:2.7.0'
 ```
 
 or source a Community edition build from Maven Central:
 
 ```groovy
-implementation 'net.zetetic:sqlcipher-android:4.18.0@aar'
+implementation 'net.zetetic:sqlcipher-android:4.19.0@aar'
 implementation 'androidx.sqlite:sqlite:2.7.0'
 ```
 
