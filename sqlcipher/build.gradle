@@ -16,7 +16,7 @@ android {
     namespace "net.zetetic.database"
     defaultConfig {
         minSdkVersion "${rootProject.ext.minSdkVersion}"
-        targetSdkVersion 37
+        targetSdkVersion 36
         versionCode 1
         versionName "${rootProject.ext.libraryVersion}"
 
