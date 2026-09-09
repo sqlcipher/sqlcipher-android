@@ -34,6 +34,7 @@ LOCAL_CFLAGS += \
 	-DSQLITE_ENABLE_DBSTAT_VTAB                      \
 	-DSQLITE_ENABLE_SNAPSHOT                         \
 	-DSQLITE_USE_URI                                 \
+  -DSQLITE_DIRECT_OVERFLOW_READ=0                  \
 	-DSQLITE_EXTRA_INIT=sqlcipher_extra_init         \
 	-DSQLITE_EXTRA_SHUTDOWN=sqlcipher_extra_shutdown
 endif
