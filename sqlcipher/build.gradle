@@ -12,11 +12,13 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING
 def log = services.get(StyledTextOutputFactory).create("sqlcipher")
 
 android {
-    compileSdkVersion 37
+    //noinspection GradleDependency
+    compileSdkVersion 36
     namespace "net.zetetic.database"
     defaultConfig {
         minSdkVersion "${rootProject.ext.minSdkVersion}"
-        targetSdkVersion 37
+        //noinspection OldTargetApi
+        targetSdkVersion 36
         versionCode 1
         versionName "${rootProject.ext.libraryVersion}"
 
