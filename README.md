@@ -2,6 +2,16 @@
 
 SQLCipher for Android provides a library replacement for `android.database.sqlite` on the Android platform for use on [SQLCipher](https://github.com/sqlcipher/sqlcipher) databases. This library is based on the upstream [Android Bindings](https://www.sqlite.org/android/doc/trunk/www/index.wiki) project and aims to be a long-term replacement for the original [SQLCipher for Android](https://github.com/sqlcipher/android-database-sqlcipher) library.
 
+> [!CAUTION]
+> ## SQLCipher 5.0.0-beta details
+> Summary:
+> - Changes architecture to use VFS shims
+> - Uses AEAD Encryption with AES-256-GCM
+> - Increases KDF iteration increase to 512K
+> - Increase default page size to 8192 bytes
+> - Adds encryption and decryption support to PRAGMA rekey
+> - **BREAKING CHANGES** - see [CHANGELOG.md](https://github.com/sqlcipher/sqlcipher/blob/v5.0.0-beta/CHANGELOG.md#500-beta----2026---500-beta-changes) and [release announcement](https://www.zetetic.net/blog/2026/09/15/sqlcipher-5.0.0-beta/)
+
 ### Compatibility
 
 SQLCipher for Android supports Android API 23 and up on `armeabi-v7a`, `x86`, `x86_64`, and `arm64-v8a` architectures.
@@ -16,16 +26,11 @@ We welcome contributions, to contribute to SQLCipher for Android, a [contributor
 Add a local reference to the local library and dependency:
 
 ```groovy
-implementation files('libs/sqlcipher-android-4.19.0-release.aar')
+implementation files('libs/sqlcipher-android-5.0.0-beta-release.aar')
 implementation 'androidx.sqlite:sqlite:2.7.0'
 ```
 
-or source a Community edition build from Maven Central:
-
-```groovy
-implementation 'net.zetetic:sqlcipher-android:4.19.0@aar'
-implementation 'androidx.sqlite:sqlite:2.7.0'
-```
+Beta builds are not distributed via Maven Central, but rather through [GitHub Releases](https://github.com/sqlcipher/sqlcipher-android/releases).
 
 ```java
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
