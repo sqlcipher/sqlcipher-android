@@ -65,7 +65,7 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH) 						  \
 
 LOCAL_MODULE:= libsqlcipher
 LOCAL_LDLIBS += -ldl -llog
-LOCAL_LDFLAGS += -Wl,-z,max-page-size=16384
+LOCAL_LDFLAGS += -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384
 ifeq ($(findstring SSL,$(LOCAL_CFLAGS)),SSL)
 LOCAL_STATIC_LIBRARIES += static-libcrypto
 else
