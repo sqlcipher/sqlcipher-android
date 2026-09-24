@@ -3,6 +3,7 @@ package net.zetetic.database.sqlcipher.driver;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+import androidx.sqlite.SQLite;
 import androidx.sqlite.SQLiteStatement;
 import android.database.SQLException;
 
@@ -115,7 +116,24 @@ public class SQLCipherStatement implements SQLiteStatement {
     @Override
     public int getColumnType(
             int index) {
-        return requireCursor().getType(index);
+        return toSqliteDataType(requireCursor().getType(index));
+    }
+
+    private static int toSqliteDataType(int cursorFieldType) {
+        switch (cursorFieldType) {
+            case Cursor.FIELD_TYPE_NULL:
+                return SQLite.SQLITE_DATA_NULL;
+            case Cursor.FIELD_TYPE_INTEGER:
+                return SQLite.SQLITE_DATA_INTEGER;
+            case Cursor.FIELD_TYPE_FLOAT:
+                return SQLite.SQLITE_DATA_FLOAT;
+            case Cursor.FIELD_TYPE_STRING:
+                return SQLite.SQLITE_DATA_TEXT;
+            case Cursor.FIELD_TYPE_BLOB:
+                return SQLite.SQLITE_DATA_BLOB;
+            default:
+                throw new SQLException("unknown cursor field type " + cursorFieldType);
+        }
     }
 
     @Override
