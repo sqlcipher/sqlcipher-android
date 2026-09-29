@@ -1,6 +1,11 @@
 package net.zetetic.database.sqlcipher.driver
 
 import android.content.Context
+import androidx.sqlite.SQLITE_DATA_BLOB
+import androidx.sqlite.SQLITE_DATA_FLOAT
+import androidx.sqlite.SQLITE_DATA_INTEGER
+import androidx.sqlite.SQLITE_DATA_NULL
+import androidx.sqlite.SQLITE_DATA_TEXT
 import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.execSQL
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -153,6 +158,18 @@ class SQLCipherConnectionTests {
         connection.prepare("PRAGMA user_version").use { statement ->
             assertTrue(statement.step())
             assertEquals(0L, statement.getLong(0))
+        }
+    }
+
+    @Test
+    fun shouldReportColumnTypesUsingSqliteDataConstants() {
+        connection.prepare("SELECT NULL, 1, 1.5, 'text', x'00'").use { statement ->
+            assertTrue(statement.step())
+            assertEquals(SQLITE_DATA_NULL, statement.getColumnType(0))
+            assertEquals(SQLITE_DATA_INTEGER, statement.getColumnType(1))
+            assertEquals(SQLITE_DATA_FLOAT, statement.getColumnType(2))
+            assertEquals(SQLITE_DATA_TEXT, statement.getColumnType(3))
+            assertEquals(SQLITE_DATA_BLOB, statement.getColumnType(4))
         }
     }
 
