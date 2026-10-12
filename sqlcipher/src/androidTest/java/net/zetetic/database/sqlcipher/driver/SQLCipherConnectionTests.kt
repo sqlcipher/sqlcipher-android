@@ -1,6 +1,7 @@
 package net.zetetic.database.sqlcipher.driver
 
 import android.content.Context
+import android.database.Cursor
 import androidx.sqlite.SQLITE_DATA_BLOB
 import androidx.sqlite.SQLITE_DATA_FLOAT
 import androidx.sqlite.SQLITE_DATA_INTEGER
@@ -10,12 +11,13 @@ import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.execSQL
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import kotlinx.coroutines.test.runTest
 import net.zetetic.database.sqlcipher.SQLiteDatabase
 import org.junit.After
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -248,6 +250,32 @@ class SQLCipherConnectionTests {
         assertThrows(android.database.SQLException::class.java) {
             stmt.step()
         }
+    }
+
+    @Test
+    fun shouldCloseCursorWhenStatementClosedAfterStep() {
+        database.execSQL(
+            "INSERT INTO t (id, v) VALUES (?, ?);",
+            arrayOf<Any>(1, "one"))
+        val statement = SQLCipherStatement(
+            database,
+            "SELECT id, v FROM t;")
+        assertTrue(statement.step())
+
+        val cursor = getCursor(statement)
+        assertNotNull(cursor)
+        assertFalse(cursor!!.isClosed)
+
+        statement.close()
+
+        assertTrue(cursor.isClosed)
+        assertNull(getCursor(statement))
+    }
+
+    private fun getCursor(statement: SQLCipherStatement): Cursor? {
+        val field = SQLCipherStatement::class.java.getDeclaredField("cursor")
+        field.isAccessible = true
+        return field.get(statement) as Cursor?
     }
 
     private fun exec(sql: String) {

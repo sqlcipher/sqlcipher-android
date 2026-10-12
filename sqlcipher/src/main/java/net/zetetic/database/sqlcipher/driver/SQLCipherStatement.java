@@ -172,6 +172,10 @@ public class SQLCipherStatement implements SQLiteStatement {
 
     @Override
     public void close() {
+        if (cursor != null) {
+            cursor.close();
+            cursor = null;
+        }
         closed = true;
     }
 
