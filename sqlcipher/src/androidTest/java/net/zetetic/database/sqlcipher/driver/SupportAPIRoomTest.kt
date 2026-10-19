@@ -176,6 +176,15 @@ class SupportAPIRoomTest {
         assertThat(db.getSupportWrapper().isWriteAheadLoggingEnabled, `is`(true))
     }
 
+    @Test
+    fun shouldReadNullColumnThroughSupportWrapperCursor() {
+        db.getSupportWrapper().query("SELECT NULL AS empty_value, 'x' AS present_value").use { cursor ->
+            assertThat(cursor.moveToFirst(), `is`(true))
+            assertThat(cursor.isNull(0), `is`(true))
+            assertThat(cursor.getString(1), `is`("x"))
+        }
+    }
+
     @Database(entities = [User::class], version = 1, exportSchema = false)
     abstract class AppDatabase : RoomDatabase() {
         abstract fun userDao(): UserDao
