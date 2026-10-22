@@ -759,10 +759,12 @@ public final class SQLiteConnectionPool implements Closeable {
     // Can't throw.
     private void logConnectionPoolBusyLocked(long waitMillis, int connectionFlags) {
         final Thread thread = Thread.currentThread();
+        @SuppressWarnings("deprecation")
+        final long threadId = thread.getId();
         StringBuilder msg = new StringBuilder();
         msg.append("The connection pool for database '").append(mConfiguration.label);
         msg.append("' has been unable to grant a connection to thread ");
-        msg.append(thread.getId()).append(" (").append(thread.getName()).append(") ");
+        msg.append(threadId).append(" (").append(thread.getName()).append(") ");
         msg.append("with flags 0x").append(Integer.toHexString(connectionFlags));
         msg.append(" for ").append(waitMillis * 0.001f).append(" seconds.\n");
 
