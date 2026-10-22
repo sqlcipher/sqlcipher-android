@@ -3,14 +3,17 @@
 SQLCipher for Android provides a library replacement for `android.database.sqlite` on the Android platform for use on [SQLCipher](https://github.com/sqlcipher/sqlcipher) databases. This library is based on the upstream [Android Bindings](https://www.sqlite.org/android/doc/trunk/www/index.wiki) project and aims to be a long-term replacement for the original [SQLCipher for Android](https://github.com/sqlcipher/android-database-sqlcipher) library.
 
 > [!CAUTION]
-> ## SQLCipher 5.0.0-beta details
+> ## SQLCipher 5.0.0-beta.1 details
 > Summary:
-> - Changes architecture to use VFS shims
-> - Uses AEAD Encryption with AES-256-GCM
-> - Increases KDF iteration increase to 512K
-> - Increase default page size to 8192 bytes
-> - Adds encryption and decryption support to PRAGMA rekey
-> - **BREAKING CHANGES** - see [CHANGELOG.md](https://github.com/sqlcipher/sqlcipher/blob/v5.0.0-beta/CHANGELOG.md#500-beta----2026---500-beta-changes) and [release announcement](https://www.zetetic.net/blog/2026/09/15/sqlcipher-5.0.0-beta/)
+> - Changes architecture to use codec
+> - Adjusts KDF iteration back to 256K
+> - Rekey support for databases in WAL mode with concurrent connections
+> - Journal spill behavior is now locked down to prevent plaintext writes
+> - Fixed a bug where cipher_hmac_fast_kdf could write the page HMAC past the reserved area
+> - Improved error handling and reporting for rekey failures
+> - Fixed shared cache connections for encrypted databases
+> - Added PRAGMA cipher_selftest for verifying internal implementations
+> - **BREAKING CHANGES** - see [CHANGELOG.md](https://github.com/sqlcipher/sqlcipher/blob/beta/CHANGELOG.md#500-beta1---oct-2026---500-beta1-changes) and [release announcement](https://www.zetetic.net/blog/2026/10/22/sqlcipher-5.0.0-beta.1/)
 
 ### Compatibility
 
@@ -129,7 +132,7 @@ There are two different compile-specific options available to alter the logging 
 To manage the logging produced from SQLCipher core, please review the runtime configurations: [`PRAGMA cipher_log`](https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_log),
 [`PRAGMA cipher_log_level`](https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_log_level), and [`PRAGMA cipher_log_source`](https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_log_source).
 
-### Building 
+### Building
 
 This project and it's dependencies can be built directly within Android Studio.  Currently, SQLCipher for Android uses NDK version "25.2.9519653". The repository includes a submodule for SQLCipher core, and LibTomCrypt as external dependencies. When cloning the repository, please execute the following command at the root of the project (the build phase will check for this on your behalf):
 
