@@ -391,7 +391,8 @@ public final class SQLiteSession {
      *
      * @param cancellationSignal A signal to cancel the operation in progress, or null if none.
      *
-     * @throws IllegalStateException if there is no current transaction.
+     * @throws IllegalStateException if there is no current transaction or an outermost
+     * transaction is ended while a reentrant statement is still executing.
      * @throws SQLiteException if an error occurs.
      * @throws OperationCanceledException if the operation was canceled.
      *
@@ -411,6 +412,7 @@ public final class SQLiteSession {
             cancellationSignal.throwIfCanceled();
         }
 
+        throwIfOutermostTransactionHasActiveStatement();
         final Transaction top = mTransactionStack;
         boolean successful = (top.mMarkedSuccessful || yielding) && !top.mChildFailed;
 
@@ -443,6 +445,9 @@ public final class SQLiteSession {
                 } else {
                     mConnection.execute("ROLLBACK;", null, cancellationSignal); // might throw
                 }
+            } catch (RuntimeException failure) {
+                recoverTransactionAfterFailure(failure);
+                throw failure;
             } finally {
                 releaseConnection(); // might throw
             }
@@ -450,6 +455,27 @@ public final class SQLiteSession {
 
         if (listenerException != null) {
             throw listenerException;
+        }
+    }
+
+    // Keep the connection owned until SQLite confirms it is no longer in a transaction.
+    private void recoverTransactionAfterFailure(RuntimeException failure) {
+        try {
+            if (!mConnection.isAutoCommit()) {
+                // Recovery must not inherit the failed operation's cancellation signal.
+                mConnection.execute("ROLLBACK;", null, null);
+            }
+        } catch (RuntimeException | LinkageError cleanupFailure) {
+            failure.addSuppressed(cleanupFailure);
+            boolean discard = true;
+            try {
+                discard = !mConnection.isAutoCommit();
+            } catch (RuntimeException | LinkageError stateFailure) {
+                failure.addSuppressed(stateFailure);
+            }
+            if (discard) {
+                mConnectionPool.discardConnection(mConnection);
+            }
         }
     }
 
@@ -912,6 +938,8 @@ public final class SQLiteSession {
                 return true;
 
             case DatabaseUtils.STATEMENT_COMMIT:
+                // Do not mark the transaction successful if completion must be rejected.
+                throwIfOutermostTransactionHasActiveStatement();
                 setTransactionSuccessful();
                 endTransaction(cancellationSignal);
                 return true;
@@ -943,6 +971,15 @@ public final class SQLiteSession {
             } finally {
                 mConnection = null;
             }
+        }
+    }
+
+    private void throwIfOutermostTransactionHasActiveStatement() {
+        if (mTransactionStack != null && mTransactionStack.mParent == null
+                && mConnectionUseCount > 1) {
+            // A reentrant statement still owns the connection. Releasing or discarding
+            // it here would let that statement continue on an untrusted connection.
+            throw new IllegalStateException("Cannot end the outer transaction while a statement is executing.");
         }
     }
 

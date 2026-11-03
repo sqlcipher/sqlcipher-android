@@ -1,0 +1,43 @@
+diff --git a/sqlcipher/src/main/jni/sqlcipher/android_database_SQLiteConnection.cpp b/sqlcipher/src/main/jni/sqlcipher/android_database_SQLiteConnection.cpp
+index dcb6a7a..71f83ef 100644
+--- a/sqlcipher/src/main/jni/sqlcipher/android_database_SQLiteConnection.cpp
++++ b/sqlcipher/src/main/jni/sqlcipher/android_database_SQLiteConnection.cpp
+@@ -29,6 +29,7 @@
+ #include <cinttypes>
+ #include <unistd.h>
+ #include <cassert>
++#include <atomic>
+
+ #include <sqlite3.h>
+
+@@ -110,6 +111,18 @@ static void sqliteProfileCallback(void *data, const char *sql, sqlite3_uint64 tm
+           connection->label.c_str(), sql, tm * 0.000001f);
+ }
+
++// Test-only commit-hook gate; production progress interval is unchanged.
++static std::atomic<int> testCommitProbe{0};
++extern "C" JNIEXPORT void JNICALL Java_net_zetetic_database_sqlcipher_NativeCommitProbe_arm(JNIEnv*, jclass) { testCommitProbe.store(1); }
++extern "C" JNIEXPORT jint JNICALL Java_net_zetetic_database_sqlcipher_NativeCommitProbe_phase(JNIEnv*, jclass) { return testCommitProbe.load(); }
++static int testCommitHook(void* data) {
++    auto* connection = static_cast<SQLiteConnection*>(data);
++    testCommitProbe.store(2);
++    for (int i = 0; i < 10000 && !connection->canceled; ++i) usleep(1000);
++    testCommitProbe.store(connection->canceled ? 3 : 4);
++    return 0;
++}
++
+ // Called after each SQLite VM instruction when cancelation is enabled.
+ static int sqliteProgressHandlerCallback(void* data) {
+     auto* connection = static_cast<SQLiteConnection*>(data);
+@@ -524,7 +537,11 @@ static void nativeExecute(JNIEnv* env, jclass clazz, jlong connectionPtr,
+         jlong statementPtr) {
+     auto* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
+     auto* statement = reinterpret_cast<sqlite3_stmt*>(statementPtr);
++    const char* sql = sqlite3_sql(statement);
++    bool armed = testCommitProbe.load() == 1 && sql && strcmp(sql, "COMMIT;") == 0;
++    if (armed) sqlite3_commit_hook(connection->db, testCommitHook, connection);
+     executeNonQuery(env, connection, statement);
++    if (armed) sqlite3_commit_hook(connection->db, nullptr, nullptr);
+ }
+
+ static jint nativeExecuteForChangedRowCount(JNIEnv* env, jclass clazz,

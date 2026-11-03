@@ -160,6 +160,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
       long connectionPtr, long statementPtr, long winPtr,
       int startPos, int requiredPos, boolean countAllRows);
     private static native int nativeGetDbLookaside(long connectionPtr);
+    private static native boolean nativeIsAutoCommit(long connectionPtr);
     private static native void nativeCancel(long connectionPtr);
     private static native void nativeResetCancel(long connectionPtr, boolean cancelable);
 
@@ -493,6 +494,11 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
      */
     public int getConnectionId() {
         return mConnectionId;
+    }
+
+    // The session must own this connection while checking native transaction state.
+    boolean isAutoCommit() {
+        return nativeIsAutoCommit(mConnectionPtr);
     }
 
     /**
