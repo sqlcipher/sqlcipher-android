@@ -803,6 +803,11 @@ static jint nativeGetDbLookaside(JNIEnv* env, jobject clazz, jlong connectionPtr
     return cur;
 }
 
+static jboolean nativeIsAutoCommit(JNIEnv* env, jclass clazz, jlong connectionPtr) {
+    auto* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
+    return sqlite3_get_autocommit(connection->db) ? JNI_TRUE : JNI_FALSE;
+}
+
 static void nativeCancel(JNIEnv* env, jobject clazz, jlong connectionPtr) {
     auto* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
     connection->canceled = true;
@@ -886,6 +891,8 @@ static JNINativeMethod sMethods[] =
             (void*)nativeExecuteForCursorWindow },
     { "nativeGetDbLookaside", "(J)I",
             (void*)nativeGetDbLookaside },
+    { "nativeIsAutoCommit", "(J)Z",
+            (void*)nativeIsAutoCommit },
     { "nativeCancel", "(J)V",
             (void*)nativeCancel },
     { "nativeResetCancel", "(JZ)V",

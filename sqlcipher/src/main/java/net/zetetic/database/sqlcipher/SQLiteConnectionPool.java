@@ -86,6 +86,7 @@ public final class SQLiteConnectionPool implements Closeable {
     private final SQLiteDatabaseConfiguration mConfiguration;
     private int mMaxConnectionPoolSize;
     private boolean mIsOpen;
+    private boolean mUnusable;
     private int mNextConnectionId;
 
     private ConnectionWaiter mConnectionWaiterPool;
@@ -222,7 +223,9 @@ public final class SQLiteConnectionPool implements Closeable {
             // themselves will be in.  The finalizer is really just here for CloseGuard.
             // The connections will take care of themselves when their own finalizers run.
             synchronized (mLock) {
-                throwIfClosedLocked();
+                if (!mIsOpen) {
+                    throw new IllegalStateException("The connection pool has been closed.");
+                }
 
                 mIsOpen = false;
 
@@ -380,7 +383,7 @@ public final class SQLiteConnectionPool implements Closeable {
                         + "from this pool or has already been released.");
             }
 
-            if (!mIsOpen) {
+            if (!mIsOpen || mUnusable) {
                 closeConnectionAndLogExceptionsLocked(connection);
             } else if (connection.isPrimaryConnection()) {
                 if (recycleConnectionLocked(connection, status)) {
@@ -396,6 +399,20 @@ public final class SQLiteConnectionPool implements Closeable {
                 }
                 wakeConnectionWaitersLocked();
             }
+        }
+    }
+
+    // Called while the session still owns the connection.
+    void discardConnection(SQLiteConnection connection) {
+        synchronized (mLock) {
+            if (!mAcquiredConnections.containsKey(connection)) {
+                throw new IllegalStateException("Connection is not acquired from this pool");
+            }
+            mAcquiredConnections.put(connection, AcquiredConnectionStatus.DISCARD);
+            // Reopening can silently lose in-memory data, attachments, TEMP objects,
+            // or other connection-local state. Require the owner to close and reopen.
+            mUnusable = true;
+            wakeConnectionWaitersLocked();
         }
     }
 
@@ -697,7 +714,16 @@ public final class SQLiteConnectionPool implements Closeable {
 
                 // Check whether we are done waiting yet.
                 synchronized (mLock) {
-                    throwIfClosedLocked();
+                    if (!mIsOpen || mUnusable) {
+                        // A connection may have been assigned before invalidation but not
+                        // consumed by this waiter yet. It must not remain acquired.
+                        final SQLiteConnection assigned = waiter.mAssignedConnection;
+                        recycleConnectionWaiterLocked(waiter);
+                        if (assigned != null) {
+                            releaseConnection(assigned);
+                        }
+                        throwIfClosedLocked();
+                    }
 
                     final SQLiteConnection connection = waiter.mAssignedConnection;
                     final RuntimeException ex = waiter.mException;
@@ -812,7 +838,10 @@ public final class SQLiteConnectionPool implements Closeable {
         boolean nonPrimaryConnectionNotAvailable = false;
         while (waiter != null) {
             boolean unpark = false;
-            if (!mIsOpen) {
+            if (!mIsOpen || mUnusable) {
+                // A cancellation listener may be installed after this waiter is dequeued.
+                // Mark it terminal before waking it so cancellation will not search the queue.
+                waiter.mException = new IllegalStateException("Connection pool is closed or unusable.");
                 unpark = true;
             } else {
                 try {
@@ -983,6 +1012,9 @@ public final class SQLiteConnectionPool implements Closeable {
     }
 
     private void throwIfClosedLocked() {
+        if (mUnusable) {
+            throw new IllegalStateException("The connection pool cannot be reused after transaction recovery failed; close and reopen the database.");
+        }
         if (!mIsOpen) {
             throw new IllegalStateException("Cannot perform this operation "
                     + "because the connection pool has been closed.");

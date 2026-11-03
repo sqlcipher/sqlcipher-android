@@ -574,6 +574,13 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
     /**
      * End a transaction. See beginTransaction for notes about how to use this and when transactions
      * are committed and rolled back.
+     * <p>If transaction recovery fails, this database's connection pool cannot be reused.
+     * Close the database and reopen it before performing further operations. A failed commit
+     * does not by itself establish whether the transaction reached durable storage.</p>
+     *
+     * @throws IllegalStateException if there is no current transaction, or if an outermost
+     * transaction is ended reentrantly while a statement is still executing. In the latter
+     * case the transaction remains active and must be ended after the statement finishes.
      */
     public void endTransaction() {
         acquireReference();

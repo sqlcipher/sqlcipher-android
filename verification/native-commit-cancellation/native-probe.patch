@@ -1,0 +1,58 @@
+diff --git a/sqlcipher/src/main/jni/sqlcipher/android_database_SQLiteConnection.cpp b/sqlcipher/src/main/jni/sqlcipher/android_database_SQLiteConnection.cpp
+index dcb6a7a..8c28d7f 100644
+--- a/sqlcipher/src/main/jni/sqlcipher/android_database_SQLiteConnection.cpp
++++ b/sqlcipher/src/main/jni/sqlcipher/android_database_SQLiteConnection.cpp
+@@ -29,6 +29,7 @@
+ #include <cinttypes>
+ #include <unistd.h>
+ #include <cassert>
++#include <atomic>
+
+ #include <sqlite3.h>
+
+@@ -110,9 +111,24 @@ static void sqliteProfileCallback(void *data, const char *sql, sqlite3_uint64 tm
+           connection->label.c_str(), sql, tm * 0.000001f);
+ }
+
+-// Called after each SQLite VM instruction when cancelation is enabled.
++// Test-only gate: this code is never included in the candidate artifact.
++static std::atomic<int> testCommitProbe{0};
++static thread_local bool testInCommit = false;
++extern "C" JNIEXPORT void JNICALL
++Java_net_zetetic_database_sqlcipher_NativeCommitProbe_arm(JNIEnv*, jclass) {
++    testCommitProbe.store(1);
++}
++extern "C" JNIEXPORT jint JNICALL
++Java_net_zetetic_database_sqlcipher_NativeCommitProbe_phase(JNIEnv*, jclass) {
++    return testCommitProbe.load();
++}
+ static int sqliteProgressHandlerCallback(void* data) {
+     auto* connection = static_cast<SQLiteConnection*>(data);
++    if (testInCommit && testCommitProbe.load() == 1) {
++        testCommitProbe.store(2); // sqlite3_step is executing COMMIT's VM.
++        for (int i = 0; i < 10000 && !connection->canceled; ++i) usleep(1000);
++        testCommitProbe.store(connection->canceled ? 3 : 4);
++    }
+     return connection->canceled;
+ }
+
+@@ -524,7 +540,10 @@ static void nativeExecute(JNIEnv* env, jclass clazz, jlong connectionPtr,
+         jlong statementPtr) {
+     auto* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
+     auto* statement = reinterpret_cast<sqlite3_stmt*>(statementPtr);
++    const char* sql = sqlite3_sql(statement);
++    testInCommit = sql && strcmp(sql, "COMMIT;") == 0;
+     executeNonQuery(env, connection, statement);
++    testInCommit = false;
+ }
+
+ static jint nativeExecuteForChangedRowCount(JNIEnv* env, jclass clazz,
+@@ -813,7 +832,7 @@ static void nativeResetCancel(JNIEnv* env, jobject clazz, jlong connectionPtr,
+     auto* connection = reinterpret_cast<SQLiteConnection*>(connectionPtr);
+     connection->canceled = false;
+     if (cancelable) {
+-        sqlite3_progress_handler(connection->db, 4, sqliteProgressHandlerCallback,
++        sqlite3_progress_handler(connection->db, testCommitProbe.load() == 1 ? 1 : 4, sqliteProgressHandlerCallback,
+                 connection);
+     } else {
+         sqlite3_progress_handler(connection->db, 0, NULL, NULL);
